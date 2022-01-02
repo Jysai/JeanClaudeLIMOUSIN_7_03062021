@@ -7,7 +7,10 @@ router.post('/signup', userCtrl.signup)
 router.post('/login', userCtrl.login)
 
 router.get('/me', auth,  userCtrl.me)
-router.put('/updateUserProfile', auth, userCtrl.updateUserProfile)
+router.get('/allUsers', auth,  userCtrl.allUsers)
+router.put('/', auth, userCtrl.updateUserProfile)
+router.delete('/', auth, userCtrl.deleteProfile)
+
 
 
 module.exports = router

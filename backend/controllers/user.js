@@ -1,28 +1,17 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-
 const models = require("../models");
-
-// const EMAIL_REGEX =
-//   /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 exports.signup = (req, res, next) => {
   if (
     req.body.email == null ||
-    req.body.username == null ||
+    req.body.firstname == null ||
+    req.body.lastname == null ||
     req.body.password == null
   ) {
     return res.status(400).json({ error: "missing parameters" });
   }
-
-  // if (req.body.username.length > 13 ||req.body.username.length < 5 ) {
-  //   return res.status(400).json({ error: "wrong username (must be lenght 5 - 13)" });
-  // }
-
-  // if (!EMAIL_REGEX.test(req.body.email)) {
-
-  // }
 
   // console.log(req.body);
   models.User.findOne({
@@ -37,7 +26,8 @@ exports.signup = (req, res, next) => {
           .then(function (bcryptedPassword) {
             return models.User.create({
               email: req.body.email,
-              username: req.body.username,
+              firstname: req.body.firstname,
+              lastname: req.body.lastname,
               password: bcryptedPassword,
             });
           })
@@ -77,7 +67,7 @@ exports.login = (req, res, next) => {
                 .status(401)
                 .json({ error: "Mot de passe incorrect !" });
             } else {
-                res.status(200).json({
+              res.status(200).json({
                 userId: userFound.id,
                 token: jwt.sign(
                   { userId: userFound.id },
@@ -97,7 +87,7 @@ exports.login = (req, res, next) => {
 
 exports.me = (req, res, next) => {
   models.User.findOne({
-    attributes: ["id", "email", "username"],
+    attributes: ["id", "email", "firstname", "lastname"],
     // where: { userId: req.body.userId },
     where: { id: req.body.userId },
   })
@@ -113,22 +103,59 @@ exports.me = (req, res, next) => {
     });
 };
 
-exports.updateUserProfile = (req, res, next ) => {
-  models.User.findOne({
-    attributes: ['id', 'email', 'username' ],
-    where: { id: req.body.userId },
-  }).then(function (userFound){
-    if (userFound) {
-      userFound.update({
-        username: (req.body.username ? req.body.username : userFound.username),
-        email: (req.body.email ? req.body.email : userFound.email)
-      })
-      res.status(201).json(userFound)
-    } else {
-      res.status(404).json({'error' : 'user not found'})
-    }
-  }).catch(function(err){
-    res.status(500).json({'error' : 'cannot fetch user'})
+exports.allUsers = (req, res, next) => {
+  models.User.findAll({
+    attributes: ["id", "firstname", "lastname"],
   })
-}
+    .then(function (userFound) {
+      if (userFound) {
+        res.status(201).json(userFound);
+      } else {
+        res.status(404).json({ error: "users not found" });
+      }
+    })
+    .catch(function (error) {
+      res.status(500).json({ error: "cannot fetch user" });
+    });
+};
 
+exports.updateUserProfile = (req, res, next) => {
+  models.User.findOne({
+    attributes: ["id", "email", "firstname", "lastname"],
+    where: { id: req.body.userId },
+  })
+    .then(function (userFound) {
+      if (userFound) {
+        userFound.update({
+          firstname: req.body.firstname
+            ? req.body.firstname
+            : userFound.firstname,
+          lastname: req.body.lastname ? req.body.lastname : userFound.lastname,
+          email: req.body.email ? req.body.email : userFound.email,
+        });
+        res.status(201).json(userFound);
+      } else {
+        res.status(404).json({ error: "user not found" });
+      }
+    })
+    .catch(function (err) {
+      res.status(500).json({ error: "cannot fetch user" });
+    });
+};
+
+exports.deleteProfile = (req, res, next) => {
+  models.User.findOne({
+    where: { id: req.body.userId },
+  })
+    .then(function (userFound) {
+      if (userFound) {
+        userFound.destroy()
+        res.status(200).json({ message: "user supprimé !" });
+      } else {
+        res.status(404).json({ error: "user not found" });
+      }
+    })
+    .catch(function (err) {
+      res.status(500).json({ error: "cannot fetch user" });
+    });
+};

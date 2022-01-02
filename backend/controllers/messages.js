@@ -1,15 +1,10 @@
 const models = require("../models");
 
 exports.createMessage = (req, res, next) => {
-  const title = req.body.title;
   const content = req.body.content;
 
-  if (title == null || content == null) {
+  if (content == null) {
     return res.status(400).json({ err: "missing parameters" });
-  }
-
-  if (title.length <= 2 || content.length <= 4) {
-    return res.status(400).json({ err: "invalid parameters" });
   }
 
   models.User.findOne({
@@ -18,7 +13,6 @@ exports.createMessage = (req, res, next) => {
     .then(function (userFound) {
       if (userFound) {
         models.Message.create({
-          title: title,
           content: content,
           likes: 0,
           UserId: userFound.id,
@@ -41,31 +35,50 @@ exports.createMessage = (req, res, next) => {
 };
 
 exports.listMessages = (req, res, next) => {
-    const fields = req.query.fields;
-    const limit = parseInt(req.query.fields);
-    const offset = parseInt(req.query.offset);
-    const order = req.query.order;
-    models.Message.findAll({
-    //   order: [order != null ? order.split(":") : ["title", "ASC"]],
-    //   attributes: fields !== "*" && fields != null ? fields.split(",") : null,
-    //   limit: !isNaN(limit) ? limit : null,
-    //   offset: !isNaN(offset) ? offset : null,
-      include: [
-        {
-          model: models.User,
-          attributes: ["username"],
-        },
-      ],
+  models.Message.findAll({
+    include: [
+      {
+        model: models.User,
+        attributes: ["lastname", "firstname"],
+      },
+    ],
+  })
+    .then(function (messages) {
+      if (messages) {
+        return res.status(200).json({ messages });
+      } else {
+        res.status(404).json({ error: "no messages found" });
+      }
     })
-      .then(function (messages) {
-        if (messages) {
-          return res.status(200).json({ messages });
-        } else {
-          res.status(404).json({ error: "no messages found" });
-        }
-      })
-      .catch(function (err) {
-        console.log(err);
-        res.status(500).json({ error: "invalid fields" });
-      });
+    .catch(function (err) {
+      console.log(err);
+      res.status(500).json({ error: "invalid fields" });
+    });
+};
+
+exports.editPost = (req, res, next) => {
+  models.Message.findOne({ _id: req.params.id })
+  .then((message) => {
+    console.log(message);
+  })
+  .catch(function (err) {
+    res.status(500).json({ error: "cannot fetch user" });
+  });
+};
+
+  
+
+
+
+exports.deleteMessage = (req, res, next) => {
+  const saucedId = req.params.id;
+  console.log(req.params.id);
+
+  models.Message.findOne({ _id: saucedId }) //On récupère la sauce
+    .then((sauce) => {
+      Sauce.dextroy({ _id: saucedId }) // la méthode deleteOne permet de supprimer l'objet dans la base
+        .then(() => res.status(200).json({ message: "Objet supprimé !" }))
+        .catch((error) => res.status(400).json({ error }));
+    })
+    .catch((error) => res.status(500).json({ error }));
 };
