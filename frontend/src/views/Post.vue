@@ -9,7 +9,7 @@
         <hr>
         <router-link :to="{name: 'post'}"><div class="menu-nav"><i class="fas fa-home fa-2x"></i><h4>Accueil</h4></div></router-link>     
         <router-link :to="{name: 'profile'}"><div class="menu-nav"><i class="fas fa-user fa-2x"></i><h4>Profil</h4></div></router-link>        
-        <div class="menu-nav"><i class="fas fa-cog fa-2x"></i><h4>Paramêtres</h4></div>
+          <router-link :to="{name: 'settings'}"><div class="menu-nav"><i class="fas fa-cog fa-2x"></i><h4>Paramêtres</h4></div></router-link>   
          
            <button @click="logout()" class="button">Déconnexion</button>
        
@@ -73,7 +73,6 @@
 
 <script>
 import { mapState } from "vuex";
-
 export default {
   name: "Post",
   data: function () {
@@ -88,12 +87,10 @@ export default {
       this.$router.push("/");
       return;
     }
-
     this.$store.dispatch("getPostInfos");
     this.$store.dispatch("createNewPost");
     this.$store.dispatch("getAllUsers");
   },
-
   computed: {
     ...mapState({
       posts: "postInfos",
@@ -102,7 +99,6 @@ export default {
     }),
     ...mapState(["status"]),
   },
-
   methods: {
     logout: function () {
       // Permet de se déconnecter
@@ -139,7 +135,6 @@ span {
   font-weight: 500;
   text-transform: capitalize;
 }
-
 h3 {
   margin: 20px;
 }
@@ -148,7 +143,6 @@ h4{
 }
 .logo{
   width: 100%;
-
 }
 .fas{
   width: 20px;

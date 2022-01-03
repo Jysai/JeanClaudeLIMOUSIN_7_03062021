@@ -172,8 +172,9 @@ const store = createStore({
         instance
           .post("/mess/", userInfos)
           .then(function (response) {
+            console.log(response.data);
             commit("setStatus", "");
-            commit("newPosts", response);
+            commit("newPosts", response.data);
             (response);
           })
           .catch(function (error) {
@@ -183,6 +184,43 @@ const store = createStore({
       // });
     },
 
+    editProfile: ({ commit }, userInfos) => {
+      // Méthode post via AXIOS pour authentifier l'utilisateur dans la base de données
+      commit("setStatus", "loading");
+      return new Promise((resolve, reject) => {
+        instance
+          .put("/auth/", userInfos)
+          .then(function (response) {
+            
+            commit("setStatus", "");
+            commit("logUser", response.data);
+            resolve(response);
+          })
+          .catch(function (error) {
+            commit("setStatus", "error_login");
+            reject(error);
+          });
+      });
+    },
+
+    deleteProfile: ({ commit }, userInfos) => {
+      // Méthode post via AXIOS pour authentifier l'utilisateur dans la base de données
+      commit("setStatus", "loading");
+      return new Promise((resolve, reject) => {
+        instance
+          .delete("/auth/", userInfos)
+          .then(function (response) {
+            
+            commit("setStatus", "");
+            commit("logUser", response.data);
+            resolve(response);
+          })
+          .catch(function (error) {
+            commit("setStatus", "error_login");
+            reject(error);
+          });
+      });
+    },
  
 
   },

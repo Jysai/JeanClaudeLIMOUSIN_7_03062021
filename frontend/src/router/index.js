@@ -2,7 +2,7 @@ import { createWebHistory, createRouter } from "vue-router";
 import Login from "../views/Login.vue";
 import Profile from "../views/Profile.vue";
 import Post from "../views/Post.vue";
-
+import Settings from "../views/Settings.vue";
 
 const routes = [
   { 
@@ -22,6 +22,12 @@ const routes = [
     component: Post, 
     props:true 
   },
+  {
+    name: 'settings',
+    path: '/settings', 
+    component: Settings, 
+    props:true 
+  }
 ]
 
 const router = createRouter({

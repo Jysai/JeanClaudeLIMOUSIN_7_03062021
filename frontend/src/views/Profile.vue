@@ -8,7 +8,7 @@
         <hr>
         <router-link :to="{name: 'post'}"><div class="menu-nav"><i class="fas fa-home fa-2x"></i><h4>Accueil</h4></div></router-link>     
         <router-link :to="{name: 'profile'}"><div class="menu-nav"><i class="fas fa-user fa-2x"></i><h4>Profil</h4></div></router-link>        
-        <div class="menu-nav"><i class="fas fa-cog fa-2x"></i><h4>Paramêtres</h4></div>
+        <router-link :to="{name: 'settings'}"><div class="menu-nav"><i class="fas fa-cog fa-2x"></i><h4>Paramêtres</h4></div></router-link>  
          
            <button @click="logout()" class="button">Déconnexion</button>
        
@@ -42,13 +42,8 @@
 </template>
 
 <script>
-
 import { mapState } from "vuex";
-
-
-
 export default {
-
   name: 'Profile',
   mounted: function() {
     if (this.$store.state.user.userId == -1) {
@@ -59,7 +54,6 @@ export default {
     
     
   },
-
   computed: {
     ...mapState({
       user: 'userInfos',
@@ -95,7 +89,6 @@ span {
   font-weight: 500;
   text-transform: capitalize;
 }
-
 h3 {
   margin: 20px;
 }
@@ -104,7 +97,6 @@ h4{
 }
 .logo{
   width: 100%;
-
 }
 .fas{
   width: 20px;
@@ -214,5 +206,4 @@ p {
   margin-bottom: 15px;
   width: 650px;
 }
-
 </style>

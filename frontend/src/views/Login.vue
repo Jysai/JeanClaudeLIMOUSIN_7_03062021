@@ -62,7 +62,6 @@
       <button
         @click="createAccount()"
         class="button"
-        
         v-else
       >
         <span v-if="status == 'loading'">Création en cours...</span>
@@ -73,13 +72,7 @@
 </template>
 
 
-
-
-
-
-
 <script>
-
 import { mapState } from "vuex";
 export default {
   name: "Login",
@@ -124,7 +117,7 @@ export default {
           }
         );
     },
-    createAccount: () => { // Création du compte 
+    createAccount: function () { // Création du compte 
       const self = this;
       this.$store // Appel API dans le store
         .dispatch("createAccount", {
