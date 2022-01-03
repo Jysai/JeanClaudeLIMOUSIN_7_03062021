@@ -121,7 +121,7 @@ exports.allUsers = (req, res, next) => {
 
 exports.updateUserProfile = (req, res, next) => {
   models.User.findOne({
-    attributes: ["id", "email", "firstname", "lastname"],
+    // attributes: ["id", "email", "firstname", "lastname"],
     where: { id: req.body.userId },
   })
     .then(function (userFound) {

@@ -5,7 +5,7 @@ const auth = require('../middleware/auth')
 
 router.post('/', auth, messageCtrl.createMessage)
 router.get('/',  messageCtrl.listMessages)
-router.delete('/', auth, messageCtrl.deleteMessage)
+router.delete('/:id', auth, messageCtrl.deleteMessage)
 router.put('/:id', auth, messageCtrl.editPost)
 
 module.exports = router

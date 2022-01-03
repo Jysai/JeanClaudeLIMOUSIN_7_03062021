@@ -57,28 +57,70 @@ exports.listMessages = (req, res, next) => {
 };
 
 exports.editPost = (req, res, next) => {
-  models.Message.findOne({ _id: req.params.id })
-  .then((message) => {
-    console.log(message);
+  models.User.findOne({
+    where: { id: req.body.userId },
   })
-  .catch(function (err) {
-    res.status(500).json({ error: "cannot fetch user" });
-  });
+    .then(function (userFound) {
+      
+      models.Message.findOne({
+        where: { id: req.params.id },
+        
+      })
+        .then(function (messageFound) {
+          if (userFound.id == messageFound.UserId) {
+            console.log(userFound);
+            messageFound.update({
+              content: req.body.content
+                ? req.body.content
+                : messageFound.content,
+            });
+            res.status(200).json({ error: "message modifié" });
+          } else {
+            res
+              .status(401)
+              .json({
+                error: "vous n'avez pas les droits pour modifier ce message",
+              });
+          }
+        })
+        .catch(function (err) {
+          res.status(404).json({
+            error: "message non trouvé",
+          });
+        });
+    })
+    .catch(function (error) {
+      res.status(404).json({ error: "Utilisateur non trouvé" });
+    });
 };
 
-  
-
-
-
 exports.deleteMessage = (req, res, next) => {
-  const saucedId = req.params.id;
-  console.log(req.params.id);
-
-  models.Message.findOne({ _id: saucedId }) //On récupère la sauce
-    .then((sauce) => {
-      Sauce.dextroy({ _id: saucedId }) // la méthode deleteOne permet de supprimer l'objet dans la base
-        .then(() => res.status(200).json({ message: "Objet supprimé !" }))
-        .catch((error) => res.status(400).json({ error }));
+  models.User.findOne({
+    where: { id: req.body.userId },
+  })
+    .then(function (userFound) {
+      models.Message.findOne({
+        where: { id: req.params.id },
+      })
+        .then(function (messageFound) {
+          if (userFound.id == messageFound.UserId) {
+            messageFound.destroy();
+            res.status(200).json({ error: "message supprimé !" });
+          } else {
+            res
+              .status(401)
+              .json({
+                error: "vous n'avez pas les droits pour supprimer ce message",
+              });
+          }
+        })
+        .catch(function (err) {
+          res.status(404).json({
+            error: "message non trouvé",
+          });
+        });
     })
-    .catch((error) => res.status(500).json({ error }));
+    .catch(function (error) {
+      res.status(404).json({ error: "Utilisateur non trouvé" });
+    });
 };
