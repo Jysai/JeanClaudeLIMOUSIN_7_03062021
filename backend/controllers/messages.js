@@ -61,14 +61,11 @@ exports.editPost = (req, res, next) => {
     where: { id: req.body.userId },
   })
     .then(function (userFound) {
-      
       models.Message.findOne({
         where: { id: req.params.id },
-        
       })
         .then(function (messageFound) {
           if (userFound.id == messageFound.UserId) {
-            console.log(userFound);
             messageFound.update({
               content: req.body.content
                 ? req.body.content

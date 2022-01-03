@@ -12,7 +12,7 @@ const routes = [
   },
   { 
     name: 'profile',
-    path: '/profile/id', 
+    path: '/me', 
     component: Profile, 
     props:true 
   },
