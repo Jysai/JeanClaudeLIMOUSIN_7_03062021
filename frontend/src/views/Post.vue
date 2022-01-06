@@ -1,18 +1,39 @@
 <template>
-
   <div>
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
+      integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm"
+      crossorigin="anonymous"
+    />
     <div class="main-site">
       <div class="card-side card-side-left">
-        
-        <img class="logo" alt="Groupomania logo" src="../assets/icon-left-font.webp">
-        <hr>
-        <router-link :to="{name: 'post'}"><div class="menu-nav"><i class="fas fa-home fa-2x"></i><h4>Accueil</h4></div></router-link>     
-        <router-link :to="{name: 'profile'}"><div class="menu-nav"><i class="fas fa-user fa-2x"></i><h4>Profil</h4></div></router-link>        
-          <router-link :to="{name: 'settings'}"><div class="menu-nav"><i class="fas fa-cog fa-2x"></i><h4>Paramêtres</h4></div></router-link>   
-         
-           <button @click="logout()" class="button">Déconnexion</button>
-       
+        <img
+          class="logo"
+          alt="Groupomania logo"
+          src="../assets/icon-left-font.webp"
+        />
+        <hr />
+        <router-link :to="{ name: 'post' }"
+          ><div class="menu-nav">
+            <i class="fas fa-home fa-2x"></i>
+            <h4>Accueil</h4>
+          </div></router-link
+        >
+        <router-link :to="{ name: 'profile' }"
+          ><div class="menu-nav">
+            <i class="fas fa-user fa-2x"></i>
+            <h4>Profil</h4>
+          </div></router-link
+        >
+        <router-link :to="{ name: 'settings' }"
+          ><div class="menu-nav">
+            <i class="fas fa-cog fa-2x"></i>
+            <h4>Paramêtres</h4>
+          </div></router-link
+        >
+
+        <button @click="logout()" class="button">Déconnexion</button>
       </div>
       <div>
         <div class="card">
@@ -37,6 +58,9 @@
           <div class="card" v-bind:key="index" v-for="(post, index) in posts">
             <p>UtilisateurID: {{ post.UserId }}</p>
             <p>Message: {{ post.content }}</p>
+            <p>{{new Date(post.createdAt).toLocaleString('fr-FR', { hour12: false })}}</p>
+         
+            
             <hr />
             <div class="comment">
               <textarea
@@ -48,8 +72,6 @@
             </div>
           </div>
         </div>
-
-      
       </div>
       <div class="card-side card-side-right">
         <h3>Suggestions pour vous</h3>
@@ -88,13 +110,11 @@ export default {
       return;
     }
     this.$store.dispatch("getPostInfos");
-    this.$store.dispatch("createNewPost");
     this.$store.dispatch("getAllUsers");
   },
   computed: {
     ...mapState({
       posts: "postInfos",
-      newPosts: "newPosts",
       users: "allUsers",
     }),
     ...mapState(["status"]),
@@ -104,9 +124,6 @@ export default {
       // Permet de se déconnecter
       this.$store.commit("logout");
       this.$router.push("/");
-    },
-    refreshPost: function () {
-      this.$store.dispatch("getPostInfos");
     },
     creationPost: function () {
       // const self = this;
@@ -138,26 +155,25 @@ span {
 h3 {
   margin: 20px;
 }
-h4{
+h4 {
   margin-left: 20px;
 }
-.logo{
+.logo {
   width: 100%;
 }
-.fas{
+.fas {
   width: 20px;
 }
-.menu-nav{
+.menu-nav {
   display: flex;
   align-items: center;
-  padding: 20px
+  padding: 20px;
 }
-.menu-nav:hover{
+.menu-nav:hover {
   background: rgb(238, 238, 238);
   border-radius: 25px;
 }
 .card-side-right {
-  
   margin-left: 15px;
   height: 800px;
   width: 20%;
@@ -195,17 +211,15 @@ p {
   flex: 1;
   color: black;
 }
-.comment{
+.comment {
   display: flex;
   justify-content: center;
-  
 }
-.textarea-row-comment{
-  
+.textarea-row-comment {
   width: 100%;
   resize: none;
   overflow: hidden;
-  
+
   padding: 8px;
   border: none;
   border-radius: 25px;

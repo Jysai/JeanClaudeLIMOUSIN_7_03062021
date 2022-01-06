@@ -1,4 +1,4 @@
-import 'es6-promise/auto'
+import "es6-promise/auto";
 
 import { createStore } from "vuex";
 
@@ -39,28 +39,9 @@ const store = createStore({
       lastname: "",
       firstname: "",
     },
-    postInfos: {
-      UserId: "",
-      title: "",
-      content: "",
-      attachment: "",
-      likes: "",
-      createdAt: "",
-      updatedAt: "",
-      User: {
-        lastname: "",
-        firstname: "",
-      },
-    },
-    newPosts: {
-      content: "",
-    },
-    allUsers: {
-      firstname: "",
-      lastname: "",
-    }
-
-    
+    postInfos: [],
+    newPosts: [],
+    allUsers: [],
   },
   mutations: {
     setStatus: function (state, status) {
@@ -155,32 +136,30 @@ const store = createStore({
       // Méthode GET via AXIOS pour récupérer les plucations
       commit("setStatus", "loading");
       return new Promise((resolve) => {
-       instance
-        .get("mess")
-        .then(function (response) {
-          commit("setStatus", "");
-          commit("postInfos", response.data.messages);
-          resolve(response);
-        })
-        .catch(function () {});
-      })
+        instance
+          .get("mess")
+          .then(function (response) {
+            commit("setStatus", "");
+            commit("postInfos", response.data.messages);
+            resolve(response);
+          })
+          .catch(function () {});
+      });
     },
 
     createNewPost: ({ commit }, userInfos) => {
       // Méthode post via AXIOS pour authentifier l'utilisateur dans la base de données
       commit("setStatus", "loading");
-        instance
-          .post("/mess/", userInfos)
-          .then(function (response) {
-            console.log(response.data);
-            commit("setStatus", "");
-            commit("newPosts", response.data);
-            (response);
-          })
-          .catch(function (error) {
-            commit("setStatus", "");
-            (error);
-          });
+      instance
+        .post("/mess/", userInfos)
+        .then(function (response) {
+          console.log(response.data);
+          commit("setStatus", "");
+        })
+        .catch(function (error) {
+          commit("setStatus", "");
+          error;
+        });
       // });
     },
 
@@ -191,7 +170,6 @@ const store = createStore({
         instance
           .put("/auth/", userInfos)
           .then(function (response) {
-            
             commit("setStatus", "");
             commit("logUser", response.data);
             resolve(response);
@@ -210,7 +188,6 @@ const store = createStore({
         instance
           .delete("/auth/", userInfos)
           .then(function (response) {
-            
             commit("setStatus", "");
             commit("logUser", response.data);
             resolve(response);
@@ -221,8 +198,6 @@ const store = createStore({
           });
       });
     },
- 
-
   },
 });
 

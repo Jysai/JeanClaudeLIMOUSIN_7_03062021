@@ -66,10 +66,38 @@
           <span >Valider mes options</span>
         </button>
         <hr>
-        <button @click="deleteProfile()" class="button">
-          <!-- <span v-if="status == 'loading'">Validation en cours...</span> -->
-          <span >Supprimer mon compte</span>
-        </button>
+        <link
+      href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <button @click="openModal()" class="button">Supprimer votre compte</button>
+
+    <div id="myModal" class="modal" ref="myModal">
+      <div id="modal-content" class="modal-content animation-1">
+        <header class="modal-header">
+          <p class="modal-header-title">
+            Vous êtes sur le point de supprimer votre compte
+          </p>
+          <button id="close" class="modal-header-icon">
+            <span class="icon" @click="closeModal()">
+              <i class="bx bx-x"></i>
+            </span>
+          </button>
+        </header>
+
+        <div class="modal-body">
+          <button class="modal-button" @click="deleteProfile()">Valider</button>
+          <button class="modal-button" @click="closeModal()">Annuler</button>
+        </div>
+
+        <footer class="modal-footer"></footer>
+      </div>
+    </div>
+
+
+
+
+
       </div>
     </div>
   </div>
@@ -79,6 +107,7 @@
 import { mapState } from "vuex";
 
 export default {
+  el: "#app",
   name: "Setting",
   data: function () {
     return {
@@ -95,6 +124,11 @@ export default {
       return;
     }
     this.$store.dispatch("getUserInfos");
+    this.$el.addEventListener("click", this.onClick);
+  },
+  beforeDestroy: function () {
+    this.$el.removeEventListener("click", this.onClick);
+    // document.removeEventListener('click', this.onClick)
   },
 
   computed: {
@@ -138,6 +172,17 @@ export default {
             console.log(error);
           }
         );
+    },
+     onClick: function (ev) {
+      if (ev.target == this.$refs.myModal) {
+        this.$refs.myModal.style.display = "none";
+      }
+    },
+    openModal: function () {
+      this.$refs.myModal.style.display = "block";
+    },
+    closeModal: function () {
+      this.$refs.myModal.style.display = "none";
     },
   },
 };

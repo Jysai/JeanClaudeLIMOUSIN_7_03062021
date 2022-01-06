@@ -1,20 +1,26 @@
 const models = require("../models");
 
-exports.createMessage = (req, res, next) => {
-  const content = req.body.content;
 
-  if (content == null) {
-    return res.status(400).json({ err: "missing parameters" });
-  }
+exports.createMessage = (req, res, next) => {
+  console.log(`${req.protocol}://${req.get("host")}`);
+  const content = req.body.content;
+  
+
+  // if (content == null) {
+  //   return res.status(400).json({ err: "missing parameters" });
+  // }
 
   models.User.findOne({
     where: { id: req.body.userId },
   })
     .then(function (userFound) {
-      if (userFound) {
+      
         models.Message.create({
           content: content,
           likes: 0,
+          // attachment: `${req.protocol}://${req.get("host")}/images/${ 
+          //   req.file.filename
+          // }`,
           UserId: userFound.id,
         })
           .then(function (newMessage) {
@@ -25,23 +31,24 @@ exports.createMessage = (req, res, next) => {
           .catch(function (err) {
             return res.status(500).json({ err });
           });
-      } else {
-        return res.status(409).json({ error: "utilisateur non trouvé" });
-      }
+     
     })
     .catch(function (err) {
-      return res.status(500).json({ error: err });
+      return res.status(500).json({ err});
     });
 };
 
 exports.listMessages = (req, res, next) => {
   models.Message.findAll({
+    order: [['createdAt', 'DESC']],
     include: [
       {
         model: models.User,
         attributes: ["lastname", "firstname"],
+        
       },
     ],
+    
   })
     .then(function (messages) {
       if (messages) {
