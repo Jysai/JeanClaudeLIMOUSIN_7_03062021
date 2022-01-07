@@ -58,6 +58,7 @@
           <div class="card" v-bind:key="index" v-for="(post, index) in posts">
             <p>UtilisateurID: {{ post.UserId }}</p>
             <p>Message: {{ post.content }}</p>
+            <p>Like: {{ post.likes }}</p>
             <p>{{new Date(post.createdAt).toLocaleString('fr-FR', { hour12: false })}}</p>
          
             
