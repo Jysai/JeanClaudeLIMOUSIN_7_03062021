@@ -79,7 +79,6 @@
             <button v-on:click.prevent="likeMessage(message.id)" class="button">
               J'aime
             </button>
-           
 
             <hr />
             <div class="comment">
@@ -89,9 +88,11 @@
                 type="text-area"
                 placeholder="Ecivez un commentaire..."
               ></textarea>
-              
             </div>
-             <button v-on:click.prevent="creationComment(message.id)" class="button">
+            <button
+              v-on:click.prevent="createComment(message.id)"
+              class="button"
+            >
               commenter
             </button>
           </div>
@@ -154,13 +155,14 @@ export default {
         .dispatch("likeMessage", id)
         .then();
     },
-    creationComment: function(id, ){
-      console.log(this.contentComment);
+    createComment: function (id) {
+      
       this.$store
-      .dispatch("createComment", id, {
-        content: this.contentComment,
-      })
-      .then();
+        .dispatch("createComment", {
+            content: this.contentComment,
+            id: id
+        })
+        .then();
     },
     creationPost: function () {
       // const self = this;

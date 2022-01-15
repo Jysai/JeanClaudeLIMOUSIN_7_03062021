@@ -39,6 +39,7 @@ const store = createStore({
       lastname: "",
       firstname: "",
     },
+ 
   },
   mutations: {
     setStatus: function (state, status) {
@@ -56,6 +57,11 @@ const store = createStore({
       //récupère les informations de l'user pour les afficher dans profile.vue
       state.userInfos = userInfos;
     },
+    createComment: function (state, createComment) {
+      //récupère les informations de l'user pour les afficher dans profile.vue
+      state.createComment = createComment;
+    },
+    
     messageInfos: function (state, messageInfos) {
       //récupère les publications pour les afficher dans profile.vue
       state.messageInfos = messageInfos;
@@ -163,6 +169,25 @@ const store = createStore({
       // });
     },
 
+ 
+    createComment: ({ commit}, commentInfos)=>{
+      
+      return new Promise((resolve, reject)=>{
+        
+        instance.post(`message/${commentInfos.id}/comment`, commentInfos)
+        .then(function (response) {
+          commit("createComment");
+          resolve(response);
+        })
+        .catch(function (error) {
+          reject(error);
+        });
+      })
+    },
+
+
+
+
 
     editProfile: ({ commit }, userInfos) => {
       // Méthode post via AXIOS pour authentifier l'utilisateur dans la base de données
@@ -218,23 +243,32 @@ const store = createStore({
     },
 
 
-    createComment: ({ commit }, id) => {
+    // createComment: ({ commit }, id) => {
       
-      // Méthode post via AXIOS pour authentifier l'utilisateur dans la base de données
-      commit("setStatus");
-      instance
-        .post(`message/${id}/comment`)
-        .then(function (response) {
-          console.log(response.data);
-          commit("setStatus", "");
-        })
-        .catch(function (error) {
+    //   // Méthode post via AXIOS pour authentifier l'utilisateur dans la base de données
+    //   commit("setStatus");
+    //   instance
+    //     .post(`message/${id}/comment`)
+    //     .then(function (response) {
+    //       console.log(response.data);
+    //       commit("setStatus", "");
+    //     })
+    //     .catch(function (error) {
           
-          commit("setStatus", "");
-          error;
-        });
-      // });
-    },
+    //       commit("setStatus", "");
+    //       error;
+    //     });
+    //   // });
+    // },
+
+
+
+
+    
+
+
+
+
   },
 });
 
