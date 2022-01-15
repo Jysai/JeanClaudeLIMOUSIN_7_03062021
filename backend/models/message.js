@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
   Message.init(
     {
       content: DataTypes.STRING,
-      attachment: DataTypes.STRING,
+      imageUrl: DataTypes.STRING,
       likes: DataTypes.INTEGER,
       createdAt: DataTypes.DATE
     },

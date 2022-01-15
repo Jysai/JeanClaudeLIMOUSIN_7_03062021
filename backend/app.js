@@ -1,9 +1,10 @@
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
+const upload = require("express-fileupload")
 
 const userRoutes = require('./routes/user')
-const messagesRoutes = require('./routes/mess');
+const messagesRoutes = require('./routes/message');
 const { Sequelize } = require('sequelize');
 const path = require('path');
 
@@ -20,13 +21,14 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(upload())
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }))
 
 app.use('/images',express.static(path.join(__dirname,'images')));
 
-app.use('/api/auth', userRoutes);
+app.use('/api/user', userRoutes);
 
-app.use('/api/mess', messagesRoutes);
+app.use('/api/message', messagesRoutes);
 
 module.exports = app;

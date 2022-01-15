@@ -1,11 +1,13 @@
 const models = require("../models");
 
-exports.createMessage = (req, res, next) => {
+exports.createMessage = ('/upload', function(req, res) {
   const content = req.body.content;
   // if (content == null) {
   //   return res.status(400).json({ err: "missing parameters" });
   // }
-
+  // console.log(`${req.protocol}://${req.get('host')}/public/${
+  //   req.files.image.name
+  // }`);
   models.User.findOne({
     where: { id: req.body.userId },
   })
@@ -13,8 +15,8 @@ exports.createMessage = (req, res, next) => {
       models.Message.create({
         content: content,
         likes: 0,
-        // attachment: `${req.protocol}://${req.get("host")}/images/${
-        //   req.file.filename
+        // imageUrl: `${req.protocol}://${req.get('host')}/public/${
+        //   req.files.image.name
         // }`,
         UserId: userFound.id,
       })
@@ -30,17 +32,17 @@ exports.createMessage = (req, res, next) => {
     .catch(function (err) {
       return res.status(500).json({ err });
     });
-};
+});
 
 exports.listMessages = (req, res, next) => {
   models.Message.findAll({
-    order: [["createdAt", "DESC"]],
     include: [
       {
         model: models.User,
         attributes: ["lastname", "firstname"],
       },
     ],
+    order: [["createdAt", "DESC"]],
   })
     .then(function (messages) {
       if (messages) {
@@ -55,7 +57,7 @@ exports.listMessages = (req, res, next) => {
     });
 };
 
-exports.editPost = (req, res, next) => {
+exports.editMessage = (req, res, next) => {
   models.User.findOne({
     where: { id: req.body.userId },
   })
@@ -117,26 +119,26 @@ exports.deleteMessage = (req, res, next) => {
     });
 };
 
-exports.likePost = async (req, res, next) => {
+exports.likeMessage = async (req, res, next) => {
   try {
-    const userId = req.body.userId
+    const userId = req.body.userId;
     const messageId = req.params.id;
     const user = await models.Like.findOne({
       where: { userId: userId, messageId: messageId },
     });
     if (user) {
-      await models.Like.destroy(
-        { where: { userId: userId, messageId: messageId } },
-      );
-      res.status(201).send({ Message: "vous n'aimez plus ce post" });
+      await models.Like.destroy({
+        where: { userId: userId, messageId: messageId },
+      });
+      res.status(201).send({ Message: "vous n'aimez plus ce Message" });
       try {
         const messageFound = await models.Message.findOne({
           where: { id: messageId },
         });
-        if (messageFound){
+        if (messageFound) {
           messageFound.update({
-            likes: messageFound.likes - 1
-          })
+            likes: messageFound.likes - 1,
+          });
         }
       } catch (err) {
         return res.status(500).send({ err });
@@ -146,15 +148,15 @@ exports.likePost = async (req, res, next) => {
         userId: userId,
         messageId: messageId,
       });
-      res.status(201).json({ Message: "vous aimez ce post" });
+      res.status(201).json({ Message: "vous aimez ce Message" });
       try {
         const messageFound = await models.Message.findOne({
           where: { id: messageId },
         });
-        if (messageFound){
+        if (messageFound) {
           messageFound.update({
-            likes: messageFound.likes + 1
-          })
+            likes: messageFound.likes + 1,
+          });
         }
       } catch (err) {
         return res.status(500).send({ err });
@@ -165,5 +167,24 @@ exports.likePost = async (req, res, next) => {
   }
 };
 
-
-
+exports.addComment = async (req, res) => {
+  try {
+    const userId = req.body.userId;
+    const messageId = req.params.id;
+    const message = await models.Message.findOne({
+      where: { id: messageId },
+    });
+    if (message) {
+      await models.Comment.create({
+        userId: userId,
+        messageId: messageId,
+        content: req.body.content,
+      });
+      res.status(201).send({ Message: "commentaire créé" });
+    } else {
+      res.status(404).send({ err: "Impossible de créer un commentaire" });
+    }
+  } catch (err) {
+    return res.status(500).send({ err });
+  }
+};

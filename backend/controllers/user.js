@@ -149,13 +149,18 @@ exports.deleteProfile = (req, res, next) => {
   })
     .then(function (userFound) {
       if (userFound) {
-        userFound.destroy()
-        res.status(200).json({ message: "user supprimé !" });
+        return userFound.destroy({
+          force: true
+        });
+        
       } else {
         res.status(404).json({ error: "user not found" });
       }
     })
+    .then(function () {
+      res.status(200).json({ message: "utilisateur supprimé" })
+    })
     .catch(function (err) {
-      res.status(500).json({ error: "cannot fetch user" });
+      res.status(500).json({ err });
     });
 };

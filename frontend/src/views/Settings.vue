@@ -14,7 +14,7 @@
           src="../assets/icon-left-font.webp"
         />
         <hr />
-        <router-link :to="{ name: 'post' }"
+        <router-link :to="{ name: 'feed' }"
           ><div class="menu-nav">
             <i class="fas fa-home fa-2x"></i>
             <h4>Accueil</h4>

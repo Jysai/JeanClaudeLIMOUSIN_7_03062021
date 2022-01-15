@@ -39,9 +39,6 @@ const store = createStore({
       lastname: "",
       firstname: "",
     },
-    postInfos: [],
-    newPosts: [],
-    allUsers: [],
   },
   mutations: {
     setStatus: function (state, status) {
@@ -59,17 +56,13 @@ const store = createStore({
       //récupère les informations de l'user pour les afficher dans profile.vue
       state.userInfos = userInfos;
     },
-    postInfos: function (state, postInfos) {
+    messageInfos: function (state, messageInfos) {
       //récupère les publications pour les afficher dans profile.vue
-      state.postInfos = postInfos;
-    },
-    newPosts: (state, newPosts) => {
-      state.newPosts = newPosts;
+      state.messageInfos = messageInfos;
     },
     allUsers: (state, allUsers) => {
       state.allUsers = allUsers;
     },
-
     logout: function (state) {
       // Permet de se déconnecter
       state.user = {
@@ -85,7 +78,7 @@ const store = createStore({
       commit("setStatus", "loading");
       return new Promise((resolve, reject) => {
         instance
-          .post("/auth/login", userInfos)
+          .post("/user/login", userInfos)
           .then(function (response) {
             commit("setStatus", "");
             commit("logUser", response.data);
@@ -102,7 +95,7 @@ const store = createStore({
       commit("setStatus", "loading");
       return new Promise((resolve, reject) => {
         instance
-          .post("/auth/signup", userInfos)
+          .post("/user/signup", userInfos)
           .then(function (response) {
             commit("setStatus", "created");
             resolve(response);
@@ -113,47 +106,54 @@ const store = createStore({
           });
       });
     },
+
     getUserInfos: ({ commit }) => {
       // Méthode GET via AXIOS pour récupérer les données de l'utilisateur
       instance
-        .get("auth/me")
+        .get("user/me")
         .then(function (response) {
           commit("userInfos", response.data);
         })
         .catch(function () {});
     },
+
     getAllUsers: ({ commit }) => {
       // Méthode GET via AXIOS pour récupérer les données de l'utilisateur
       instance
-        .get("auth/allUsers")
+        .get("user/allUsers")
         .then(function (response) {
           commit("allUsers", response.data);
         })
         .catch(function () {});
     },
 
-    getPostInfos: ({ commit }) => {
+    getMessageInfos: ({ commit }) => {
       // Méthode GET via AXIOS pour récupérer les plucations
+      // console.log({ commit });
       commit("setStatus", "loading");
       return new Promise((resolve) => {
         instance
-          .get("mess")
+          .get("message")
           .then(function (response) {
             commit("setStatus", "");
-            commit("postInfos", response.data.messages);
+            commit("messageInfos", response.data.messages);
             resolve(response);
           })
           .catch(function () {});
       });
     },
 
-    createNewPost: ({ commit }, userInfos) => {
+
+    createNewPost: ({ commit }, postInfos) => {
+      // console.log(postInfos);
       // Méthode post via AXIOS pour authentifier l'utilisateur dans la base de données
       commit("setStatus", "loading");
+      // let formData = new FormData()
+      // formData.append("content", userInfos.content)
+      // formData.append("image", userInfos.file)
       instance
-        .post("/mess/", userInfos)
-        .then(function (response) {
-          console.log(response.data);
+        .post("/message/", postInfos)
+        .then(function () {
           commit("setStatus", "");
         })
         .catch(function (error) {
@@ -163,12 +163,13 @@ const store = createStore({
       // });
     },
 
+
     editProfile: ({ commit }, userInfos) => {
       // Méthode post via AXIOS pour authentifier l'utilisateur dans la base de données
       commit("setStatus", "loading");
       return new Promise((resolve, reject) => {
         instance
-          .put("/auth/", userInfos)
+          .put("/user/", userInfos)
           .then(function (response) {
             commit("setStatus", "");
             commit("logUser", response.data);
@@ -186,7 +187,7 @@ const store = createStore({
       commit("setStatus", "loading");
       return new Promise((resolve, reject) => {
         instance
-          .delete("/auth/", userInfos)
+          .delete("/user/", userInfos)
           .then(function (response) {
             commit("setStatus", "");
             commit("logUser", response.data);
@@ -197,6 +198,42 @@ const store = createStore({
             reject(error);
           });
       });
+    },
+
+    likeMessage: ({ commit}, id ) => {
+      // Méthode post via AXIOS pour authentifier l'utilisateur dans la base de données
+      
+      commit("setStatus",);
+      instance
+        .post(`message/${id}/like`,)
+        .then(function (response) {
+          console.log(response.data);
+          commit("setStatus", "");
+        })
+        .catch(function (error) {
+          commit("setStatus", "");
+          error;
+        });
+      // });
+    },
+
+
+    createComment: ({ commit }, id) => {
+      
+      // Méthode post via AXIOS pour authentifier l'utilisateur dans la base de données
+      commit("setStatus");
+      instance
+        .post(`message/${id}/comment`)
+        .then(function (response) {
+          console.log(response.data);
+          commit("setStatus", "");
+        })
+        .catch(function (error) {
+          
+          commit("setStatus", "");
+          error;
+        });
+      // });
     },
   },
 });

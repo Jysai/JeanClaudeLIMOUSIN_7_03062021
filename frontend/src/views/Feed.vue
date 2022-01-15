@@ -14,7 +14,7 @@
           src="../assets/icon-left-font.webp"
         />
         <hr />
-        <router-link :to="{ name: 'post' }"
+        <router-link :to="{ name: 'feed' }"
           ><div class="menu-nav">
             <i class="fas fa-home fa-2x"></i>
             <h4>Accueil</h4>
@@ -38,12 +38,18 @@
       <div>
         <div class="card">
           <textarea
-            v-model="content"
+            v-model="contentPost"
             class="textarea-row"
             type="text-area"
             placeholder="Quoi de neuf?"
           ></textarea>
-
+          <input
+            type="file"
+            accept="image/*"
+            @change="openFile"
+            id="inputFile"
+            ref="inputFile"
+          />
           <div class="form-row-btn">
             <button v-on:click.prevent="creationPost" class="button">
               Publier
@@ -55,22 +61,39 @@
           <div class="loader">Loading...</div>
         </div>
         <div v-else>
-          <div class="card" v-bind:key="index" v-for="(post, index) in posts">
-            <p>UtilisateurID: {{ post.UserId }}</p>
-            <p>Message: {{ post.content }}</p>
-            <p>Like: {{ post.likes }}</p>
-            <p>{{new Date(post.createdAt).toLocaleString('fr-FR', { hour12: false })}}</p>
-         
-            
+          <div
+            class="card"
+            v-bind:key="index"
+            v-for="(message, index) in messages"
+          >
+            <p>{{ message.User.firstname }} {{ message.User.lastname }}</p>
+            <p>Message: {{ message.content }}</p>
+            <p>Like: {{ message.likes }}</p>
+            <p>
+              {{
+                new Date(message.createdAt).toLocaleString("fr-FR", {
+                  hour12: false,
+                })
+              }}
+            </p>
+            <button v-on:click.prevent="likeMessage(message.id)" class="button">
+              J'aime
+            </button>
+           
+
             <hr />
             <div class="comment">
               <textarea
-                v-bind:value="comment"
+                v-model="contentComment"
                 class="textarea-row-comment"
                 type="text-area"
                 placeholder="Ecivez un commentaire..."
               ></textarea>
+              
             </div>
+             <button v-on:click.prevent="creationComment(message.id)" class="button">
+              commenter
+            </button>
           </div>
         </div>
       </div>
@@ -90,19 +113,17 @@
 </template>
 
 
-
-
-
-
 <script>
 import { mapState } from "vuex";
+
 export default {
-  name: "Post",
+  name: "Message",
   data: function () {
     return {
-      mode: "post",
-      content: "",
-      comment: "",
+      mode: "message",
+      contentPost: null,
+      contentComment: null,
+      imagesArray: null,
     };
   },
   mounted: function () {
@@ -110,12 +131,12 @@ export default {
       this.$router.push("/");
       return;
     }
-    this.$store.dispatch("getPostInfos");
+    this.$store.dispatch("getMessageInfos");
     this.$store.dispatch("getAllUsers");
   },
   computed: {
     ...mapState({
-      posts: "postInfos",
+      messages: "messageInfos",
       users: "allUsers",
     }),
     ...mapState(["status"]),
@@ -126,13 +147,32 @@ export default {
       this.$store.commit("logout");
       this.$router.push("/");
     },
+    likeMessage: function (id) {
+      console.log(id);
+      // const self = this;
+      this.$store // Appel API dans le store
+        .dispatch("likeMessage", id)
+        .then();
+    },
+    creationComment: function(id, ){
+      console.log(this.contentComment);
+      this.$store
+      .dispatch("createComment", id, {
+        content: this.contentComment,
+      })
+      .then();
+    },
     creationPost: function () {
       // const self = this;
       this.$store // Appel API dans le store
         .dispatch("createNewPost", {
-          content: this.content,
+          content: this.contentPost,
+          // file: this.imagesArray,
         })
         .then();
+    },
+    openFile: function (e) {
+      this.imagesArray = e.target.files[0];
     },
   },
 };

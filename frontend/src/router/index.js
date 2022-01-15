@@ -1,7 +1,7 @@
 import { createWebHistory, createRouter } from "vue-router";
 import Login from "../views/Login.vue";
 import Profile from "../views/Profile.vue";
-import Post from "../views/Post.vue";
+import Feed from "../views/Feed.vue";
 import Settings from "../views/Settings.vue";
 
 
@@ -18,9 +18,9 @@ const routes = [
     props:true 
   },
   { 
-    name: 'post',
-    path: '/post', 
-    component: Post, 
+    name: 'feed',
+    path: '/feed', 
+    component: Feed, 
     props:true 
   },
   {

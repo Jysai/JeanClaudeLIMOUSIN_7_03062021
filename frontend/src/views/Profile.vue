@@ -6,7 +6,7 @@
         
         <img class="logo" alt="Groupomania logo" src="../assets/icon-left-font.webp">
         <hr>
-        <router-link :to="{name: 'post'}"><div class="menu-nav"><i class="fas fa-home fa-2x"></i><h4>Accueil</h4></div></router-link>     
+        <router-link :to="{name: 'feed'}"><div class="menu-nav"><i class="fas fa-home fa-2x"></i><h4>Accueil</h4></div></router-link>     
         <router-link :to="{name: 'profile'}"><div class="menu-nav"><i class="fas fa-user fa-2x"></i><h4>Profil</h4></div></router-link>        
         <router-link :to="{name: 'settings'}"><div class="menu-nav"><i class="fas fa-cog fa-2x"></i><h4>Paramêtres</h4></div></router-link>  
          

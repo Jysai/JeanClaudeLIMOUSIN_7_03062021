@@ -16,19 +16,20 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'userId',
         otherKey  : 'messageId'
       });
-      models.Message.belongsToMany(models.User, {
-        through: models.Like,
-        foreignKey: 'messageId',
-        otherKey: 'userId'
-      });
-      models.Like.belongsTo(models.User, {
-        foreignKey: 'userId',
-        as: 'user'
-      });
-      models.Like.belongsTo(models.Message, {
-        foreignKey: 'messageId',
-        as: 'message'
-      });
+      // models.Message.belongsToMany(models.User, {
+      //   through: models.Like,
+      //   foreignKey: 'messageId',
+      //   otherKey: 'userId'
+      // });
+
+      // models.Like.belongsTo(models.User, {
+      //   foreignKey: 'userId',
+      //   as: 'user'
+      // });
+      // models.Like.belongsTo(models.Message, {
+      //   foreignKey: 'messageId',
+      //   as: 'message'
+      // });
     }
   };
   
@@ -39,5 +40,6 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Like',
   });
+  // Like.hasOne(models.User, { onDelete: 'CASCADE' })
   return Like;
 };
