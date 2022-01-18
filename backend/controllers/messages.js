@@ -101,6 +101,7 @@ exports.listMessages = (req, res, next) => {
         model: models.User,
         attributes: ["lastname", "firstname"],
       },
+
     ],
     order: [["createdAt", "DESC"]],
   })
@@ -139,8 +140,6 @@ exports.addComment = async (req, res) => {
 };
 
 
-
-
 exports.likeMessage = async (req, res, next) => {
   try {
     const userId = req.body.userId;
@@ -153,36 +152,38 @@ exports.likeMessage = async (req, res, next) => {
         where: { userId: userId, messageId: messageId },
       });
       res.status(201).send({ Message: "vous n'aimez plus ce Message" });
-      // try {
-      //   const messageFound = await models.Message.findOne({
-      //     where: { id: messageId },
-      //   });
-      //   if (messageFound) {
-      //     messageFound.update({
-      //       likes: messageFound.likes - 1,
-      //     });
-      //   }
-      // } catch (err) {
-      //   return res.status(500).send({ err });
-      // }
+      try {
+        const messageFound = await models.Message.findOne({
+          where: { id: messageId },
+        });
+        if (messageFound) {
+          console.log(messageFound.likes);
+          messageFound.update({
+            likes: messageFound.likes - 1,
+          });
+        }
+      } catch (err) {
+        return res.status(500).send({ err });
+      }
     } else {
       await models.Like.create({
         userId: userId,
         messageId: messageId,
       });
       res.status(201).json({ Message: "vous aimez ce Message" });
-      // try {
-      //   const messageFound = await models.Message.findOne({
-      //     where: { id: messageId },
-      //   });
-      //   if (messageFound) {
-      //     messageFound.update({
-      //       likes: messageFound.likes + 1,
-      //     });
-      //   }
-      // } catch (err) {
-      //   return res.status(500).send({ err });
-      // }
+      try {
+        const messageFound = await models.Message.findOne({
+          where: { id: messageId },
+        });
+        if (messageFound) {
+          console.log(messageFound.likes);
+          messageFound.update({
+            likes: messageFound.likes + 1,
+          });
+        }
+      } catch (err) {
+        return res.status(500).send({ err });
+      }
     }
   } catch (err) {
     return res.status(500).send({ err });
