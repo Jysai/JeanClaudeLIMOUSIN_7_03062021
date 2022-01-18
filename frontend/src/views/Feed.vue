@@ -82,12 +82,13 @@
 
             <hr />
             <div class="comment">
-              <textarea
+              <input
                 v-model="contentComment"
+                
                 class="textarea-row-comment"
                 type="text-area"
                 placeholder="Ecivez un commentaire..."
-              ></textarea>
+              />
             </div>
             <button
               v-on:click.prevent="createComment(message.id)"
@@ -123,10 +124,10 @@ export default {
     return {
       mode: "message",
       contentPost: null,
-      contentComment: null,
       imagesArray: null,
     };
   },
+
   mounted: function () {
     if (this.$store.state.user.userId == -1) {
       this.$router.push("/");
@@ -139,6 +140,7 @@ export default {
     ...mapState({
       messages: "messageInfos",
       users: "allUsers",
+      
     }),
     ...mapState(["status"]),
   },
@@ -162,7 +164,9 @@ export default {
             content: this.contentComment,
             id: id
         })
-        .then();
+        .then(
+          
+         );
     },
     creationPost: function () {
       // const self = this;

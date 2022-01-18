@@ -16,15 +16,12 @@ module.exports = {
           key: "id",
         },
       },
-      title: {
-        allowNull: false,
-        type: Sequelize.STRING,
-      },
+
       content: {
         allowNull: false,
         type: Sequelize.STRING,
       },
-      attachment: {
+      imageUrl: {
         allowNull: true,
         type: Sequelize.STRING,
       },
@@ -35,7 +32,6 @@ module.exports = {
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        
       },
       updatedAt: {
         allowNull: false,

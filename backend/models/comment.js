@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Comment extends Model {
     /**
@@ -11,25 +9,50 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      // models.Message.belongsToMany(models.User, {
-      //   through: models.Comment,
-      //   foreignKey: 'messageId',
-      //   otherKey: 'userId'
+      // models.Comment.belongsTo(models.User, {
+      //   foreignKey: {
+      //     allowNull: false,
+      //   },
+      // });
+      // models.Comment.belongsToMany(models.Message, {
+      //   foreignKey: {
+      //     allowNull: false,
+      //   },
       // });
       models.User.belongsToMany(models.Message, {
         through: models.Comment,
         foreignKey: 'userId',
         otherKey  : 'messageId'
       });
+
+      models.Comment.belongsTo(models.Message, {
+        foreignKey: 'messageId',
+        as: 'message'
+      });
+      // models.Comment.belongsTo(models.User, {
+      //   foreignKey: {
+      //     allowNull: false,
+      //   },
+      //   onDelete: "CASCADE",
+      // });
+      // models.Comment.belongsTo(models.Message, {
+      //   foreignKey: {
+      //     allowNull: false,
+      //   },
+      //   onDelete: "CASCADE",
+      // });
     }
-  };
-  Comment.init({
-    messageId: DataTypes.INTEGER,
-    userId: DataTypes.INTEGER,
-    content: DataTypes.STRING
-  }, {
-    sequelize,
-    modelName: 'Comment',
-  });
+  }
+  Comment.init(
+    {
+      messageId: DataTypes.INTEGER,
+      userId: DataTypes.INTEGER,
+      content: DataTypes.STRING,
+    },
+    {
+      sequelize,
+      modelName: "Comment",
+    }
+  );
   return Comment;
 };

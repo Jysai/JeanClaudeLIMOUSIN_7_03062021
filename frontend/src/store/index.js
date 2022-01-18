@@ -39,7 +39,7 @@ const store = createStore({
       lastname: "",
       firstname: "",
     },
- 
+    
   },
   mutations: {
     setStatus: function (state, status) {

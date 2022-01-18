@@ -45,7 +45,7 @@ exports.signup = (req, res, next) => {
       }
     })
     .catch(function (err) {
-      return res.status(500).json({ error: err });
+      return res.status(500).json({ err });
     });
 };
 
@@ -82,7 +82,7 @@ exports.login = (req, res, next) => {
           .catch((error) => res.status(500).json({ error }));
       }
     })
-    .catch((error) => res.status(500).json({ error: "cette erreur" }));
+    .catch((error) => res.status(500).json({ error}));
 };
 
 exports.me = (req, res, next) => {
@@ -148,6 +148,7 @@ exports.deleteProfile = (req, res, next) => {
     where: { id: req.body.userId },
   })
     .then(function (userFound) {
+      console.log(userFound);
       if (userFound) {
         return userFound.destroy({
           force: true
