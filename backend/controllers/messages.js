@@ -33,16 +33,36 @@ exports.createMessage = function (req, res) {
 };
 
 exports.editMessage = (req, res, next) => {
-  const id = req.params.id;
-  const userId = req.body.userId;
-
-  let updatedPost = {
-    content: req.body.content,
-  };
-
-  models.Message.update(updatedPost, {
-    where: { id: id, userId: userId },
-  }).then(() => res.status(200).json({ message: "Post modifié avec succès" }));
+  models.User.findOne({
+    where: { id: req.body.userId },
+  })
+    .then(function (userFound) {
+      models.Message.findOne({
+        where: { id: req.params.id },
+      })
+        .then(function (messageFound) {
+          if (userFound.id == messageFound.UserId) {
+            messageFound.update({
+              content: req.body.content
+                ? req.body.content
+                : messageFound.content,
+            });
+            res.status(200).json({ error: "message modifié" });
+          } else {
+            res.status(401).json({
+              error: "vous n'avez pas les droits pour modifier ce message",
+            });
+          }
+        })
+        .catch(function (err) {
+          res.status(404).json({
+            error: "message non trouvé",
+          });
+        });
+    })
+    .catch(function (error) {
+      res.status(404).json({ error: "Utilisateur non trouvé" });
+    });
 };
 
 exports.deleteMessage = (req, res) => {
@@ -50,12 +70,10 @@ exports.deleteMessage = (req, res) => {
     where: { id: req.body.userId },
   })
     .then(function (userFound) {
-      console.log(userFound);
       models.Message.findOne({
         where: { id: req.params.id },
       })
         .then(function (messageFound) {
-          console.log(messageFound);
           if (userFound.id == messageFound.UserId) {
             messageFound.destroy();
             res.status(200).json({ error: "message supprimé !" });
@@ -78,13 +96,13 @@ exports.deleteMessage = (req, res) => {
 
 exports.listMessages = (req, res, next) => {
   models.Message.findAll({
-    // include: [
-    //   {
-    //     model: models.User,
-    //     attributes: ["lastname", "firstname"],
-    //   },
-    // ],
-    // order: [["createdAt", "DESC"]],
+    include: [
+      {
+        model: models.User,
+        attributes: ["lastname", "firstname"],
+      },
+    ],
+    order: [["createdAt", "DESC"]],
   })
     .then(function (messages) {
       if (messages) {
@@ -98,20 +116,30 @@ exports.listMessages = (req, res, next) => {
     );
 };
 
-exports.addComment = (req, res) => {
-  const comment = {
-    content: req.body.content,
-    messageId: req.params.id,
-    userId: req.body.userId,
-  };
-  models.Comment.create(comment)
-    .then(() => res.status(201).json({ message: "commentaire créé" }))
-    .catch((error) =>
-      res
-        .status(400)
-        .json({ message: "Impossible de créer un commentaire", error })
-    );
+exports.addComment = async (req, res) => {
+  try {
+    const userId = req.body.userId;
+    const messageId = req.params.id;
+    const message = await models.Message.findOne({
+      where: { id: messageId },
+    });
+    if (message) {
+      await models.Comment.create({
+        userId: userId,
+        messageId: messageId,
+        content: req.body.content,
+      });
+      res.status(201).send({ Message: "commentaire créé" });
+    } else {
+      res.status(404).send({ err: "Impossible de créer un commentaire" });
+    }
+  } catch (err) {
+    return res.status(500).send({ err });
+  }
 };
+
+
+
 
 exports.likeMessage = async (req, res, next) => {
   try {

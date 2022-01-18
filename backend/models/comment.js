@@ -25,10 +25,10 @@ module.exports = (sequelize, DataTypes) => {
         otherKey  : 'messageId'
       });
 
-      models.Comment.belongsTo(models.Message, {
-        foreignKey: 'messageId',
-        as: 'message'
-      });
+      // models.Comment.belongsTo(models.Message, {
+      //   foreignKey: 'messageId',
+      //   as: 'message'
+      // });
       // models.Comment.belongsTo(models.User, {
       //   foreignKey: {
       //     allowNull: false,
