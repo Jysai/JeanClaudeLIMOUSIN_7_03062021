@@ -66,6 +66,12 @@ const store = createStore({
       //récupère les publications pour les afficher dans profile.vue
       state.messageInfos = messageInfos;
     },
+
+
+    getComment: function (state, getComment) {
+      //récupère les publications pour les afficher dans profile.vue
+      state.getComment = getComment;
+    },
     allUsers: (state, allUsers) => {
       state.allUsers = allUsers;
     },
@@ -141,6 +147,7 @@ const store = createStore({
         instance
           .get("message")
           .then(function (response) {
+            console.log(response.data);
             commit("setStatus", "");
             commit("messageInfos", response.data.messages);
             resolve(response);
@@ -185,8 +192,22 @@ const store = createStore({
       })
     },
 
-
-
+    getComment: ({ commit }) => {
+      // Méthode GET via AXIOS pour récupérer les plucations
+      // console.log({ commit });
+      commit("setStatus", "loading");
+      return new Promise((resolve) => {
+        instance
+          .get("message/comment")
+          .then(function (response) {
+            
+            commit("setStatus", "");
+            commit("getComment", response.data.comments);
+            resolve(response);
+          })
+          .catch(function () {});
+      });
+    },
 
 
     editProfile: ({ commit }, userInfos) => {
@@ -227,7 +248,7 @@ const store = createStore({
 
     likeMessage: ({ commit}, id ) => {
       // Méthode post via AXIOS pour authentifier l'utilisateur dans la base de données
-      
+  
       commit("setStatus",);
       instance
         .post(`message/${id}/like`,)
@@ -241,33 +262,6 @@ const store = createStore({
         });
       // });
     },
-
-
-    // createComment: ({ commit }, id) => {
-      
-    //   // Méthode post via AXIOS pour authentifier l'utilisateur dans la base de données
-    //   commit("setStatus");
-    //   instance
-    //     .post(`message/${id}/comment`)
-    //     .then(function (response) {
-    //       console.log(response.data);
-    //       commit("setStatus", "");
-    //     })
-    //     .catch(function (error) {
-          
-    //       commit("setStatus", "");
-    //       error;
-    //     });
-    //   // });
-    // },
-
-
-
-
-    
-
-
-
 
   },
 });

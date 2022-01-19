@@ -1,7 +1,6 @@
 const models = require("../models");
 
 exports.createMessage = function (req, res) {
-  // console.log(req.body.userId);
   const content = req.body.content;
   // if (content == null) {
   //   return res.status(400).json({ err: "missing parameters" });
@@ -157,7 +156,7 @@ exports.likeMessage = async (req, res, next) => {
           where: { id: messageId },
         });
         if (messageFound) {
-          console.log(messageFound.likes);
+          
           messageFound.update({
             likes: messageFound.likes - 1,
           });
@@ -176,7 +175,7 @@ exports.likeMessage = async (req, res, next) => {
           where: { id: messageId },
         });
         if (messageFound) {
-          console.log(messageFound.likes);
+          
           messageFound.update({
             likes: messageFound.likes + 1,
           });
@@ -191,24 +190,24 @@ exports.likeMessage = async (req, res, next) => {
 };
 
 exports.listComments = (req, res, next) => {
-  // models.Comment.findAll({
-  //   include: [
-  //     {
-  //       model: models.User,
-  //       attributes: ["lastname", "firstname"],
-  //     },
-  //   ],
-  //   order: [["createdAt", "DESC"]],
-  // })
-  //   .then(function (comments) {
-  //     if (comments) {
-  //       return res.status(200).json({ comments });
-  //     } else {
-  //       res.status(404).json({ error: "no comments found" });
-  //     }
-  //   })
-  //   .catch(function (err) {
-  //     console.log(err);
-  //     res.status(500).json({ error: "invalid fields" });
-  //   });
+  models.Comment.findAll({
+    include: [
+      {
+        model: models.User,
+        attributes: ["lastname", "firstname"],
+      },
+    ],
+    order: [["createdAt", "DESC"]],
+  })
+    .then(function (comments) {
+      if (comments) {
+        return res.status(200).json({ comments });
+      } else {
+        res.status(404).json({ error: "no comments found" });
+      }
+    })
+    .catch(function (err) {
+      console.log(err);
+      res.status(500).json({ err });
+    });
 };

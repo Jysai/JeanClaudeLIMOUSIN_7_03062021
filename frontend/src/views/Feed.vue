@@ -84,7 +84,6 @@
             <div class="comment">
               <input
                 v-model="contentComment"
-                
                 class="textarea-row-comment"
                 type="text-area"
                 placeholder="Ecivez un commentaire..."
@@ -96,6 +95,16 @@
             >
               commenter
             </button>
+
+            <div
+              
+              v-bind:key="index"
+              v-for="(comment, index) in comments"
+            >
+              <div v-if="comment.messageId == message.id">
+                <p>{{ comment.content }}</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -125,6 +134,7 @@ export default {
       mode: "message",
       contentPost: null,
       imagesArray: null,
+      contentComment: "",
     };
   },
 
@@ -135,12 +145,13 @@ export default {
     }
     this.$store.dispatch("getMessageInfos");
     this.$store.dispatch("getAllUsers");
+    this.$store.dispatch("getComment");
   },
   computed: {
     ...mapState({
       messages: "messageInfos",
       users: "allUsers",
-      
+      comments: "getComment",
     }),
     ...mapState(["status"]),
   },
@@ -158,15 +169,12 @@ export default {
         .then();
     },
     createComment: function (id) {
-      
       this.$store
         .dispatch("createComment", {
-            content: this.contentComment,
-            id: id
+          content: this.contentComment,
+          id: id,
         })
-        .then(
-          
-         );
+        .then();
     },
     creationPost: function () {
       // const self = this;
