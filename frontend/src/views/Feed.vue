@@ -66,19 +66,34 @@
             v-bind:key="index"
             v-for="(message, index) in messages"
           >
-            <p>{{ message.User.firstname }} {{ message.User.lastname }}</p>
-            <p>Message: {{ message.content }}</p>
-            <p>Like: {{ message.likes }}</p>
-            <p>
+            <div
+              v-bind:key="index"
+              v-for="(profileUser, index) in profileUsers"
+            ></div>
+            <div class="icon">
+            <div v-if="message.UserId == profileUsers.id"><i class="fas fa-trash-alt"></i></div>
+            <div v-if="message.UserId == profileUsers.id"><i class="fas fa-edit"></i></div>
+            </div>
+            <div class="identity">
+            <p class="nickname">{{ message.User.firstname }} {{ message.User.lastname }}</p>
+            <p class="time">
               {{
                 new Date(message.createdAt).toLocaleString("fr-FR", {
                   hour12: false,
                 })
               }}
             </p>
-            <button v-on:click.prevent="likeMessage(message.id)" class="button">
-              J'aime
-            </button>
+            </div>
+            <p>{{ message.content }}</p>
+            
+            
+            
+            <div class="like">
+              <p>{{ message.likes }}</p>
+            <div class="like-heart" v-on:click.prevent="likeMessage(message.id)">
+              <i class="fas fa-heart"></i>
+              </div>
+            </div>
 
             <hr />
             <div class="comment">
@@ -87,38 +102,35 @@
                 class="textarea-row-comment"
                 type="text-area"
                 placeholder="Ecivez un commentaire..."
+                
               />
-            </div>
-            <button
+              <button
               v-on:click.prevent="createComment(message.id)"
-              class="button"
+              class="button-comment"
             >
-              commenter
-            </button>
+              Commenter
+             </button>
+            </div>
+            
 
-            <div
-              
-              v-bind:key="index"
-              v-for="(comment, index) in comments"
-            >
+            <div v-bind:key="index" v-for="(comment, index) in comments">
               <div v-if="comment.messageId == message.id">
-                <p>{{ comment.content }}</p>
+                <div
+                  v-bind:key="index"
+                  v-for="(profileUser, index) in profileUsers"
+                ></div>
+                <div class="icon">
+                <div v-if="comment.UserId == profileUsers.id"><i class="fas fa-trash-alt"></i></div>
+                <div v-if="comment.UserId == profileUsers.id"><i class="fas fa-edit"></i></div>
+                </div>
+                <p class="nickname">{{ comment.User.firstname }}{{ comment.User.lastname }}</p><p>{{ comment.content }}</p>
+                
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="card-side card-side-right">
-        <h3>Suggestions pour vous</h3>
-        <div
-          class="card-contact"
-          v-bind:key="index"
-          v-for="(user, index) in users"
-        >
-          <span>{{ user.firstname }} {{ user.lastname }}</span>
-        </div>
-        <div></div>
-      </div>
+      
     </div>
   </div>
 </template>
@@ -146,12 +158,14 @@ export default {
     this.$store.dispatch("getMessageInfos");
     this.$store.dispatch("getAllUsers");
     this.$store.dispatch("getComment");
+    this.$store.dispatch("getUserInfos");
   },
   computed: {
     ...mapState({
       messages: "messageInfos",
       users: "allUsers",
       comments: "getComment",
+      profileUsers: "userInfos",
     }),
     ...mapState(["status"]),
   },
@@ -194,6 +208,30 @@ export default {
 
 
 <style scoped>
+.identity{
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  text-transform: capitalize;
+}
+.nickname{
+  font-weight: 500;
+}
+.time{
+  font-weight: 100;
+  font-size: 10px;
+}
+.like{
+  display: flex;
+  align-items: center;
+}
+.like-heart{
+  cursor: pointer;
+}
+.icon{
+  display: flex;
+  float: right;
+}
 .main-site {
   display: flex;
   justify-content: center;
@@ -277,7 +315,7 @@ p {
 
   padding: 8px;
   border: none;
-  border-radius: 25px;
+  border-radius: 25px 0px 0px 25px;
   background: #f2f2f2;
   font-weight: 500;
   font-size: 12px;
@@ -288,6 +326,22 @@ p {
 }
 .textarea-row::placeholder {
   color: #aaaaaa;
+  
+}
+.button-comment {
+  background: rgb(9, 31, 67);
+  color: white;
+  border-radius: 8px;
+  font-weight: 800;
+  font-size: 15px;
+  border: none;
+  border-radius: 0px 25px 25px 0px;
+  padding: 16px;
+  transition: 0.4s background-color;
+}
+.button-comment:hover {
+  cursor: pointer;
+  background: #1976d2;
 }
 .form-row-btn {
   display: flex;

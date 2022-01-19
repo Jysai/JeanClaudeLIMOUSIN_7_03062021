@@ -200,7 +200,7 @@ const store = createStore({
         instance
           .get("message/comment")
           .then(function (response) {
-            
+            console.log(response.data.comments);
             commit("setStatus", "");
             commit("getComment", response.data.comments);
             resolve(response);
