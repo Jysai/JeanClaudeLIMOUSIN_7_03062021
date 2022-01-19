@@ -96,6 +96,29 @@
             </div>
 
             <hr />
+            
+            
+
+            <div v-bind:key="index" v-for="(comment, index) in comments">
+              <div class="commment-row" v-if="comment.messageId == message.id">
+                <div
+                  v-bind:key="index"
+                  v-for="(profileUser, index) in profileUsers"
+                ></div>
+                <div class="icon">
+                <div v-if="comment.UserId == profileUsers.id"><i class="fas fa-trash-alt"></i></div>
+                <div v-if="comment.UserId == profileUsers.id"><i class="fas fa-edit"></i></div>
+                </div>
+                <p class="nickname">{{ comment.User.firstname }} {{ comment.User.lastname }}</p> <p class="time">
+              {{
+                new Date(comment.createdAt).toLocaleString("fr-FR", {
+                  hour12: false,
+                })
+              }}
+            </p><div class="comment"> <p>{{ comment.content }}</p></div>
+                
+              </div>
+            </div>
             <div class="comment">
               <input
                 v-model="contentComment"
@@ -110,22 +133,6 @@
             >
               Commenter
              </button>
-            </div>
-            
-
-            <div v-bind:key="index" v-for="(comment, index) in comments">
-              <div v-if="comment.messageId == message.id">
-                <div
-                  v-bind:key="index"
-                  v-for="(profileUser, index) in profileUsers"
-                ></div>
-                <div class="icon">
-                <div v-if="comment.UserId == profileUsers.id"><i class="fas fa-trash-alt"></i></div>
-                <div v-if="comment.UserId == profileUsers.id"><i class="fas fa-edit"></i></div>
-                </div>
-                <p class="nickname">{{ comment.User.firstname }}{{ comment.User.lastname }}</p><p>{{ comment.content }}</p>
-                
-              </div>
             </div>
           </div>
         </div>
@@ -212,10 +219,14 @@ export default {
   display: flex;
   align-items: flex-start;
   flex-direction: column;
-  text-transform: capitalize;
 }
 .nickname{
   font-weight: 500;
+  text-transform: capitalize;
+  display: flex;
+  align-items: flex-start;
+  
+  padding-right: 5px;
 }
 .time{
   font-weight: 100;
@@ -287,9 +298,7 @@ h4 {
   height: 500px;
   width: 20%;
 }
-p {
-  text-align: center;
-}
+
 .textarea-row {
   width: 100%;
   resize: none;
@@ -306,7 +315,8 @@ p {
 }
 .comment {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
+  flex-wrap:wrap,ss
 }
 .textarea-row-comment {
   width: 100%;
@@ -338,6 +348,12 @@ p {
   border-radius: 0px 25px 25px 0px;
   padding: 16px;
   transition: 0.4s background-color;
+}
+.commment-row{
+  border-radius: 10px;
+  background: #ebebeb;
+  padding: 15px;
+  margin: 15px 0px 15px ;
 }
 .button-comment:hover {
   cursor: pointer;
