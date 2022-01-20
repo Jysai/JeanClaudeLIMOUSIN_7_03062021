@@ -124,6 +124,7 @@ const store = createStore({
       instance
         .get("user/me")
         .then(function (response) {
+          
           commit("userInfos", response.data);
         })
         .catch(function () {});
@@ -147,7 +148,7 @@ const store = createStore({
         instance
           .get("message")
           .then(function (response) {
-            console.log(response.data);
+            
             commit("setStatus", "");
             commit("messageInfos", response.data.messages);
             resolve(response);
@@ -176,6 +177,23 @@ const store = createStore({
       // });
     },
 
+    deletePost: ({ commit}, id ) => {
+      // Méthode post via AXIOS pour authentifier l'utilisateur dans la base de données
+      commit("setStatus",);
+      instance
+        .delete(`message/${id}`,)
+        .then(function (response) {
+          console.log(response);
+          commit("setStatus", "");
+        })
+        .catch(function (error) {
+          commit("setStatus", "");
+          error;
+        });
+      // });
+    },
+
+
  
     createComment: ({ commit}, commentInfos)=>{
       
@@ -200,7 +218,7 @@ const store = createStore({
         instance
           .get("message/comment")
           .then(function (response) {
-            console.log(response.data.comments);
+              console.log(response.data);
             commit("setStatus", "");
             commit("getComment", response.data.comments);
             resolve(response);
@@ -253,7 +271,7 @@ const store = createStore({
       instance
         .post(`message/${id}/like`,)
         .then(function (response) {
-          console.log(response.data);
+          console.log(response);
           commit("setStatus", "");
         })
         .catch(function (error) {

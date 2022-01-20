@@ -32,6 +32,9 @@
             <h4>Paramêtres</h4>
           </div></router-link
         >
+        <div class="menu-nav">
+          <span>{{ profileUsers.firstname }} {{ profileUsers.lastname }}</span>
+        </div>
 
         <button @click="logout()" class="button">Déconnexion</button>
       </div>
@@ -57,66 +60,130 @@
           </div>
         </div>
 
+        <!-- <div id="myModal" class="modal" ref="myModalComment">
+          <div id="modal-content" class="modal-content animation-1">
+            <header class="modal-header">
+              <p class="modal-header-title">
+                Vous êtes sur le point de supprimer ce commentaire
+              </p>
+              
+            </header>
+
+            <div class="modal-body">
+              <div v-bind:key="index" v-for="(comment, index) in comments">
+                </div>
+              <button class="modal-button" @click="deleteComment(comment.messageId )">
+                Valider
+              </button>
+              
+              <button class="modal-button" @click="closeModalComment()">
+                Annuler
+              </button>
+            </div>
+
+            <footer class="modal-footer"></footer>
+          </div>
+        </div>
+
+        <div id="myModal" class="modal" ref="myModalPost">
+          <div id="modal-content" class="modal-content animation-1">
+            <header class="modal-header">
+              <p class="modal-header-title">
+                Vous êtes sur le point de supprimer ce message
+              </p>
+              
+            </header>
+
+            <div class="modal-body">
+              <div v-bind:key="index" v-for="(message, index) in messages">
+                
+              <button class="modal-button" @click="deletePost(message.id )">
+                Valider
+              </button>
+              
+              <button class="modal-button" @click="closeModalPost()">
+                Annuler
+              </button>
+            </div>
+            </div>
+            <footer class="modal-footer"></footer>
+          </div>
+        </div> -->
+
         <div class="card" v-if="status == 'loading'">
           <div class="loader">Loading...</div>
         </div>
+
         <div v-else>
           <div
             class="card"
             v-bind:key="index"
             v-for="(message, index) in messages"
           >
-            <div
-              v-bind:key="index"
-              v-for="(profileUser, index) in profileUsers"
-            ></div>
             <div class="icon">
-            <div v-if="message.UserId == profileUsers.id"><i class="fas fa-trash-alt"></i></div>
-            <div v-if="message.UserId == profileUsers.id"><i class="fas fa-edit"></i></div>
+              <div v-if="message.UserId == profileUsers.id">
+
+                <button @click="deletePost(message.id)">
+                      <i class="fas fa-trash-alt"></i>
+                </button>
+                
+              </div>
+              <div v-if="message.UserId == profileUsers.id">
+                <i class="fas fa-edit"></i>
+              </div>
             </div>
             <div class="identity">
-            <p class="nickname">{{ message.User.firstname }} {{ message.User.lastname }}</p>
-            <p class="time">
-              {{
-                new Date(message.createdAt).toLocaleString("fr-FR", {
-                  hour12: false,
-                })
-              }}
-            </p>
+              <p class="nickname">
+                {{ message.User.firstname }} {{ message.User.lastname }}
+              </p>
+              <p class="time">
+                {{
+                  new Date(message.createdAt).toLocaleString("fr-FR", {
+                    hour12: false,
+                  })
+                }}
+              </p>
             </div>
             <p>{{ message.content }}</p>
-            
-            
-            
+
             <div class="like">
               <p>{{ message.likes }}</p>
-            <div class="like-heart" v-on:click.prevent="likeMessage(message.id)">
-              <i class="fas fa-heart"></i>
+              <div
+                class="like-heart"
+                v-on:click.prevent="likeMessage(message.id)"
+              >
+                <i class="fas fa-heart"></i>
               </div>
             </div>
 
             <hr />
-            
-            
 
             <div v-bind:key="index" v-for="(comment, index) in comments">
               <div class="commment-row" v-if="comment.messageId == message.id">
-                <div
-                  v-bind:key="index"
-                  v-for="(profileUser, index) in profileUsers"
-                ></div>
                 <div class="icon">
-                <div v-if="comment.UserId == profileUsers.id"><i class="fas fa-trash-alt"></i></div>
-                <div v-if="comment.UserId == profileUsers.id"><i class="fas fa-edit"></i></div>
+                  <div v-if="comment.UserId == profileUsers.id">
+                    <button @click="deleteComment(comment.Id)">
+                      <i class="fas fa-trash-alt"></i>
+                    </button>
+                  </div>
+
+                  <div v-if="comment.UserId == profileUsers.id">
+                    <i class="fas fa-edit"></i>
+                  </div>
                 </div>
-                <p class="nickname">{{ comment.User.firstname }} {{ comment.User.lastname }}</p> <p class="time">
-              {{
-                new Date(comment.createdAt).toLocaleString("fr-FR", {
-                  hour12: false,
-                })
-              }}
-            </p><div class="comment"> <p>{{ comment.content }}</p></div>
-                
+                <p class="nickname">
+                  {{ comment.User.firstname }} {{ comment.User.lastname }}
+                </p>
+                <p class="time">
+                  {{
+                    new Date(comment.createdAt).toLocaleString("fr-FR", {
+                      hour12: false,
+                    })
+                  }}
+                </p>
+                <div class="comment">
+                  <p>{{ comment.content }}</p>
+                </div>
               </div>
             </div>
             <div class="comment">
@@ -125,19 +192,17 @@
                 class="textarea-row-comment"
                 type="text-area"
                 placeholder="Ecivez un commentaire..."
-                
               />
               <button
-              v-on:click.prevent="createComment(message.id)"
-              class="button-comment"
-            >
-              Commenter
-             </button>
+                v-on:click.prevent="createComment(message.id)"
+                class="button-comment"
+              >
+                Commenter
+              </button>
             </div>
           </div>
         </div>
       </div>
-      
     </div>
   </div>
 </template>
@@ -147,6 +212,7 @@
 import { mapState } from "vuex";
 
 export default {
+  el: "#app",
   name: "Message",
   data: function () {
     return {
@@ -166,7 +232,9 @@ export default {
     this.$store.dispatch("getAllUsers");
     this.$store.dispatch("getComment");
     this.$store.dispatch("getUserInfos");
+    this.$el.addEventListener("click", this.onClick);
   },
+
   computed: {
     ...mapState({
       messages: "messageInfos",
@@ -209,37 +277,61 @@ export default {
     openFile: function (e) {
       this.imagesArray = e.target.files[0];
     },
+      onClick: function (ev) {
+      if (ev.target == this.$refs.myModalComment) {
+        this.$refs.myModalComment.style.display = "none";
+        
+      }
+      if (ev.target == this.$refs.myModalPost) {
+        this.$refs.myModalPost.style.display = "none";
+
+        
+      }
+    },
+    deletePost: function (id) {
+      console.log(id);
+       this.$store 
+        .dispatch("deletePost", id)
+         .then();
+    },
+    deleteComment: function (id) {
+      console.log(id);
+      // this.$store 
+      //   .dispatch("deletePost", id)
+      //   .then();
+    }
+
   },
 };
 </script>
 
 
 <style scoped>
-.identity{
+.identity {
   display: flex;
   align-items: flex-start;
   flex-direction: column;
 }
-.nickname{
+.nickname {
   font-weight: 500;
   text-transform: capitalize;
   display: flex;
   align-items: flex-start;
-  
+
   padding-right: 5px;
 }
-.time{
+.time {
   font-weight: 100;
   font-size: 10px;
 }
-.like{
+.like {
   display: flex;
   align-items: center;
 }
-.like-heart{
+.like-heart {
   cursor: pointer;
 }
-.icon{
+.icon {
   display: flex;
   float: right;
 }
@@ -316,7 +408,7 @@ h4 {
 .comment {
   display: flex;
   justify-content: flex-start;
-  flex-wrap:wrap,ss
+  flex-wrap: wrap, ss;
 }
 .textarea-row-comment {
   width: 100%;
@@ -336,7 +428,6 @@ h4 {
 }
 .textarea-row::placeholder {
   color: #aaaaaa;
-  
 }
 .button-comment {
   background: rgb(9, 31, 67);
@@ -349,11 +440,11 @@ h4 {
   padding: 16px;
   transition: 0.4s background-color;
 }
-.commment-row{
+.commment-row {
   border-radius: 10px;
   background: #ebebeb;
   padding: 15px;
-  margin: 15px 0px 15px ;
+  margin: 15px 0px 15px;
 }
 .button-comment:hover {
   cursor: pointer;

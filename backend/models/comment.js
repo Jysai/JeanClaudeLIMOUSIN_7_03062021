@@ -19,9 +19,10 @@ module.exports = (sequelize, DataTypes) => {
       //     allowNull: false,
       //   },
       // });
+
       models.User.belongsToMany(models.Message, {
         through: models.Comment,
-        foreignKey: 'userId',
+        foreignKey: 'id',
         otherKey  : 'messageId'
       });
       models.Comment.belongsTo(models.User, {
@@ -47,6 +48,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Comment.init(
     {
+     
       messageId: DataTypes.INTEGER,
       userId: DataTypes.INTEGER,
       content: DataTypes.STRING,

@@ -78,11 +78,7 @@
           <p class="modal-header-title">
             Vous êtes sur le point de supprimer votre compte
           </p>
-          <button id="close" class="modal-header-icon">
-            <span class="icon" @click="closeModal()">
-              <i class="bx bx-x"></i>
-            </span>
-          </button>
+       
         </header>
 
         <div class="modal-body">
@@ -107,7 +103,7 @@
 import { mapState } from "vuex";
 
 export default {
-  el: "#app",
+  // el: "#app",
   name: "Setting",
   data: function () {
     return {
@@ -126,10 +122,10 @@ export default {
     this.$store.dispatch("getUserInfos");
     this.$el.addEventListener("click", this.onClick);
   },
-  beforeDestroy: function () {
-    this.$el.removeEventListener("click", this.onClick);
-    // document.removeEventListener('click', this.onClick)
-  },
+  // beforeDestroy: function () {
+  //   this.$el.removeEventListener("click", this.onClick);
+  //   // document.removeEventListener('click', this.onClick)
+  // },
 
   computed: {
     ...mapState({

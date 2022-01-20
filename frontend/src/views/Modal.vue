@@ -1,6 +1,6 @@
 <template>
   <div>
-    <link
+    <!-- <link
       href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css"
       rel="stylesheet"
     />
@@ -26,37 +26,37 @@
 
         <footer class="modal-footer"></footer>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
 
 <script>
 export default {
-  el: "#app",
-  mounted: function () {
-    // Attach event listener to the root vue element
-    this.$el.addEventListener("click", this.onClick);
-    // Or if you want to affect everything
-    // document.addEventListener('click', this.onClick)
-  },
-  beforeDestroy: function () {
-    this.$el.removeEventListener("click", this.onClick);
-    // document.removeEventListener('click', this.onClick)
-  },
-  methods: {
-    onClick: function (ev) {
-      if (ev.target == this.$refs.myModal) {
-        this.$refs.myModal.style.display = "none";
-      }
-    },
-    openModal: function () {
-      this.$refs.myModal.style.display = "block";
-    },
-    closeModal: function () {
-      this.$refs.myModal.style.display = "none";
-    },
-  },
+  // el: "#app",
+  // mounted: function () {
+  //   // Attach event listener to the root vue element
+  //   this.$el.addEventListener("click", this.onClick);
+  //   // Or if you want to affect everything
+  //   // document.addEventListener('click', this.onClick)
+  // },
+  // beforeDestroy: function () {
+  //   this.$el.removeEventListener("click", this.onClick);
+  //   // document.removeEventListener('click', this.onClick)
+  // },
+  // methods: {
+  //   onClick: function (ev) {
+  //     if (ev.target == this.$refs.myModal) {
+  //       this.$refs.myModal.style.display = "none";
+  //     }
+  //   },
+  //   openModal: function () {
+  //     this.$refs.myModal.style.display = "block";
+  //   },
+  //   closeModal: function () {
+  //     this.$refs.myModal.style.display = "none";
+  //   },
+  // },
 };
 </script>
 

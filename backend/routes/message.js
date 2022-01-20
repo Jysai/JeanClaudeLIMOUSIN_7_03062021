@@ -11,4 +11,5 @@ router.put('/:id', auth, messageCtrl.editMessage)
 router.post('/:id/like', auth,  messageCtrl.likeMessage)
 router.post('/:id/comment', auth,  messageCtrl.addComment)
 router.get('/comment', auth,  messageCtrl.listComments)
+
 module.exports = router
