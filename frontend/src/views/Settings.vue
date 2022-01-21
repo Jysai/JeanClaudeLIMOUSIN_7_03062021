@@ -7,35 +7,8 @@
       crossorigin="anonymous"
     />
     <div class="main-site">
-      <div class="card-side card-side-left">
-        <img
-          class="logo"
-          alt="Groupomania logo"
-          src="../assets/icon-left-font.webp"
-        />
-        <hr />
-        <router-link :to="{ name: 'feed' }"
-          ><div class="menu-nav">
-            <i class="fas fa-home fa-2x"></i>
-            <h4>Accueil</h4>
-          </div></router-link
-        >
-        <router-link :to="{ name: 'profile' }"
-          ><div class="menu-nav">
-            <i class="fas fa-user fa-2x"></i>
-            <h4>Profil</h4>
-          </div></router-link
-        >
-        <router-link :to="{ name: 'settings' }"
-          ><div class="menu-nav">
-            <i class="fas fa-cog fa-2x"></i>
-            <h4>Paramêtres</h4>
-          </div></router-link
-        >
-
-        <button @click="logout()" class="button">Déconnexion</button>
-      </div>
-
+      <nav-header></nav-header>
+      <div class="main-container">
       <div class="card">
         <h1 class="card__title">Espace Perso</h1>
         <p class="card__subtitle">C'est mon profil</p>
@@ -46,8 +19,7 @@
             type="text"
             placeholder="Adresse mail"
           />
-        </div>
-        <div class="form-row">
+        
           <input
             v-model="firstname"
             class="form-row__input"
@@ -61,39 +33,41 @@
             placeholder="Nom de Famille"
           />
         </div>
+        
         <button @click="editProfile()" class="button">
           <!-- <span v-if="status == 'loading'">Validation en cours...</span> -->
-          <span >Valider mes options</span>
+          <span>Valider mes options</span>
         </button>
-        <hr>
+        <hr />
         <link
-      href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css"
-      rel="stylesheet"
-    />
-    <button @click="openModal()" class="button">Supprimer votre compte</button>
+          href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css"
+          rel="stylesheet"
+        />
+        <button @click="openModal()" class="button">
+          Supprimer votre compte
+        </button>
 
-    <div id="myModal" class="modal" ref="myModal">
-      <div id="modal-content" class="modal-content animation-1">
-        <header class="modal-header">
-          <p class="modal-header-title">
-            Vous êtes sur le point de supprimer votre compte
-          </p>
-       
-        </header>
+        <div id="myModal" class="modal" ref="myModal">
+          <div id="modal-content" class="modal-content animation-1">
+            <header class="modal-header">
+              <p class="modal-header-title">
+                Vous êtes sur le point de supprimer votre compte
+              </p>
+            </header>
 
-        <div class="modal-body">
-          <button class="modal-button" @click="deleteProfile()">Valider</button>
-          <button class="modal-button" @click="closeModal()">Annuler</button>
+            <div class="modal-body">
+              <button class="modal-button" @click="deleteProfile()">
+                Valider
+              </button>
+              <button class="modal-button" @click="closeModal()">
+                Annuler
+              </button>
+            </div>
+
+            <footer class="modal-footer"></footer>
+          </div>
         </div>
-
-        <footer class="modal-footer"></footer>
       </div>
-    </div>
-
-
-
-
-
       </div>
     </div>
   </div>
@@ -101,6 +75,7 @@
 
 <script>
 import { mapState } from "vuex";
+import Nav from "../components/Nav.vue";
 
 export default {
   // el: "#app",
@@ -111,8 +86,10 @@ export default {
       email: "",
       firstname: "",
       lastname: "",
-      
     };
+  },
+  components: {
+    "nav-header": Nav,
   },
   mounted: function () {
     if (this.$store.state.user.userId == -1) {
@@ -169,7 +146,7 @@ export default {
           }
         );
     },
-     onClick: function (ev) {
+    onClick: function (ev) {
       if (ev.target == this.$refs.myModal) {
         this.$refs.myModal.style.display = "none";
       }
@@ -188,15 +165,8 @@ export default {
 
 
 <style scoped>
-.main-site {
-  display: flex;
-  justify-content: center;
-}
-.card-side {
-  min-width: 350px;
-  background: white;
-  border-radius: 16px;
-}
+
+
 span {
   font-weight: 500;
   text-transform: capitalize;
@@ -214,70 +184,11 @@ h4 {
 .fas {
   width: 20px;
 }
-.menu-nav {
-  display: flex;
-  align-items: center;
-  padding: 20px;
-}
-.menu-nav:hover {
-  background: rgb(238, 238, 238);
-  border-radius: 25px;
-}
-.card-side-right {
-  margin-left: 15px;
-  height: 800px;
-  width: 20%;
-}
-.card-contact {
-  display: flex;
-  flex-direction: row;
-  margin: 20px;
-  justify-content: flex-start;
-}
-.card-side-left {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  margin-right: 15px;
-  height: auto;
-  padding: 20px;
-  height: 500px;
-  width: 20%;
-}
+
 p {
   text-align: center;
 }
-.textarea-row {
-  width: 100%;
-  resize: none;
-  overflow: hidden;
-  height: auto;
-  padding: 8px;
-  border: none;
-  border-radius: 8px;
-  background: #f2f2f2;
-  font-weight: 500;
-  font-size: 16px;
-  flex: 1;
-  color: black;
-}
-.comment {
-  display: flex;
-  justify-content: center;
-}
-.textarea-row-comment {
-  width: 100%;
-  resize: none;
-  overflow: hidden;
 
-  padding: 8px;
-  border: none;
-  border-radius: 25px;
-  background: #f2f2f2;
-  font-weight: 500;
-  font-size: 12px;
-  color: black;
-}
 .button {
   border-radius: 35px;
 }
@@ -296,7 +207,7 @@ p {
   display: flex;
   margin: 16px 0px;
   gap: 16px;
-  flex-wrap: wrap;
+  flex-direction: column;
 }
 .form-row__input {
   padding: 8px;
@@ -312,8 +223,5 @@ p {
 .form-row__input::placeholder {
   color: #aaaaaa;
 }
-.card {
-  margin-bottom: 15px;
-  width: 650px;
-}
+
 </style>

@@ -1,12 +1,18 @@
 <template>
+
   <router-view></router-view>
 </template>
 
 
 <script>
+
+
+
 export default {
   name: "App",
-  components: {},
+  components: {
+    
+  },
 };
 </script>
 
@@ -21,17 +27,31 @@ export default {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  text-decoration: none
-
+  text-decoration: none;
+  
 }
+.main-site {
+  display: flex;
+  justify-content: center;
+ 
+}
+.main-container{
+  padding-top: 30px;
+  width: 700px;
+  min-width: 360px;
+}
+
+
+
+
 a {
-    color: #0d0086;
+    color: rgb(124, 110, 255);
     text-decoration: none;
 }
 
 a:hover 
 {
-     color:#00A0C6; 
+     color:#444444; 
      text-decoration:none; 
      cursor:pointer;  
 }
@@ -39,9 +59,8 @@ a:hover
   max-width: 100%;
 }
 body {
-  background-image: linear-gradient( rgb(201, 81, 90) 0%, rgb(9, 31, 67) 100%);
-  display: flex;
-  justify-content: center;
+  background-image: linear-gradient( rgb(129, 46, 51) 0%, rgb(6, 20, 44) 100%);
+
   min-height: 100vh;
   padding: 32px;
 }
@@ -49,12 +68,40 @@ img {
   max-width: 100%;
   border-radius: 8px;
 }
+
+.textarea-row {
+  width: 100%;
+  resize: none;
+  overflow: hidden;
+  height: auto;
+  padding: 8px;
+  border: none;
+  border-radius: 8px;
+  background-color: rgb(31, 34, 35);
+  font-weight: 500;
+  font-size: 16px;
+  flex: 1;
+  color: black;
+}
+span {
+  font-weight: 500;
+  text-transform: capitalize;
+  color: white;
+}
+p{
+    color: white;
+}
 .card {
   max-width: 100%;
-  width: 540px;
+  
   background: white;
   border-radius: 16px;
   padding: 32px;
+ 
+  margin-bottom: 15px;
+  width: 100%;
+  background-color: rgb(26, 26, 26);
+
 }
 .card__title {
   text-align: center;

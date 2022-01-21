@@ -1,73 +1,79 @@
 <template>
-  <div class="card">
-    <h1 class="card__title" v-if="mode == 'login'">Connexion</h1>
-    <h1 class="card__title" v-else>Inscription</h1>
-    <p class="card__subtitle" v-if="mode == 'login'">
-      Tu n'as pas encore de compte ?<span
-        class="card__action"
-        @click="switchToCreateAccount()"
-        >Créer un compte</span
-      >
-    </p>
-    <p class="card__subtitle" v-else>
-      Tu as déjà un compte ?
-      <span class="card__action" @click="switchToLogin()">Se connecter</span>
-    </p>
-    <div class="form-row">
-      <input
-        v-model="email"
-        class="form-row__input"
-        type="text"
-        placeholder="Adresse mail"
-      />
+  <div class="main-site">
+    <nav class="main-menu-nav">
+     
+        <img
+          class="logo-full"
+          alt="Groupomania logo"
+          src="../assets/logo-full.webp"
+        />
+    
+
+      
+    </nav>
+    <div class="main-container">
+    <div class="card">
+      <h1 class="card__title" v-if="mode == 'login'">Connexion</h1>
+      <h1 class="card__title" v-else>Inscription</h1>
+      <p class="card__subtitle" v-if="mode == 'login'">
+        Tu n'as pas encore de compte ?<span
+          class="card__action"
+          @click="switchToCreateAccount()"
+          >Créer un compte</span
+        >
+      </p>
+      <p class="card__subtitle" v-else>
+        Tu as déjà un compte ?
+        <span class="card__action" @click="switchToLogin()">Se connecter</span>
+      </p>
+      <div class="form-row">
+        <input
+          v-model="email"
+          class="form-row__input"
+          type="text"
+          placeholder="Adresse mail"
+        />
+      </div>
+      <div class="form-row" v-if="mode == 'create'">
+        <input
+          v-model="firstname"
+          class="form-row__input"
+          type="text"
+          placeholder="Prénom"
+        />
+        <input
+          v-model="lastname"
+          class="form-row__input"
+          type="text"
+          placeholder="Nom de Famille"
+        />
+      </div>
+      <div class="form-row">
+        <input
+          v-model="password"
+          class="form-row__input"
+          type="password"
+          placeholder="Mot de passe"
+        />
+      </div>
+      <div class="form-row" v-if="mode == 'login' && status == 'error_login'">
+        Adresse mail et/ou mot de passe invalide
+      </div>
+      <div class="form-row" v-if="mode == 'create' && status == 'error_create'">
+        Adresse mail déjà utilisée
+      </div>
+      <div class="form-row">
+        <button @click="login()" class="button" v-if="mode == 'login'">
+          <span v-if="status == 'loading'">Connexion en cours...</span>
+          <span v-else>Connexion</span>
+        </button>
+        <button @click="createAccount()" class="button" v-else>
+          <span v-if="status == 'loading'">Création en cours...</span>
+          <span v-else>Créer mon compte</span>
+        </button>
+      </div>
     </div>
-    <div class="form-row" v-if="mode == 'create'">
-      <input
-        v-model="firstname"
-        class="form-row__input"
-        type="text"
-        placeholder="Prénom"
-      />
-      <input
-        v-model="lastname"
-        class="form-row__input"
-        type="text"
-        placeholder="Nom de Famille"
-      />
-    </div>
-    <div class="form-row">
-      <input
-        v-model="password"
-        class="form-row__input"
-        type="password"
-        placeholder="Mot de passe"
-      />
-    </div>
-    <div class="form-row" v-if="mode == 'login' && status == 'error_login'">
-      Adresse mail et/ou mot de passe invalide
-    </div>
-    <div class="form-row" v-if="mode == 'create' && status == 'error_create'">
-      Adresse mail déjà utilisée
-    </div>
-    <div class="form-row">
-      <button
-        @click="login()"
-        class="button"
-        
-        v-if="mode == 'login'"
-      >
-        <span v-if="status == 'loading'">Connexion en cours...</span>
-        <span v-else>Connexion</span>
-      </button>
-      <button
-        @click="createAccount()"
-        class="button"
-        v-else
-      >
-        <span v-if="status == 'loading'">Création en cours...</span>
-        <span v-else>Créer mon compte</span>
-      </button>
-    </div>
+  </div>
   </div>
 </template>
 
@@ -95,13 +101,14 @@ export default {
     ...mapState(["status"]),
   },
   methods: {
-    switchToCreateAccount: function () { 
+    switchToCreateAccount: function () {
       this.mode = "create";
     },
     switchToLogin: function () {
       this.mode = "login";
     },
-    login: function () { // Permet de s'authentifier
+    login: function () {
+      // Permet de s'authentifier
       const self = this;
       this.$store // Appel API dans le store
         .dispatch("loginAuth", {
@@ -110,14 +117,15 @@ export default {
         })
         .then(
           function () {
-            self.$router.push("/feed"); // La route quand l'user est authentifié 
+            self.$router.push("/feed"); // La route quand l'user est authentifié
           },
           function (error) {
             console.log(error);
           }
         );
     },
-    createAccount: function () { // Création du compte 
+    createAccount: function () {
+      // Création du compte
       const self = this;
       this.$store // Appel API dans le store
         .dispatch("createAccount", {
@@ -166,4 +174,58 @@ export default {
 .form-row__input::placeholder {
   color: #aaaaaa;
 }
-</style>>
+.logo-full {
+  height: auto;
+  width: 200px;
+}
+
+.main-menu-nav {
+  display: flex;
+  align-items: center;
+  height: 50px;
+  top: 0;
+  position: fixed;
+  width: 100%;
+  background-color: rgb(31, 31, 31);
+  justify-content: center;
+  z-index: 1;
+  padding: 0px 15px 0px 15px;
+}
+
+.logo {
+  width: 10%;
+}
+
+.menu-nav {
+  height: auto;
+  display: flex;
+
+  padding: 8px;
+}
+
+.menu-center {
+}
+.menu-nav-center {
+}
+.menu-end {
+}
+
+@media all and (max-width: 750px) {
+  .form-row{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+ 
+    }
+    .form-row__input{
+      width: 100%;
+
+    }
+
+  
+}
+@media all and (max-width: 750px) {
+}
+@media all and (max-width: 450px) {
+}
+</style>

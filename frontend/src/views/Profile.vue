@@ -1,90 +1,66 @@
 <template>
   <div>
-     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
+      integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm"
+      crossorigin="anonymous"
+    />
     <div class="main-site">
-      <div class="card-side card-side-left">
-        
-        <img class="logo" alt="Groupomania logo" src="../assets/icon-left-font.webp">
-        <hr>
-        <router-link :to="{name: 'feed'}"><div class="menu-nav"><i class="fas fa-home fa-2x"></i><h4>Accueil</h4></div></router-link>     
-        <router-link :to="{name: 'profile'}"><div class="menu-nav"><i class="fas fa-user fa-2x"></i><h4>Profil</h4></div></router-link>        
-        <router-link :to="{name: 'settings'}"><div class="menu-nav"><i class="fas fa-cog fa-2x"></i><h4>Paramêtres</h4></div></router-link>  
-         
-           <button @click="logout()" class="button">Déconnexion</button>
-       
-      </div>
-
-
-
-
-
-
-     
-          <div class="card">
-            <h1 class="card__title">Espace Perso</h1>
-            <p class="card__subtitle">C'est mon profil</p>
-            <p>Mon id: {{user.id}} <br> Email: {{user.email}} <br> Nom: {{user.lastname}} <br> Prénom: {{user.firstname}}</p>
-          
-        
+      <nav-header></nav-header>
+      <div class="main-container">
+      <div class="card">
+        <h1 class="card__title">Espace Perso</h1>
+        <p class="card__subtitle">C'est mon profil</p>
+        <p>
+          Mon id: {{ user.id }} <br />
+          Email: {{ user.email }} <br />
+          Nom: {{ user.lastname }} <br />
+          Prénom: {{ user.firstname }}
+        </p>
+      </div></div>
+    </div>
   </div>
-  </div>
-  </div>
-
-
-
-
-
-
-
-
-
-  
 </template>
 
 <script>
 import { mapState } from "vuex";
+
+import Nav from "../components/Nav.vue";
+
 export default {
-  name: 'Profile',
-  mounted: function() {
+  name: "Profile",
+  mounted: function () {
     if (this.$store.state.user.userId == -1) {
-      this.$router.push('/')
+      this.$router.push("/");
       return;
     }
-    this.$store.dispatch('getUserInfos');
-    
-    
+    this.$store.dispatch("getUserInfos");
+  },
+  components: {
+    "nav-header": Nav,
   },
   computed: {
     ...mapState({
-      user: 'userInfos',
-      
-    })
-    
+      user: "userInfos",
+    }),
   },
- 
-        
-  methods:{
-    logout: function(){ // Permet de se déconnecter
-      this.$store.commit('logout');
-      this.$router.push('/')
-    }
-  }
-}
+
+  methods: {
+    logout: function () {
+      // Permet de se déconnecter
+      this.$store.commit("logout");
+      this.$router.push("/");
+    },
+  },
+};
 </script>
 
 
 
 
 <style scoped>
-.main-site {
-  display: flex;
-  justify-content: center;
-}
-.card-side {
-  min-width: 350px;
-  background: white;
-  border-radius: 16px;
-}
+
 span {
   font-weight: 500;
   text-transform: capitalize;
@@ -92,46 +68,14 @@ span {
 h3 {
   margin: 20px;
 }
-h4{
+h4 {
   margin-left: 20px;
 }
-.logo{
-  width: 100%;
-}
-.fas{
+
+.fas {
   width: 20px;
 }
-.menu-nav{
-  display: flex;
-  align-items: center;
-  padding: 20px
-}
-.menu-nav:hover{
-  background: rgb(238, 238, 238);
-  border-radius: 25px;
-}
-.card-side-right {
-  
-  margin-left: 15px;
-  height: 800px;
-  width: 20%;
-}
-.card-contact {
-  display: flex;
-  flex-direction: row;
-  margin: 20px;
-  justify-content: flex-start;
-}
-.card-side-left {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  margin-right: 15px;
-  height: auto;
-  padding: 20px;
-  height: 500px;
-  width: 20%;
-}
+
 p {
   text-align: center;
 }
@@ -149,31 +93,11 @@ p {
   flex: 1;
   color: black;
 }
-.comment{
-  display: flex;
-  justify-content: center;
-  
-}
-.textarea-row-comment{
-  
-  width: 100%;
-  resize: none;
-  overflow: hidden;
-  
-  padding: 8px;
-  border: none;
-  border-radius: 25px;
-  background: #f2f2f2;
-  font-weight: 500;
-  font-size: 12px;
-  color: black;
-}
+
 .button {
   border-radius: 35px;
 }
-.textarea-row::placeholder {
-  color: #aaaaaa;
-}
+
 .form-row-btn {
   display: flex;
   margin: 16px 0px;
@@ -202,8 +126,5 @@ p {
 .form-row__input::placeholder {
   color: #aaaaaa;
 }
-.card {
-  margin-bottom: 15px;
-  width: 650px;
-}
+
 </style>

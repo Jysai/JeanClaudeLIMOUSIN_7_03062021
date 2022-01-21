@@ -7,52 +7,36 @@
       crossorigin="anonymous"
     />
     <div class="main-site">
-      <div class="card-side card-side-left">
-        <img
-          class="logo"
-          alt="Groupomania logo"
-          src="../assets/icon-left-font.webp"
-        />
-        <hr />
-        <router-link :to="{ name: 'feed' }"
-          ><div class="menu-nav">
-            <i class="fas fa-home fa-2x"></i>
-            <h4>Accueil</h4>
-          </div></router-link
-        >
-        <router-link :to="{ name: 'profile' }"
-          ><div class="menu-nav">
-            <i class="fas fa-user fa-2x"></i>
-            <h4>Profil</h4>
-          </div></router-link
-        >
-        <router-link :to="{ name: 'settings' }"
-          ><div class="menu-nav">
-            <i class="fas fa-cog fa-2x"></i>
-            <h4>Paramêtres</h4>
-          </div></router-link
-        >
-        <div class="menu-nav">
-          <span>{{ profileUsers.firstname }} {{ profileUsers.lastname }}</span>
-        </div>
-
-        <button @click="logout()" class="button">Déconnexion</button>
-      </div>
-      <div>
+      <nav-header></nav-header>
+      <div class="main-container">
         <div class="card">
+          <span>Bonjour {{ profileUsers.firstname }}</span>
           <textarea
             v-model="contentPost"
             class="textarea-row"
             type="text-area"
             placeholder="Quoi de neuf?"
           ></textarea>
-          <input
+
+          <div class="image-upload">
+            <label for="inputFile">
+              <i class="fas fa-file-image fa-1x icon-download"></i>
+            </label>
+
+            <input type="file"
+            accept="image/*"
+            @change="openFile"
+            id="inputFile"
+            ref="inputFile" />
+          </div>
+          <!-- <input
+            
             type="file"
             accept="image/*"
             @change="openFile"
             id="inputFile"
             ref="inputFile"
-          />
+          /> -->
           <div class="form-row-btn">
             <button v-on:click.prevent="creationPost" class="button">
               Publier
@@ -122,11 +106,9 @@
           >
             <div class="icon">
               <div v-if="message.UserId == profileUsers.id">
-
                 <button @click="deletePost(message.id)">
-                      <i class="fas fa-trash-alt"></i>
+                  <i class="fas fa-trash-alt"></i>
                 </button>
-                
               </div>
               <div v-if="message.UserId == profileUsers.id">
                 <i class="fas fa-edit"></i>
@@ -210,10 +192,14 @@
 
 <script>
 import { mapState } from "vuex";
+import Nav from "../components/Nav.vue";
 
 export default {
   el: "#app",
   name: "Message",
+  components: {
+    "nav-header": Nav,
+  },
   data: function () {
     return {
       mode: "message",
@@ -277,36 +263,56 @@ export default {
     openFile: function (e) {
       this.imagesArray = e.target.files[0];
     },
-      onClick: function (ev) {
-      if (ev.target == this.$refs.myModalComment) {
-        this.$refs.myModalComment.style.display = "none";
-        
-      }
-      if (ev.target == this.$refs.myModalPost) {
-        this.$refs.myModalPost.style.display = "none";
+    //   onClick: function (ev) {
+    //   if (ev.target == this.$refs.myModalComment) {
+    //     this.$refs.myModalComment.style.display = "none";
 
-        
-      }
-    },
+    //   }
+    //   if (ev.target == this.$refs.myModalPost) {
+    //     this.$refs.myModalPost.style.display = "none";
+    //   }
+    // },
     deletePost: function (id) {
       console.log(id);
-       this.$store 
-        .dispatch("deletePost", id)
-         .then();
+      this.$store.dispatch("deletePost", id).then();
     },
     deleteComment: function (id) {
       console.log(id);
-      // this.$store 
+      // this.$store
       //   .dispatch("deletePost", id)
       //   .then();
-    }
-
+    },
   },
 };
 </script>
 
 
 <style scoped>
+.image-upload > input {
+  display: none;
+}
+.icon-download{
+  color: white;
+  width: 25px;
+   height: 25px;
+   padding: 15px;
+  display: flex;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+}
+.icon-download:hover{
+  background-color: pink;
+ 
+  border-radius: 100%;
+  cursor: pointer;
+  color: black;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+}
+
+
 .identity {
   display: flex;
   align-items: flex-start;
@@ -335,44 +341,15 @@ export default {
   display: flex;
   float: right;
 }
-.main-site {
-  display: flex;
-  justify-content: center;
-}
-.card-side {
-  min-width: 350px;
-  background: white;
-  border-radius: 16px;
-}
-span {
-  font-weight: 500;
-  text-transform: capitalize;
-}
+
 h3 {
   margin: 20px;
 }
 h4 {
   margin-left: 20px;
 }
-.logo {
-  width: 100%;
-}
 .fas {
   width: 20px;
-}
-.menu-nav {
-  display: flex;
-  align-items: center;
-  padding: 20px;
-}
-.menu-nav:hover {
-  background: rgb(238, 238, 238);
-  border-radius: 25px;
-}
-.card-side-right {
-  margin-left: 15px;
-  height: 800px;
-  width: 20%;
 }
 .card-contact {
   display: flex;
@@ -380,31 +357,7 @@ h4 {
   margin: 20px;
   justify-content: flex-start;
 }
-.card-side-left {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  margin-right: 15px;
-  height: auto;
-  padding: 20px;
-  height: 500px;
-  width: 20%;
-}
 
-.textarea-row {
-  width: 100%;
-  resize: none;
-  overflow: hidden;
-  height: auto;
-  padding: 8px;
-  border: none;
-  border-radius: 8px;
-  background: #f2f2f2;
-  font-weight: 500;
-  font-size: 16px;
-  flex: 1;
-  color: black;
-}
 .comment {
   display: flex;
   justify-content: flex-start;
@@ -414,11 +367,10 @@ h4 {
   width: 100%;
   resize: none;
   overflow: hidden;
-
   padding: 8px;
   border: none;
   border-radius: 25px 0px 0px 25px;
-  background: #f2f2f2;
+  background: #3b3b3b;
   font-weight: 500;
   font-size: 12px;
   color: black;
@@ -426,9 +378,7 @@ h4 {
 .button {
   border-radius: 35px;
 }
-.textarea-row::placeholder {
-  color: #aaaaaa;
-}
+
 .button-comment {
   background: rgb(9, 31, 67);
   color: white;
@@ -442,7 +392,7 @@ h4 {
 }
 .commment-row {
   border-radius: 10px;
-  background: #ebebeb;
+  background: #414141;
   padding: 15px;
   margin: 15px 0px 15px;
 }
@@ -468,7 +418,7 @@ h4 {
   padding: 8px;
   border: none;
   border-radius: 8px;
-  background: #f2f2f2;
+  background: #424242;
   font-weight: 500;
   font-size: 16px;
   flex: 1;
@@ -476,12 +426,9 @@ h4 {
   color: black;
 }
 .form-row__input::placeholder {
-  color: #aaaaaa;
+  color: #555555;
 }
-.card {
-  margin-bottom: 15px;
-  width: 650px;
-}
+
 .loader {
   margin: 100px auto;
   width: 10px;
