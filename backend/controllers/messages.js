@@ -5,18 +5,22 @@ exports.createMessage = function (req, res) {
   // if (content == null) {
   //   return res.status(400).json({ err: "missing parameters" });
   // }
+  console.log(req.body.userId);
   models.User.findOne({
     where: { id: req.body.userId },
   })
     .then(function (userFound) {
-      models.Message.create({
+      console.log("userFound");
+      const model = {
         content: content,
         likes: 0,
-        // imageUrl: `${req.protocol}://${req.get('host')}/public/${
-        //   req.files.image.name
-        // }`,
         UserId: userFound.id,
-      })
+      } 
+      if (req.file !== undefined) {
+        model["imageUrl" ] = `${req.protocol}://${req.get("host")}/public/${req.file.filename}`
+      }
+      console.log(model);
+      models.Message.create(model)
         .then(function (newMessage) {
           return res.status(201).json({
             newMessage,
@@ -100,7 +104,6 @@ exports.listMessages = (req, res, next) => {
         model: models.User,
         attributes: ["lastname", "firstname"],
       },
-
     ],
     order: [["createdAt", "DESC"]],
   })
@@ -138,6 +141,34 @@ exports.addComment = async (req, res) => {
   }
 };
 
+exports.deleteComment = (req, res) => {
+  models.User.findOne({
+    where: { id: req.body.userId },
+  })
+    .then(function (userFound) {
+      models.Comment.findOne({
+        where: { id: req.params.id },
+      })
+        .then(function (commentFound) {
+          if (userFound.id == commentFound.UserId) {
+            commentFound.destroy();
+            res.status(200).json({ error: "commentaire supprimé !" });
+          } else {
+            res.status(401).json({
+              error: "vous n'avez pas les droits pour supprimer ce message",
+            });
+          }
+        })
+        .catch(function (err) {
+          res.status(404).json({
+            error: "commentaire non trouvé",
+          });
+        });
+    })
+    .catch(function (error) {
+      res.status(404).json({ error: "Utilisateur non trouvé" });
+    });
+};
 
 exports.likeMessage = async (req, res, next) => {
   try {
@@ -156,7 +187,6 @@ exports.likeMessage = async (req, res, next) => {
           where: { id: messageId },
         });
         if (messageFound) {
-          
           messageFound.update({
             likes: messageFound.likes - 1,
           });
@@ -175,7 +205,6 @@ exports.likeMessage = async (req, res, next) => {
           where: { id: messageId },
         });
         if (messageFound) {
-          
           messageFound.update({
             likes: messageFound.likes + 1,
           });

@@ -18,7 +18,7 @@
             placeholder="Quoi de neuf?"
           ></textarea>
 
-          <div class="image-upload">
+          <!-- <div class="image-upload">
             <label for="inputFile">
               <i class="fas fa-file-image fa-1x icon-download"></i>
             </label>
@@ -30,15 +30,15 @@
               id="inputFile"
               ref="inputFile"
             />
-          </div>
-          <!-- <input
+          </div> -->
+          <input
             
             type="file"
             accept="image/*"
             @change="openFile"
             id="inputFile"
             ref="inputFile"
-          /> -->
+          />
           <div class="form-row-btn">
             <button v-on:click.prevent="creationPost" class="button">
               Publier
@@ -68,7 +68,7 @@
             </div>
             <div class="identity">
               <p class="nickname">
-                <!-- {{ message.User.firstname }} {{ message.User.lastname }} -->
+                {{ message.User.firstname }} {{ message.User.lastname }}
               </p>
               <p class="time">
                 {{
@@ -96,7 +96,7 @@
               <div class="commment-row" v-if="comment.messageId == message.id">
                 <div class="icon">
                   <div v-if="comment.UserId == profileUsers.id">
-                    <button @click="deleteComment(comment.Id)">
+                    <button @click="deleteComment(comment.id)">
                       <i class="fas fa-trash-alt"></i>
                     </button>
                   </div>
@@ -122,10 +122,10 @@
             </div>
             <div class="comment">
               <input
-                v-model="contentComment"
+                v-model="contentComment[message.id]"
                 class="textarea-row-comment"
                 type="text-area"
-                placeholder="Ecivez un commentaire..."
+                placeholder="Ecrivez un commentaire..."
               />
               <button
                 v-on:click.prevent="createComment(message.id)"
@@ -182,7 +182,7 @@ export default {
       mode: "message",
       contentPost: "",
       imagesArray: null,
-      contentComment: "",
+      contentComment: new Map(),
       
     };
   },
@@ -212,7 +212,6 @@ export default {
   methods: {
     getComments() {
       this.$store.dispatch("getComment")
-      
     },
     getPosts(){
       this.$store.dispatch("getMessageInfos");
@@ -229,12 +228,12 @@ export default {
       // const self = this;
       this.$store
         .dispatch("createComment", {
-          content: this.contentComment,
+          content: this.contentComment[id],
           id: id,
         })
         .then(() => {
           this.getComments()
-          this.contentComment = "";
+          this.contentComment[id] = "";
         });
     },
 
@@ -242,9 +241,9 @@ export default {
       // const self = this;
       this.$store // Appel API dans le store
         .dispatch("createNewPost", {
-          // content: this.messages.push(this.contentPost),
+          
           content: this.contentPost,
-          // file: this.imagesArray,
+          file: this.imagesArray,
         })
         .then(() => {
           this.getPosts()
@@ -265,9 +264,9 @@ export default {
     deleteComment: function (id) {
       console.log(id);
       this.$store
-        // .dispatch("deleteComment", id)
+        .dispatch("deleteComment", id)
         .then(() => {
-          // this.getComments()
+          this.getComments()
           
         });
     },

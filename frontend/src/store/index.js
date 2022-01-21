@@ -71,6 +71,10 @@ const store = createStore({
       //récupère les informations de l'user pour les afficher dans profile.vue
       state.deletePost = deletePost;
     },
+    deleteComment: function (state, deleteComment) {
+      //récupère les informations de l'user pour les afficher dans profile.vue
+      state.deleteComment = deleteComment;
+    },
 
     messageInfos: function (state, messageInfos) {
       //récupère les publications pour les afficher dans profile.vue
@@ -151,12 +155,12 @@ const store = createStore({
     getMessageInfos: ({ commit }) => {
       // Méthode GET via AXIOS pour récupérer les plucations
       // console.log({ commit });
-      commit("setStatus", "loading");
+      // commit("setStatus", "loading");
       return new Promise((resolve) => {
         instance
           .get("message")
           .then(function (response) {
-            commit("setStatus", "");
+            // commit("setStatus", "");
             commit("messageInfos", response.data.messages);
             resolve(response);
           })
@@ -167,12 +171,13 @@ const store = createStore({
     getComment: ({ commit }) => {
       // Méthode GET via AXIOS pour récupérer les plucations
       // console.log({ commit });
-      commit("setStatus", "loading");
+      // commit("setStatus", "loading");
       return new Promise((resolve) => {
         instance
           .get("message/comment")
           .then(function (response) {
-            commit("setStatus", "");
+            
+            // commit("setStatus", "");
             commit("getComment", response.data.comments);
             resolve(response);
           })
@@ -185,11 +190,11 @@ const store = createStore({
 
       // commit("setStatus", "loading");
       return new Promise((resolve, reject) => {
-        // let formData = new FormData()
-        // formData.append("content", userInfos.content)
-        // formData.append("image", userInfos.file)
+        let formData = new FormData()
+        formData.append("content", postInfos.content)
+        formData.append("image", postInfos.file)
         instance
-          .post("/message/", postInfos)
+          .post("/message/", formData)
           .then(function (response) {
             commit("createNewPost");
             resolve(response);
@@ -223,6 +228,25 @@ const store = createStore({
         .then(function (response) {
           
           commit("deletePost");
+          resolve(response);
+        })
+        .catch(function (error) {
+          // commit("setStatus", "");
+          reject(error);
+        });
+      });
+    },
+
+
+    deleteComment: ({ commit }, id) => {
+      // Méthode post via AXIOS pour authentifier l'utilisateur dans la base de données
+      return new Promise((resolve, reject) => {
+      
+      instance
+        .delete(`message/comment/${id}`)
+        .then(function (response) {
+          console.log(response);
+          commit("deleteComment");
           resolve(response);
         })
         .catch(function (error) {
