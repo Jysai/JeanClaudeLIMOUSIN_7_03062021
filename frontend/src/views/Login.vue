@@ -203,12 +203,7 @@ export default {
   padding: 8px;
 }
 
-.menu-center {
-}
-.menu-nav-center {
-}
-.menu-end {
-}
+
 
 @media all and (max-width: 750px) {
   .form-row{

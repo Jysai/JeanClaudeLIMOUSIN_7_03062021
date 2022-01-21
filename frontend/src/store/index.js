@@ -39,7 +39,9 @@ const store = createStore({
       lastname: "",
       firstname: "",
     },
-    
+    messageInfos: [],
+    postInfos: [],
+    commentInfos: []
   },
   mutations: {
     setStatus: function (state, status) {
@@ -61,12 +63,19 @@ const store = createStore({
       //récupère les informations de l'user pour les afficher dans profile.vue
       state.createComment = createComment;
     },
-    
+    createNewPost: function (state, createNewPost) {
+      //récupère les informations de l'user pour les afficher dans profile.vue
+      state.createNewPost = createNewPost;
+    },
+    deletePost: function (state, deletePost) {
+      //récupère les informations de l'user pour les afficher dans profile.vue
+      state.deletePost = deletePost;
+    },
+
     messageInfos: function (state, messageInfos) {
       //récupère les publications pour les afficher dans profile.vue
       state.messageInfos = messageInfos;
     },
-
 
     getComment: function (state, getComment) {
       //récupère les publications pour les afficher dans profile.vue
@@ -124,7 +133,6 @@ const store = createStore({
       instance
         .get("user/me")
         .then(function (response) {
-          
           commit("userInfos", response.data);
         })
         .catch(function () {});
@@ -148,66 +156,12 @@ const store = createStore({
         instance
           .get("message")
           .then(function (response) {
-            
             commit("setStatus", "");
             commit("messageInfos", response.data.messages);
             resolve(response);
           })
           .catch(function () {});
       });
-    },
-
-
-    createNewPost: ({ commit }, postInfos) => {
-      // console.log(postInfos);
-      // Méthode post via AXIOS pour authentifier l'utilisateur dans la base de données
-      commit("setStatus", "loading");
-      // let formData = new FormData()
-      // formData.append("content", userInfos.content)
-      // formData.append("image", userInfos.file)
-      instance
-        .post("/message/", postInfos)
-        .then(function () {
-          commit("setStatus", "");
-        })
-        .catch(function (error) {
-          commit("setStatus", "");
-          error;
-        });
-      // });
-    },
-
-    deletePost: ({ commit}, id ) => {
-      // Méthode post via AXIOS pour authentifier l'utilisateur dans la base de données
-      commit("setStatus",);
-      instance
-        .delete(`message/${id}`,)
-        .then(function (response) {
-          console.log(response);
-          commit("setStatus", "");
-        })
-        .catch(function (error) {
-          commit("setStatus", "");
-          error;
-        });
-      // });
-    },
-
-
- 
-    createComment: ({ commit}, commentInfos)=>{
-      
-      return new Promise((resolve, reject)=>{
-        
-        instance.post(`message/${commentInfos.id}/comment`, commentInfos)
-        .then(function (response) {
-          commit("createComment");
-          resolve(response);
-        })
-        .catch(function (error) {
-          reject(error);
-        });
-      })
     },
 
     getComment: ({ commit }) => {
@@ -218,7 +172,6 @@ const store = createStore({
         instance
           .get("message/comment")
           .then(function (response) {
-              console.log(response.data);
             commit("setStatus", "");
             commit("getComment", response.data.comments);
             resolve(response);
@@ -227,6 +180,57 @@ const store = createStore({
       });
     },
 
+    createNewPost: ({ commit }, postInfos) => {
+      // Méthode post via AXIOS pour authentifier l'utilisateur dans la base de données
+
+      // commit("setStatus", "loading");
+      return new Promise((resolve, reject) => {
+        // let formData = new FormData()
+        // formData.append("content", userInfos.content)
+        // formData.append("image", userInfos.file)
+        instance
+          .post("/message/", postInfos)
+          .then(function (response) {
+            commit("createNewPost");
+            resolve(response);
+          })
+          .catch(function (error) {
+            reject(error);
+          });
+      });
+    },
+
+    createComment: ({ commit }, commentInfos) => {
+      return new Promise((resolve, reject) => {
+        instance
+          .post(`message/${commentInfos.id}/comment`, commentInfos)
+          .then(function (response) {
+            commit("createComment");
+            resolve(response);
+          })
+          .catch(function (error) {
+            reject(error);
+          });
+      });
+    },
+
+    deletePost: ({ commit }, id) => {
+      // Méthode post via AXIOS pour authentifier l'utilisateur dans la base de données
+      return new Promise((resolve, reject) => {
+      
+      instance
+        .delete(`message/${id}`)
+        .then(function (response) {
+          
+          commit("deletePost");
+          resolve(response);
+        })
+        .catch(function (error) {
+          // commit("setStatus", "");
+          reject(error);
+        });
+      });
+    },
 
     editProfile: ({ commit }, userInfos) => {
       // Méthode post via AXIOS pour authentifier l'utilisateur dans la base de données
@@ -264,12 +268,12 @@ const store = createStore({
       });
     },
 
-    likeMessage: ({ commit}, id ) => {
+    likeMessage: ({ commit }, id) => {
       // Méthode post via AXIOS pour authentifier l'utilisateur dans la base de données
-  
-      commit("setStatus",);
+
+      commit("setStatus");
       instance
-        .post(`message/${id}/like`,)
+        .post(`message/${id}/like`)
         .then(function (response) {
           console.log(response);
           commit("setStatus", "");
@@ -280,7 +284,6 @@ const store = createStore({
         });
       // });
     },
-
   },
 });
 

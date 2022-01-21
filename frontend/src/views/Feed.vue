@@ -23,11 +23,13 @@
               <i class="fas fa-file-image fa-1x icon-download"></i>
             </label>
 
-            <input type="file"
-            accept="image/*"
-            @change="openFile"
-            id="inputFile"
-            ref="inputFile" />
+            <input
+              type="file"
+              accept="image/*"
+              @change="openFile"
+              id="inputFile"
+              ref="inputFile"
+            />
           </div>
           <!-- <input
             
@@ -43,56 +45,6 @@
             </button>
           </div>
         </div>
-
-        <!-- <div id="myModal" class="modal" ref="myModalComment">
-          <div id="modal-content" class="modal-content animation-1">
-            <header class="modal-header">
-              <p class="modal-header-title">
-                Vous êtes sur le point de supprimer ce commentaire
-              </p>
-              
-            </header>
-
-            <div class="modal-body">
-              <div v-bind:key="index" v-for="(comment, index) in comments">
-                </div>
-              <button class="modal-button" @click="deleteComment(comment.messageId )">
-                Valider
-              </button>
-              
-              <button class="modal-button" @click="closeModalComment()">
-                Annuler
-              </button>
-            </div>
-
-            <footer class="modal-footer"></footer>
-          </div>
-        </div>
-
-        <div id="myModal" class="modal" ref="myModalPost">
-          <div id="modal-content" class="modal-content animation-1">
-            <header class="modal-header">
-              <p class="modal-header-title">
-                Vous êtes sur le point de supprimer ce message
-              </p>
-              
-            </header>
-
-            <div class="modal-body">
-              <div v-bind:key="index" v-for="(message, index) in messages">
-                
-              <button class="modal-button" @click="deletePost(message.id )">
-                Valider
-              </button>
-              
-              <button class="modal-button" @click="closeModalPost()">
-                Annuler
-              </button>
-            </div>
-            </div>
-            <footer class="modal-footer"></footer>
-          </div>
-        </div> -->
 
         <div class="card" v-if="status == 'loading'">
           <div class="loader">Loading...</div>
@@ -116,7 +68,7 @@
             </div>
             <div class="identity">
               <p class="nickname">
-                {{ message.User.firstname }} {{ message.User.lastname }}
+                <!-- {{ message.User.firstname }} {{ message.User.lastname }} -->
               </p>
               <p class="time">
                 {{
@@ -193,6 +145,31 @@
 <script>
 import { mapState } from "vuex";
 import Nav from "../components/Nav.vue";
+const axios = require("axios");
+
+const instance = axios.create({
+  baseURL: "http://localhost:3000/api",
+  timeout: 1000,
+  headers: { "content-type": "application/json" },
+});
+
+let user = localStorage.getItem("user");
+if (!user) {
+  user = {
+    userId: -1,
+    token: "",
+  };
+} else {
+  try {
+    user = JSON.parse(user);
+    instance.defaults.headers.common["Authorization"] = `bearer ${user.token}`;
+  } catch (ex) {
+    user = {
+      userId: -1,
+      token: "",
+    };
+  }
+}
 
 export default {
   el: "#app",
@@ -203,9 +180,10 @@ export default {
   data: function () {
     return {
       mode: "message",
-      contentPost: null,
+      contentPost: "",
       imagesArray: null,
       contentComment: "",
+      
     };
   },
 
@@ -227,60 +205,71 @@ export default {
       users: "allUsers",
       comments: "getComment",
       profileUsers: "userInfos",
+      
     }),
     ...mapState(["status"]),
   },
   methods: {
-    logout: function () {
-      // Permet de se déconnecter
-      this.$store.commit("logout");
-      this.$router.push("/");
+    getComments() {
+      this.$store.dispatch("getComment")
+      
+    },
+    getPosts(){
+      this.$store.dispatch("getMessageInfos");
     },
     likeMessage: function (id) {
+      const self = this;
       console.log(id);
       // const self = this;
       this.$store // Appel API dans le store
         .dispatch("likeMessage", id)
-        .then();
+        .then(self.$router.push("/"));
     },
     createComment: function (id) {
+      // const self = this;
       this.$store
         .dispatch("createComment", {
           content: this.contentComment,
           id: id,
         })
-        .then();
+        .then(() => {
+          this.getComments()
+          this.contentComment = "";
+        });
     },
+
     creationPost: function () {
       // const self = this;
       this.$store // Appel API dans le store
         .dispatch("createNewPost", {
+          // content: this.messages.push(this.contentPost),
           content: this.contentPost,
           // file: this.imagesArray,
         })
-        .then();
+        .then(() => {
+          this.getPosts()
+          this.contentPost = "";
+        });
     },
     openFile: function (e) {
       this.imagesArray = e.target.files[0];
     },
-    //   onClick: function (ev) {
-    //   if (ev.target == this.$refs.myModalComment) {
-    //     this.$refs.myModalComment.style.display = "none";
 
-    //   }
-    //   if (ev.target == this.$refs.myModalPost) {
-    //     this.$refs.myModalPost.style.display = "none";
-    //   }
-    // },
     deletePost: function (id) {
-      console.log(id);
-      this.$store.dispatch("deletePost", id).then();
+      // const self = this;
+      this.$store.dispatch("deletePost", id)
+      .then(() => {
+          this.getPosts()
+        });
     },
     deleteComment: function (id) {
       console.log(id);
-      // this.$store
-      //   .dispatch("deletePost", id)
-      //   .then();
+      this.$store
+        // .dispatch("deleteComment", id)
+        .then(() => {
+          // this.getComments()
+          
+        });
     },
   },
 };
@@ -291,19 +280,19 @@ export default {
 .image-upload > input {
   display: none;
 }
-.icon-download{
+.icon-download {
   color: white;
   width: 25px;
-   height: 25px;
-   padding: 15px;
+  height: 25px;
+  padding: 15px;
   display: flex;
   align-items: center;
   align-content: center;
   justify-content: center;
 }
-.icon-download:hover{
+.icon-download:hover {
   background-color: pink;
- 
+
   border-radius: 100%;
   cursor: pointer;
   color: black;
@@ -311,7 +300,6 @@ export default {
   align-content: center;
   justify-content: center;
 }
-
 
 .identity {
   display: flex;
