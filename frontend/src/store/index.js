@@ -187,7 +187,7 @@ const store = createStore({
 
     createNewPost: ({ commit }, postInfos) => {
       // Méthode post via AXIOS pour authentifier l'utilisateur dans la base de données
-
+      // console.log(postInfos);
       // commit("setStatus", "loading");
       return new Promise((resolve, reject) => {
         let formData = new FormData()
@@ -257,18 +257,23 @@ const store = createStore({
     },
 
     editProfile: ({ commit }, userInfos) => {
+     
       // Méthode post via AXIOS pour authentifier l'utilisateur dans la base de données
       commit("setStatus", "loading");
       return new Promise((resolve, reject) => {
+        let formData = new FormData()
+        formData.append("lastname", userInfos.lastname)
+        formData.append("firstname", userInfos.firstname)
+        formData.append("image", userInfos.file)
         instance
-          .put("/user/", userInfos)
+          .put("/user/", formData)
           .then(function (response) {
             commit("setStatus", "");
-            commit("logUser", response.data);
+            
             resolve(response);
           })
           .catch(function (error) {
-            commit("setStatus", "error_login");
+            commit("setStatus", );
             reject(error);
           });
       });

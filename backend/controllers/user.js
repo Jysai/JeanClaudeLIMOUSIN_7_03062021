@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-
+const fs = require("fs");
 const models = require("../models");
 
 exports.signup = (req, res, next) => {
@@ -82,7 +82,7 @@ exports.login = (req, res, next) => {
           .catch((error) => res.status(500).json({ error }));
       }
     })
-    .catch((error) => res.status(500).json({ error}));
+    .catch((error) => res.status(500).json({ error }));
 };
 
 exports.me = (req, res, next) => {
@@ -119,49 +119,92 @@ exports.allUsers = (req, res, next) => {
     });
 };
 
+// exports.updateUserProfile = (req, res, next) => {
+
+//   models.User.findOne({
+//     // attributes: ["id", "email", "firstname", "lastname"],
+//     where: { id: req.body.userId },
+//   })
+//     .then(function (userFound) {
+//         m
+//         const model = {
+//           firstname: req.body.firstname
+//             ? req.body.firstname
+//             : userFound.firstname,
+//             lastname: req.body.lastname ? req.body.lastname : userFound.lastname,
+//           UserId: userFound.id,
+//         };
+//         if (req.file !== undefined) {
+//           model["imageUrl"] = req.file ? req`${req.protocol}://${req.get("host")}/public/${
+//             req.file.filename
+//           }` : null
+//         }
+
+//         models.User.update(model)
+//         .then(function (updateUser) {
+//           return res.status(201).json({
+//             updateUser,
+//           });
+//         })
+//         .catch(function (err) {
+//           return res.status(500).json({ err });
+//         });
+//     })
+//     .catch(function (err) {
+//       return res.status(500).json({ err });
+//     });
+// };
+
 exports.updateUserProfile = (req, res, next) => {
   models.User.findOne({
-    // attributes: ["id", "email", "firstname", "lastname"],
     where: { id: req.body.userId },
   })
     .then(function (userFound) {
-      if (userFound) {
-        userFound.update({
-          firstname: req.body.firstname
-            ? req.body.firstname
-            : userFound.firstname,
-          lastname: req.body.lastname ? req.body.lastname : userFound.lastname,
-          email: req.body.email ? req.body.email : userFound.email,
-        });
-        res.status(201).json(userFound);
-      } else {
-        res.status(404).json({ error: "user not found" });
+      const updatedProfile = {
+        firstname: req.body.firstname,
+        lastname: req.body.lastname,
+        };
+      if (req.file !== undefined) {
+        updatedProfile["imageUrl"] = `${req.protocol}://${req.get("host")}/public/${
+          req.file.filename
+        }`;
       }
+      userFound.update(updatedProfile)
+        .then(function (updateUser) {
+          return res.status(201).json({
+            updateUser,
+          });
+        })
+        .catch(function (err) {
+          return res.status(500).json({ err });
+        });
     })
     .catch(function (err) {
-      res.status(500).json({ error: "cannot fetch user" });
+      return res.status(500).json({ err });
     });
-};
+},
+ 
+
+
 
 exports.deleteProfile = (req, res, next) => {
-  models.User.findOne({
-    where: { id: req.body.userId },
-  })
-    .then(function (userFound) {
-      console.log(userFound);
-      if (userFound) {
-        return userFound.destroy({
-          force: true
-        });
-        
-      } else {
-        res.status(404).json({ error: "user not found" });
-      }
+    models.User.findOne({
+      where: { id: req.body.userId },
     })
-    .then(function () {
-      res.status(200).json({ message: "utilisateur supprimé" })
-    })
-    .catch(function (err) {
-      res.status(500).json({ err });
-    });
-};
+      .then(function (userFound) {
+        console.log(userFound);
+        if (userFound) {
+          return userFound.destroy({
+            force: true,
+          });
+        } else {
+          res.status(404).json({ error: "user not found" });
+        }
+      })
+      .then(function () {
+        res.status(200).json({ message: "utilisateur supprimé" });
+      })
+      .catch(function (err) {
+        res.status(500).json({ err });
+      });
+  };

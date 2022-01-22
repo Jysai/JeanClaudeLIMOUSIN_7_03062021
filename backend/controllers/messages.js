@@ -1,25 +1,27 @@
 const models = require("../models");
 
 exports.createMessage = function (req, res) {
+  
   const content = req.body.content;
   // if (content == null) {
   //   return res.status(400).json({ err: "missing parameters" });
   // }
-  console.log(req.body.userId);
+
   models.User.findOne({
     where: { id: req.body.userId },
   })
     .then(function (userFound) {
-      console.log("userFound");
       const model = {
         content: content,
         likes: 0,
         UserId: userFound.id,
-      } 
+      };
       if (req.file !== undefined) {
-        model["imageUrl" ] = `${req.protocol}://${req.get("host")}/public/${req.file.filename}`
+        model["imageUrl"] = `${req.protocol}://${req.get("host")}/public/${
+          req.file.filename
+        }`;
       }
-      console.log(model);
+
       models.Message.create(model)
         .then(function (newMessage) {
           return res.status(201).json({
@@ -32,6 +34,35 @@ exports.createMessage = function (req, res) {
     })
     .catch(function (err) {
       return res.status(500).json({ err });
+    });
+};
+
+exports.deleteMessage = (req, res) => {
+  models.User.findOne({
+    where: { id: req.body.userId },
+  })
+    .then(function (userFound) {
+      models.Message.findOne({
+        where: { id: req.params.id },
+      })
+        .then(function (messageFound) {
+          if (userFound.id == messageFound.UserId) {
+            messageFound.destroy();
+            res.status(200).json({ message: "message supprimé !" });
+          } else {
+            res.status(401).json({
+              error: "vous n'avez pas les droits pour supprimer ce message",
+            });
+          }
+        })
+        .catch(function (err) {
+          res.status(404).json({
+            error: "message non trouvé",
+          });
+        });
+    })
+    .catch(function (error) {
+      res.status(404).json({ error: "Utilisateur non trouvé" });
     });
 };
 
@@ -54,35 +85,6 @@ exports.editMessage = (req, res, next) => {
           } else {
             res.status(401).json({
               error: "vous n'avez pas les droits pour modifier ce message",
-            });
-          }
-        })
-        .catch(function (err) {
-          res.status(404).json({
-            error: "message non trouvé",
-          });
-        });
-    })
-    .catch(function (error) {
-      res.status(404).json({ error: "Utilisateur non trouvé" });
-    });
-};
-
-exports.deleteMessage = (req, res) => {
-  models.User.findOne({
-    where: { id: req.body.userId },
-  })
-    .then(function (userFound) {
-      models.Message.findOne({
-        where: { id: req.params.id },
-      })
-        .then(function (messageFound) {
-          if (userFound.id == messageFound.UserId) {
-            messageFound.destroy();
-            res.status(200).json({ error: "message supprimé !" });
-          } else {
-            res.status(401).json({
-              error: "vous n'avez pas les droits pour supprimer ce message",
             });
           }
         })
@@ -229,14 +231,9 @@ exports.listComments = (req, res, next) => {
     order: [["createdAt", "DESC"]],
   })
     .then(function (comments) {
-      if (comments) {
-        return res.status(200).json({ comments });
-      } else {
-        res.status(404).json({ error: "no comments found" });
-      }
+      return res.status(200).json({ comments });
     })
     .catch(function (err) {
-      console.log(err);
-      res.status(500).json({ err });
+      return res.status(404).json({ error: "no comments found" });
     });
 };

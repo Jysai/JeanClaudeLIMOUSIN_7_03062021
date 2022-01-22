@@ -13,13 +13,7 @@
         <h1 class="card__title">Espace Perso</h1>
         <p class="card__subtitle">C'est mon profil</p>
         <div class="form-row">
-          <input
-            v-model="email"
-            class="form-row__input"
-            type="text"
-            placeholder="Adresse mail"
-          />
-        
+                 
           <input
             v-model="firstname"
             class="form-row__input"
@@ -33,7 +27,13 @@
             placeholder="Nom de Famille"
           />
         </div>
-        
+        <input
+            type="file"
+            accept="image/*"
+            @change="openFile"
+            id="inputFile"
+            ref="inputFile"
+          />
         <button @click="editProfile()" class="button">
           <!-- <span v-if="status == 'loading'">Validation en cours...</span> -->
           <span>Valider mes options</span>
@@ -83,9 +83,10 @@ export default {
   data: function () {
     return {
       mode: "setting",
-      email: "",
+     
       firstname: "",
       lastname: "",
+      imagesArray: null,
     };
   },
   components: {
@@ -107,6 +108,7 @@ export default {
   computed: {
     ...mapState({
       user: "userInfos",
+      
     }),
   },
 
@@ -116,23 +118,7 @@ export default {
       this.$store.commit("logout");
       this.$router.push("/");
     },
-    editProfile: function () {
-      const self = this;
-      this.$store // Appel API dans le store
-        .dispatch("editProfile", {
-          email: this.email,
-          lastname: this.lastname,
-          firstname: this.firstname,
-        })
-        .then(
-          function () {
-            self.logout();
-          },
-          function (error) {
-            console.log(error);
-          }
-        );
-    },
+    
     deleteProfile: function () {
       const self = this;
       this.$store // Appel API dans le store
@@ -156,6 +142,23 @@ export default {
     },
     closeModal: function () {
       this.$refs.myModal.style.display = "none";
+    },
+    editProfile: function () {
+      // const self = this;
+      this.$store // Appel API dans le store
+        .dispatch("editProfile", {
+          firstname: this.firstname,
+          lastname: this.lastname,
+          file: this.imagesArray,
+        })
+        .then(() => {
+          this.$router.push("/settings");
+          this.firstname = "";
+          this.lastname = "";
+        });
+    },
+    openFile: function (e) {
+      this.imagesArray = e.target.files[0];
     },
   },
 };

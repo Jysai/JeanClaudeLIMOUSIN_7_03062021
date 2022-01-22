@@ -30,13 +30,7 @@ import Nav from "../components/Nav.vue";
 
 export default {
   name: "Profile",
-  mounted: function () {
-    if (this.$store.state.user.userId == -1) {
-      this.$router.push("/");
-      return;
-    }
-    this.$store.dispatch("getUserInfos");
-  },
+
   components: {
     "nav-header": Nav,
   },
@@ -47,11 +41,7 @@ export default {
   },
 
   methods: {
-    logout: function () {
-      // Permet de se déconnecter
-      this.$store.commit("logout");
-      this.$router.push("/");
-    },
+
   },
 };
 </script>

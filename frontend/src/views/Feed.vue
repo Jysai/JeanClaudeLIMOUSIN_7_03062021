@@ -18,21 +18,8 @@
             placeholder="Quoi de neuf?"
           ></textarea>
 
-          <!-- <div class="image-upload">
-            <label for="inputFile">
-              <i class="fas fa-file-image fa-1x icon-download"></i>
-            </label>
-
-            <input
-              type="file"
-              accept="image/*"
-              @change="openFile"
-              id="inputFile"
-              ref="inputFile"
-            />
-          </div> -->
+     
           <input
-            
             type="file"
             accept="image/*"
             @change="openFile"
@@ -67,9 +54,11 @@
               </div>
             </div>
             <div class="identity">
-              <p class="nickname">
-                {{ message.User.firstname }} {{ message.User.lastname }}
-              </p>
+              <div @click="profil(message.UserId)">
+                <p class="nickname">
+                  {{ message.User.firstname }} {{ message.User.lastname }}
+                </p>
+              </div>
               <p class="time">
                 {{
                   new Date(message.createdAt).toLocaleString("fr-FR", {
@@ -79,7 +68,9 @@
               </p>
             </div>
             <p>{{ message.content }}</p>
-
+            <div class="image-parent">
+              <img class="image-container" :src="message.imageUrl" />
+            </div>
             <div class="like">
               <p>{{ message.likes }}</p>
               <div
@@ -183,7 +174,6 @@ export default {
       contentPost: "",
       imagesArray: null,
       contentComment: new Map(),
-      
     };
   },
 
@@ -205,15 +195,14 @@ export default {
       users: "allUsers",
       comments: "getComment",
       profileUsers: "userInfos",
-      
     }),
     ...mapState(["status"]),
   },
   methods: {
     getComments() {
-      this.$store.dispatch("getComment")
+      this.$store.dispatch("getComment");
     },
-    getPosts(){
+    getPosts() {
       this.$store.dispatch("getMessageInfos");
     },
     likeMessage: function (id) {
@@ -232,7 +221,7 @@ export default {
           id: id,
         })
         .then(() => {
-          this.getComments()
+          this.getComments();
           this.contentComment[id] = "";
         });
     },
@@ -241,12 +230,11 @@ export default {
       // const self = this;
       this.$store // Appel API dans le store
         .dispatch("createNewPost", {
-          
           content: this.contentPost,
           file: this.imagesArray,
         })
         .then(() => {
-          this.getPosts()
+          this.getPosts();
           this.contentPost = "";
         });
     },
@@ -256,19 +244,21 @@ export default {
 
     deletePost: function (id) {
       // const self = this;
-      this.$store.dispatch("deletePost", id)
-      .then(() => {
-          this.getPosts()
-        });
+      this.$store.dispatch("deletePost", id).then(() => {
+        this.getPosts();
+      });
     },
     deleteComment: function (id) {
       console.log(id);
-      this.$store
-        .dispatch("deleteComment", id)
-        .then(() => {
-          this.getComments()
-          
-        });
+      this.$store.dispatch("deleteComment", id).then(() => {
+        this.getComments();
+      });
+    },
+    profil(userId) {
+      const router = this.$router;
+      setTimeout(function () {
+        router.push(`/user/${userId}`);
+      }, 10);
     },
   },
 };
@@ -276,6 +266,13 @@ export default {
 
 
 <style scoped>
+.image-parent {
+  display: flex;
+  justify-content: center;
+}
+.image-container {
+  object-fit: scale-down;
+}
 .image-upload > input {
   display: none;
 }
