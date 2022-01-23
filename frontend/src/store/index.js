@@ -256,17 +256,51 @@ const store = createStore({
       });
     },
 
-    editProfile: ({ commit }, userInfos) => {
-     
+    editAvatar: ({ commit }, userInfos) => {
       // Méthode post via AXIOS pour authentifier l'utilisateur dans la base de données
       commit("setStatus", "loading");
       return new Promise((resolve, reject) => {
         let formData = new FormData()
-        formData.append("lastname", userInfos.lastname)
-        formData.append("firstname", userInfos.firstname)
         formData.append("image", userInfos.file)
         instance
-          .put("/user/", formData)
+          .put("/user/editAvatar", formData)
+          .then(function (response) {
+            commit("setStatus", "");
+            
+            resolve(response);
+          })
+          .catch(function (error) {
+            commit("setStatus", );
+            reject(error);
+          });
+      });
+    },
+
+
+    editLastname: ({ commit }, userInfos) => {
+      // Méthode post via AXIOS pour authentifier l'utilisateur dans la base de données
+      commit("setStatus", "loading");
+      return new Promise((resolve, reject) => {
+        instance
+          .put("/user/editLastname", userInfos)
+          .then(function (response) {
+            commit("setStatus", "");
+            
+            resolve(response);
+          })
+          .catch(function (error) {
+            commit("setStatus", );
+            reject(error);
+          });
+      });
+    },
+
+    editFirstname: ({ commit }, userInfos) => {
+      // Méthode post via AXIOS pour authentifier l'utilisateur dans la base de données
+      commit("setStatus", "loading");
+      return new Promise((resolve, reject) => {
+        instance
+          .put("/user/editFirstname", userInfos)
           .then(function (response) {
             commit("setStatus", "");
             

@@ -11,6 +11,7 @@
       <div class="main-container">
         <div class="card">
           <span>Bonjour {{ profileUsers.firstname }}</span>
+
           <textarea
             v-model="contentPost"
             class="textarea-row"
@@ -18,7 +19,6 @@
             placeholder="Quoi de neuf?"
           ></textarea>
 
-     
           <input
             type="file"
             accept="image/*"
@@ -27,10 +27,16 @@
             ref="inputFile"
           />
           <div class="form-row-btn">
-            <button v-on:click.prevent="creationPost" class="button">
+            <button id="app" v-on:click.prevent="creationPost" class="button">
               Publier
             </button>
           </div>
+          <p v-if="errors.length">
+            <b
+              >Le contenu de votre publication est vide, veuillez ajouter du
+              texte ou/et une image.</b
+            >
+          </p>
         </div>
 
         <div class="card" v-if="status == 'loading'">
@@ -136,31 +142,6 @@
 <script>
 import { mapState } from "vuex";
 import Nav from "../components/Nav.vue";
-const axios = require("axios");
-
-const instance = axios.create({
-  baseURL: "http://localhost:3000/api",
-  timeout: 1000,
-  headers: { "content-type": "application/json" },
-});
-
-let user = localStorage.getItem("user");
-if (!user) {
-  user = {
-    userId: -1,
-    token: "",
-  };
-} else {
-  try {
-    user = JSON.parse(user);
-    instance.defaults.headers.common["Authorization"] = `bearer ${user.token}`;
-  } catch (ex) {
-    user = {
-      userId: -1,
-      token: "",
-    };
-  }
-}
 
 export default {
   el: "#app",
@@ -174,6 +155,8 @@ export default {
       contentPost: "",
       imagesArray: null,
       contentComment: new Map(),
+      errors: [],
+      
     };
   },
 
@@ -215,6 +198,10 @@ export default {
     },
     createComment: function (id) {
       // const self = this;
+
+    
+      
+     
       this.$store
         .dispatch("createComment", {
           content: this.contentComment[id],
@@ -224,19 +211,27 @@ export default {
           this.getComments();
           this.contentComment[id] = "";
         });
+      
     },
 
     creationPost: function () {
-      // const self = this;
-      this.$store // Appel API dans le store
-        .dispatch("createNewPost", {
-          content: this.contentPost,
-          file: this.imagesArray,
-        })
-        .then(() => {
-          this.getPosts();
-          this.contentPost = "";
-        });
+      this.errors = [];
+      
+      if(this.contentPost == "" && this.imagesArray == null ){
+          this.errors.push("");
+      } else {  
+        // const self = this;
+        this.$store // Appel API dans le store
+          .dispatch("createNewPost", {
+            content: this.contentPost,
+            file: this.imagesArray,
+          })
+          .then(() => {
+            this.getPosts();
+            this.contentPost = "";
+            this.imagesArray = null
+          });
+      }
     },
     openFile: function (e) {
       this.imagesArray = e.target.files[0];

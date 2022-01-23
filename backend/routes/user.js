@@ -10,7 +10,13 @@ router.post('/login', userCtrl.login)
 
 router.get('/me', auth,  userCtrl.me)
 router.get('/allUsers', auth,  userCtrl.allUsers)
-router.put('/', multer, auth, userCtrl.updateUserProfile)
+
+router.put('/editLastname', auth, userCtrl.updateUserLastname)
+router.put('/editFirstname', auth, userCtrl.updateUserFirstname)
+router.put('/editAvatar', multer, auth, userCtrl.editAvatar)
+
+
+
 router.delete('/', auth, userCtrl.deleteProfile)
 
 

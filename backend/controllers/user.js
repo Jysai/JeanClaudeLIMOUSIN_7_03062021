@@ -129,19 +129,15 @@ exports.allUsers = (req, res, next) => {
 };
 
 
-exports.updateUserProfile = (req, res, next) => {
+exports.editAvatar = (req, res, next) => {
   models.User.findOne({
     where: { id: req.body.userId },
   })
     .then(function (userFound) {
       const updatedProfile = {
-        firstname: req.body.firstname,
-        lastname: req.body.lastname,
-        };
-      if (req.file !== undefined) {
-        updatedProfile["imageUrl"] = `${req.protocol}://${req.get("host")}/public/${
+        imageUrl : `${req.protocol}://${req.get("host")}/public/${
           req.file.filename
-        }`;
+        }`
       }
       userFound.update(updatedProfile)
         .then(function (updateUser) {
@@ -158,6 +154,54 @@ exports.updateUserProfile = (req, res, next) => {
     });
 },
  
+exports.updateUserLastname= (req, res, next) => {
+  models.User.findOne({
+    where: { id: req.body.userId },
+  })
+    .then(function (userFound) {
+      const updatedProfile = {
+        lastname: req.body.lastname,
+        };
+      
+      userFound.update(updatedProfile)
+        .then(function (updateUser) {
+          return res.status(201).json({
+            updateUser,
+          });
+        })
+        .catch(function (err) {
+          return res.status(500).json({ err });
+        });
+    })
+    .catch(function (err) {
+      return res.status(500).json({ err });
+    });
+},
+
+
+exports.updateUserFirstname= (req, res, next) => {
+  models.User.findOne({
+    where: { id: req.body.userId },
+  })
+    .then(function (userFound) {
+      const updatedProfile = {
+        firstname: req.body.firstname,
+        };
+      
+      userFound.update(updatedProfile)
+        .then(function (updateUser) {
+          return res.status(201).json({
+            updateUser,
+          });
+        })
+        .catch(function (err) {
+          return res.status(500).json({ err });
+        });
+    })
+    .catch(function (err) {
+      return res.status(500).json({ err });
+    });
+},
 
 
 

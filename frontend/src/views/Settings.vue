@@ -9,65 +9,86 @@
     <div class="main-site">
       <nav-header></nav-header>
       <div class="main-container">
-      <div class="card">
-        <h1 class="card__title">Espace Perso</h1>
-        <p class="card__subtitle">C'est mon profil</p>
-        <div class="form-row">
-                 
-          <input
-            v-model="firstname"
-            class="form-row__input"
-            type="text"
-            placeholder="Prénom"
-          />
-          <input
-            v-model="lastname"
-            class="form-row__input"
-            type="text"
-            placeholder="Nom de Famille"
-          />
-        </div>
-        <input
-            type="file"
-            accept="image/*"
-            @change="openFile"
-            id="inputFile"
-            ref="inputFile"
-          />
-        <button @click="editProfile()" class="button">
-          <!-- <span v-if="status == 'loading'">Validation en cours...</span> -->
-          <span>Valider mes options</span>
-        </button>
-        <hr />
-        <link
-          href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css"
-          rel="stylesheet"
-        />
-        <button @click="openModal()" class="button">
-          Supprimer votre compte
-        </button>
+        <div class="card">
+          <h1 class="card__title">Espace Perso</h1>
+          <p class="card__subtitle">C'est mon profil</p>
+          <div class="form-row">
+            <p>Changez votre prénom:</p>
 
-        <div id="myModal" class="modal" ref="myModal">
-          <div id="modal-content" class="modal-content animation-1">
-            <header class="modal-header">
-              <p class="modal-header-title">
-                Vous êtes sur le point de supprimer votre compte
-              </p>
-            </header>
-
-            <div class="modal-body">
-              <button class="modal-button" @click="deleteProfile()">
-                Valider
-              </button>
-              <button class="modal-button" @click="closeModal()">
-                Annuler
+            <div>
+              <input
+                v-model="firstname"
+                class="form-row__input"
+                type="text"
+                placeholder="Prénom"
+              />
+              <button @click="editFirstname()" >
+                <!-- <span v-if="status == 'loading'">Validation en cours...</span> -->
+                <span>Valider <i class="fas fa-edit"></i></span>
               </button>
             </div>
 
-            <footer class="modal-footer"></footer>
+            <div>
+              <p>Changez votre nom:</p>
+              <input
+                v-model="lastname"
+                class="form-row__input"
+                type="text"
+                placeholder="Nom de Famille"
+              />
+           
+            <button @click="editLastname()" >
+              <!-- <span v-if="status == 'loading'">Validation en cours...</span> -->
+              <span>Valider <i class="fas fa-edit"></i></span>
+            </button>
+           </div>
+            </div>
+
+          <p>Changez votre photo de profil</p>
+          <div>
+            <input
+              type="file"
+              accept="image/*"
+              @change="openFile"
+              id="inputFile"
+              ref="inputFile"
+            />
+            <button @click="editAvatar()" >
+              <!-- <span v-if="status == 'loading'">Validation en cours...</span> -->
+              <span>Valider <i class="fas fa-check-square"></i></span>
+            </button>
+          </div>
+
+          <hr />
+          <link
+            href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css"
+            rel="stylesheet"
+          />
+          <button @click="openModal()" class="button">
+            Supprimer votre compte
+          </button>
+
+          <div id="myModal" class="modal" ref="myModal">
+            <div id="modal-content" class="modal-content animation-1">
+              <header class="modal-header">
+                <p class="modal-header-title">
+                  Vous êtes sur le point de supprimer votre compte
+                </p>
+              </header>
+
+              <div class="modal-body">
+                <button class="modal-button" @click="deleteProfile()">
+                  Valider
+                </button>
+                <button class="modal-button" @click="closeModal()">
+                  Annuler
+                </button>
+              </div>
+
+              <footer class="modal-footer"></footer>
+            </div>
           </div>
         </div>
-      </div>
       </div>
     </div>
   </div>
@@ -83,7 +104,7 @@ export default {
   data: function () {
     return {
       mode: "setting",
-     
+
       firstname: "",
       lastname: "",
       imagesArray: null,
@@ -108,7 +129,6 @@ export default {
   computed: {
     ...mapState({
       user: "userInfos",
-      
     }),
   },
 
@@ -118,7 +138,7 @@ export default {
       this.$store.commit("logout");
       this.$router.push("/");
     },
-    
+
     deleteProfile: function () {
       const self = this;
       this.$store // Appel API dans le store
@@ -143,18 +163,36 @@ export default {
     closeModal: function () {
       this.$refs.myModal.style.display = "none";
     },
-    editProfile: function () {
+    editLastname: function () {
       // const self = this;
       this.$store // Appel API dans le store
-        .dispatch("editProfile", {
-          firstname: this.firstname,
+        .dispatch("editLastname", {
           lastname: this.lastname,
-          file: this.imagesArray,
+        })
+        .then(() => {
+          this.$router.push("/settings");
+          this.lastname = "";
+        });
+    },
+    editFirstname: function () {
+      // const self = this;
+      this.$store // Appel API dans le store
+        .dispatch("editFirstname", {
+          firstname: this.firstname,
         })
         .then(() => {
           this.$router.push("/settings");
           this.firstname = "";
-          this.lastname = "";
+        });
+    },
+    editAvatar: function () {
+      // const self = this;
+      this.$store // Appel API dans le store
+        .dispatch("editAvatar", {
+          file: this.imagesArray,
+        })
+        .then(() => {
+          this.$router.push("/settings");
         });
     },
     openFile: function (e) {
@@ -168,8 +206,6 @@ export default {
 
 
 <style scoped>
-
-
 span {
   font-weight: 500;
   text-transform: capitalize;
@@ -226,5 +262,4 @@ p {
 .form-row__input::placeholder {
   color: #aaaaaa;
 }
-
 </style>
