@@ -37,6 +37,9 @@
               texte ou/et une image.</b
             >
           </p>
+          <p v-if="status == 'error_message'">
+              <b>Le contenu de votre publication est vide!</b>
+            </p>
         </div>
 
         <div class="card" v-if="status == 'loading'">
@@ -124,6 +127,7 @@
                 type="text-area"
                 placeholder="Ecrivez un commentaire..."
               />
+
               <button
                 v-on:click.prevent="createComment(message.id)"
                 class="button-comment"
@@ -131,6 +135,9 @@
                 Commenter
               </button>
             </div>
+            <p v-if="status == 'error_comment'">
+              <b>Vous ne pouvez pas envoyer un commentaire sans contenu!</b>
+            </p>
           </div>
         </div>
       </div>
@@ -152,11 +159,10 @@ export default {
   data: function () {
     return {
       mode: "message",
-      contentPost: "",
+      contentPost: null,
       imagesArray: null,
       contentComment: new Map(),
       errors: [],
-      
     };
   },
 
@@ -167,7 +173,6 @@ export default {
     }
     this.$store.dispatch("getMessageInfos");
     this.$store.dispatch("getAllUsers");
-    this.$store.dispatch("getComment");
     this.$store.dispatch("getUserInfos");
     this.$el.addEventListener("click", this.onClick);
   },
@@ -178,6 +183,7 @@ export default {
       users: "allUsers",
       comments: "getComment",
       profileUsers: "userInfos",
+      
     }),
     ...mapState(["status"]),
   },
@@ -199,9 +205,6 @@ export default {
     createComment: function (id) {
       // const self = this;
 
-    
-      
-     
       this.$store
         .dispatch("createComment", {
           content: this.contentComment[id],
@@ -211,15 +214,13 @@ export default {
           this.getComments();
           this.contentComment[id] = "";
         });
-      
     },
 
     creationPost: function () {
       this.errors = [];
-      
-      if(this.contentPost == "" && this.imagesArray == null ){
-          this.errors.push("");
-      } else {  
+      if (this.contentPost == null && this.imagesArray == null) {
+        this.errors.push("");
+      } else {
         // const self = this;
         this.$store // Appel API dans le store
           .dispatch("createNewPost", {
@@ -229,7 +230,7 @@ export default {
           .then(() => {
             this.getPosts();
             this.contentPost = "";
-            this.imagesArray = null
+            this.imagesArray = null;
           });
       }
     },

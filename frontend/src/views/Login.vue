@@ -9,8 +9,6 @@
     </nav>
     <div class="main-container">
       <div class="card">
-
-
         <h1 class="card__title" v-if="mode == 'login'">Connexion</h1>
         <h1 class="card__title" v-else>Inscription</h1>
         <p class="card__subtitle" v-if="mode == 'login'">
@@ -59,20 +57,18 @@
         <div class="form-row" v-if="mode == 'login' && status == 'error_login'">
           Adresse mail et/ou mot de passe invalide
         </div>
-        <div
-          class="form-row"
-          v-if="mode == 'create' && status == 'error_create'"
-        >
-          Adresse mail déjà utilisée
+
+        <div class="card" v-bind:key="index" v-for="(error, index) in errors">
+          <li>
+            {{ error }}
+          </li>
         </div>
         <div class="form-row">
           <button @click="login()" class="button" v-if="mode == 'login'">
-            <span v-if="status == 'loading'">Connexion en cours...</span>
-            <span v-else>Connexion</span>
+            <span>Connexion</span>
           </button>
           <button @click="createAccount()" class="button" v-else>
-            <span v-if="status == 'loading'">Création en cours...</span>
-            <span v-else>Créer mon compte</span>
+            <span>Créer mon compte</span>
           </button>
         </div>
       </div>
@@ -82,8 +78,6 @@
 
 
 <script>
-
-
 import { mapState } from "vuex";
 export default {
   name: "Login",
@@ -94,6 +88,7 @@ export default {
       firstname: "",
       lastname: "",
       password: "",
+      error: ""
     };
   },
 
@@ -105,6 +100,9 @@ export default {
   },
   computed: {
     ...mapState(["status"]),
+    ...mapState({
+      errors: "getError",
+    }),
   },
   methods: {
     switchToCreateAccount: function () {
@@ -142,12 +140,15 @@ export default {
         })
         .then(
           function () {
+             
             self.login(); // Quand le compte est créé on utilise la fonction login pour se diriger sur la route profile
+           
           },
           function (error) {
             console.log(error);
           }
-        );
+        )
+        
     },
   },
 };

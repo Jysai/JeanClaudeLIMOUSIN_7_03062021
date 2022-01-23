@@ -4,15 +4,7 @@ const fs = require("fs");
 const models = require("../models");
 
 exports.signup = (req, res, next) => {
-  if (
-    req.body.email == null ||
-    req.body.firstname == null ||
-    req.body.lastname == null ||
-    req.body.password == null
-  ) {
-    return res.status(400).json({ error: "missing parameters" });
-  }
- 
+  
   // console.log(req.body);
   models.User.findOne({
     // attributes: ["email"],
@@ -38,10 +30,11 @@ exports.signup = (req, res, next) => {
           })
 
           .catch(function (err) {
-            return res.status(500).json({ error: "cannot add user" });
+            return res.status(500).json({ error: "Vérifier le format de l'adresse mail: exemple@test.com, votre nom/prénom ne doit pas comporter de caractères spéciaux!", });
+            
           });
       } else {
-        return res.status(409).json({ error: "user already exist" });
+        return res.status(409).json({ error: "Cette adresse e-mail est déjà utilisée" });
       }
     })
     .catch(function (err) {

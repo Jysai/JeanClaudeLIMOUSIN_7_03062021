@@ -41,7 +41,8 @@ const store = createStore({
     },
     messageInfos: [],
     postInfos: [],
-    commentInfos: []
+    commentInfos: [],
+    getError: []
   },
   mutations: {
     setStatus: function (state, status) {
@@ -88,6 +89,9 @@ const store = createStore({
     allUsers: (state, allUsers) => {
       state.allUsers = allUsers;
     },
+    getError: (state, getError) => {
+      state.getError = getError;
+    },
     logout: function (state) {
       // Permet de se déconnecter
       state.user = {
@@ -126,7 +130,9 @@ const store = createStore({
             resolve(response);
           })
           .catch(function (error) {
-            commit("setStatus", "error_create");
+            
+            commit("getError", error.response.data),
+            
             reject(error);
           });
       });
@@ -200,6 +206,7 @@ const store = createStore({
             resolve(response);
           })
           .catch(function (error) {
+            commit("setStatus", "error_message");
             reject(error);
           });
       });
@@ -214,6 +221,7 @@ const store = createStore({
             resolve(response);
           })
           .catch(function (error) {
+            commit("setStatus", "error_comment");
             reject(error);
           });
       });
@@ -289,7 +297,7 @@ const store = createStore({
             resolve(response);
           })
           .catch(function (error) {
-            commit("setStatus", );
+            commit("setStatus", "error_name");
             reject(error);
           });
       });
@@ -307,7 +315,7 @@ const store = createStore({
             resolve(response);
           })
           .catch(function (error) {
-            commit("setStatus", );
+            commit("setStatus", "error_name");
             reject(error);
           });
       });

@@ -51,7 +51,14 @@ module.exports = (sequelize, DataTypes) => {
      
       messageId: DataTypes.INTEGER,
       userId: DataTypes.INTEGER,
-      content: DataTypes.STRING,
+      content: {
+        type: DataTypes.STRING,
+        validate: {
+          min: 1,
+          
+          notEmpty: true,
+        },
+      },
     },
     {
       sequelize,

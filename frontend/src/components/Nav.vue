@@ -1,48 +1,47 @@
 <template>
   <nav class="main-menu-nav">
     <div class="menu-start">
-    <img
-      class="logo-full"
-      alt="Groupomania logo"
-      src="../assets/logo-full.webp"
-    />
-    <img
-      class="logo-mobile"
-      alt="Groupomania logo"
-      src="../assets/logo-mobile.webp"
-    />
+      <img
+        class="logo-full"
+        alt="Groupomania logo"
+        src="../assets/logo-full.webp"
+      />
+      <img
+        class="logo-mobile"
+        alt="Groupomania logo"
+        src="../assets/logo-mobile.webp"
+      />
     </div>
-
-
 
     <div class="menu-center">
-    <router-link :to="{ name: 'feed' }"
-      ><div class="menu-nav menu-nav-center">
-        <i class="fas fa-home fa-2x"></i>
-        <h4 class="title-nav">Accueil</h4>
-      </div></router-link
-    >
-    <router-link :to="{ name: 'profile' }"
-      ><div class="menu-nav menu-nav-center">
-        <i class="fas fa-user fa-2x"></i>
-        <h4 class="title-nav">Profil</h4>
-      </div></router-link
-    >
-    <router-link :to="{ name: 'settings' }"
-      ><div class="menu-nav menu-nav-center">
-        <i class="fas fa-cog fa-2x"></i>
-        <h4 class="title-nav">Paramêtres</h4>
-      </div></router-link
-    >
+      <router-link :to="{ name: 'feed' }"
+        ><div class="menu-nav menu-nav-center">
+          <i class="fas fa-home fa-2x"></i>
+          <h4 class="title-nav">Accueil</h4>
+        </div></router-link
+      >
+      <router-link :to="{ name: 'profile' }"
+        ><div class="menu-nav menu-nav-center">
+          <i class="fas fa-user fa-2x"></i>
+          <h4 class="title-nav">Profil</h4>
+        </div></router-link
+      >
+      <router-link :to="{ name: 'settings' }"
+        ><div class="menu-nav menu-nav-center">
+          <i class="fas fa-cog fa-2x"></i>
+          <h4 class="title-nav">Paramêtres</h4>
+        </div></router-link
+      >
     </div>
     <div class="menu-end">
-      <span class="menu-nickname">{{ profileUsers.firstname }} {{ profileUsers.lastname }}</span>
-    
-    <div @click="logout()" class="logout">
-        
-      <i class="fas fa-sign-out-alt"></i
-      ><span class="title-nav"> Se déconnecter</span>
-    </div>
+      <span class="menu-nickname"
+        >{{ profileUsers.firstname }} {{ profileUsers.lastname }}</span
+      >
+
+      <div @click="logout()" class="logout">
+        <i class="fas fa-sign-out-alt"></i
+        ><span class="title-nav"> Se déconnecter</span>
+      </div>
     </div>
   </nav>
 </template>
@@ -60,18 +59,18 @@ export default {
   },
   methods: {
     logout: function () {
-      // Permet de se déconnecter
+      // Permet de s'authentifier
+
       this.$store.commit("logout");
-      this.$router.push("/");
-    }
-    }
+      this.$router.push("/").then(function () {
+        location.reload();
+      });
+    },
+  },
 };
-
-
 </script>
 
 <style scoped>
-
 .logo-mobile {
   display: none;
 }
@@ -79,8 +78,6 @@ export default {
   height: auto;
   width: 200px;
 }
-
-
 
 .main-menu-nav {
   display: flex;
@@ -103,7 +100,7 @@ export default {
   height: auto;
   display: flex;
   align-items: center;
-  
+
   padding: 8px;
 }
 .menu-nav:hover {
@@ -111,26 +108,25 @@ export default {
   background: rgb(238, 238, 238);
   border-radius: 15px;
 }
-.menu-center{
-    display: flex;
-    justify-content: space-around;
-    flex-direction: row;
-    
+.menu-center {
+  display: flex;
+  justify-content: space-around;
+  flex-direction: row;
 }
-.menu-nav-center{
-    margin: 0px 20px 0px 20px;
+.menu-nav-center {
+  margin: 0px 20px 0px 20px;
 }
-.menu-end{
-    display: flex;
-    align-items: center;
-    flex-direction: row;
+.menu-end {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
 }
-.logout{
-    color: white;
-    margin-left: 15px;
+.logout {
+  color: white;
+  margin-left: 15px;
 }
-.logout{
-    cursor: pointer;
+.logout {
+  cursor: pointer;
 }
 
 @media all and (max-width: 750px) {
@@ -145,22 +141,18 @@ export default {
     height: 45px;
     min-width: 50px;
   }
-  .main-menu-nav{
-    
+  .main-menu-nav {
   }
 }
 
 @media all and (max-width: 450px) {
-  .menu-nickname{
-      display: none;
-    }
-    .logo-mobile {
+  .menu-nickname {
+    display: none;
+  }
+  .logo-mobile {
     display: block;
     height: 25px;
     min-width: 25px;
   }
-
 }
-
-
 </style>

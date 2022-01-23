@@ -19,7 +19,15 @@ module.exports = (sequelize, DataTypes) => {
   }
   Message.init(
     {
-      content: DataTypes.STRING,
+      content: {
+        type: DataTypes.STRING,
+        validate: {
+          min: 1,
+          
+          notEmpty: true,
+        },
+      },
+      
       imageUrl: DataTypes.STRING,
       likes: DataTypes.INTEGER,
       createdAt: DataTypes.DATE

@@ -22,8 +22,8 @@
                 type="text"
                 placeholder="Prénom"
               />
-              <button @click="editFirstname()" >
-                <!-- <span v-if="status == 'loading'">Validation en cours...</span> -->
+
+              <button @click="editFirstname()">
                 <span>Valider <i class="fas fa-edit"></i></span>
               </button>
             </div>
@@ -36,14 +36,23 @@
                 type="text"
                 placeholder="Nom de Famille"
               />
-           
-            <button @click="editLastname()" >
-              <!-- <span v-if="status == 'loading'">Validation en cours...</span> -->
-              <span>Valider <i class="fas fa-edit"></i></span>
-            </button>
-           </div>
-            </div>
 
+              <button @click="editLastname()">
+                <span>Valider <i class="fas fa-edit"></i></span>
+              </button>
+            </div>
+          </div>
+          <p v-if="errors.length">
+            <b
+              >Le champs est vide!</b
+            >
+          </p>
+          <p v-if="status == 'error_name'">
+            <b
+              >Les caractères spéciales et les chiffres ne sont pas acceptés!</b
+            >
+          </p>
+          <hr />
           <p>Changez votre photo de profil</p>
           <div>
             <input
@@ -53,7 +62,7 @@
               id="inputFile"
               ref="inputFile"
             />
-            <button @click="editAvatar()" >
+            <button @click="editAvatar()">
               <!-- <span v-if="status == 'loading'">Validation en cours...</span> -->
               <span>Valider <i class="fas fa-check-square"></i></span>
             </button>
@@ -99,17 +108,18 @@ import { mapState } from "vuex";
 import Nav from "../components/Nav.vue";
 
 export default {
-  // el: "#app",
+  el: "#app",
   name: "Setting",
   data: function () {
     return {
       mode: "setting",
-
+      errors: [],
       firstname: "",
       lastname: "",
       imagesArray: null,
     };
   },
+
   components: {
     "nav-header": Nav,
   },
@@ -130,6 +140,7 @@ export default {
     ...mapState({
       user: "userInfos",
     }),
+    ...mapState(["status"]),
   },
 
   methods: {
@@ -165,25 +176,35 @@ export default {
     },
     editLastname: function () {
       // const self = this;
-      this.$store // Appel API dans le store
-        .dispatch("editLastname", {
-          lastname: this.lastname,
-        })
-        .then(() => {
-          this.$router.push("/settings");
-          this.lastname = "";
-        });
+      this.errors = [];
+      if (this.lastname == "") {
+        this.errors.push("");
+      } else {
+        this.$store // Appel API dans le store
+          .dispatch("editLastname", {
+            lastname: this.lastname,
+          })
+          .then(() => {
+            this.$router.push("/settings");
+            this.lastname = "";
+          });
+      }
     },
     editFirstname: function () {
       // const self = this;
-      this.$store // Appel API dans le store
-        .dispatch("editFirstname", {
-          firstname: this.firstname,
-        })
-        .then(() => {
-          this.$router.push("/settings");
-          this.firstname = "";
-        });
+      this.errors = [];
+      if (this.firstname == "") {
+        this.errors.push("");
+      } else {
+        this.$store // Appel API dans le store
+          .dispatch("editFirstname", {
+            firstname: this.firstname,
+          })
+          .then(() => {
+            this.$router.push("/settings");
+            this.firstname = "";
+          });
+      }
     },
     editAvatar: function () {
       // const self = this;

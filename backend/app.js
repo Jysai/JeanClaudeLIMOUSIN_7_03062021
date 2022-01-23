@@ -30,11 +30,10 @@ app.use((req, res, next) => {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }))
 
-
 app.use('/public',express.static(path.join(__dirname,'image')));
 
-app.use('/api/user', limiter, userRoutes);
+app.use('/api/user', userRoutes);
 
-app.use('/api/message', limiter, messagesRoutes);
+app.use('/api/message',  messagesRoutes);
 
 module.exports = app;

@@ -20,12 +20,17 @@ module.exports = (sequelize, DataTypes) => {
         validate: {
           
           len: [1,45]
+          ,
+          is: /^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð,.'-]+$/i,
+          notEmpty: true,
         },
       },
       lastname: {
         type: DataTypes.STRING,
         validate: {
-          len: [1,45]
+          len: [1,45],
+          is: /^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð,.'-]+$/i,
+          notEmpty: true,
         },
       },
       email: {
@@ -37,7 +42,10 @@ module.exports = (sequelize, DataTypes) => {
       },
       password: {
         type: DataTypes.STRING,
-       
+        validate: {
+          min: 7,
+          notEmpty: true, // don't allow empty strings
+        },
       },
       imageUrl: DataTypes.STRING,
     },
