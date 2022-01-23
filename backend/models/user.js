@@ -8,7 +8,6 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      
       // define association here
       models.User.hasMany(models.Message);
       models.User.hasMany(models.Comment);
@@ -16,10 +15,30 @@ module.exports = (sequelize, DataTypes) => {
   }
   User.init(
     {
-      firstname: DataTypes.STRING,
-      lastname: DataTypes.STRING,
-      email: DataTypes.STRING,
-      password: DataTypes.STRING,
+      firstname: {
+        type: DataTypes.STRING,
+        validate: {
+          
+          len: [1,45]
+        },
+      },
+      lastname: {
+        type: DataTypes.STRING,
+        validate: {
+          len: [1,45]
+        },
+      },
+      email: {
+        type: DataTypes.STRING,
+        validate: {
+          isEmail: true, // checks for email format (foo@bar.com)
+          notEmpty: true, // don't allow empty strings
+        },
+      },
+      password: {
+        type: DataTypes.STRING,
+       
+      },
       imageUrl: DataTypes.STRING,
     },
     {
@@ -29,4 +48,3 @@ module.exports = (sequelize, DataTypes) => {
   );
   return User;
 };
-

@@ -12,7 +12,7 @@ exports.signup = (req, res, next) => {
   ) {
     return res.status(400).json({ error: "missing parameters" });
   }
-
+ 
   // console.log(req.body);
   models.User.findOne({
     // attributes: ["email"],
@@ -46,10 +46,19 @@ exports.signup = (req, res, next) => {
     })
     .catch(function (err) {
       return res.status(500).json({ err });
-    });
-};
+    })
+}
 
 exports.login = (req, res, next) => {
+
+  if (
+    req.body.email == null ||
+    req.body.password == null
+  ) {
+    return res.status(400).json({ error: "missing parameters" });
+  }
+
+
   models.User.findOne({
     // attributes: ["email"],
     where: { email: req.body.email },
@@ -119,41 +128,6 @@ exports.allUsers = (req, res, next) => {
     });
 };
 
-// exports.updateUserProfile = (req, res, next) => {
-
-//   models.User.findOne({
-//     // attributes: ["id", "email", "firstname", "lastname"],
-//     where: { id: req.body.userId },
-//   })
-//     .then(function (userFound) {
-//         m
-//         const model = {
-//           firstname: req.body.firstname
-//             ? req.body.firstname
-//             : userFound.firstname,
-//             lastname: req.body.lastname ? req.body.lastname : userFound.lastname,
-//           UserId: userFound.id,
-//         };
-//         if (req.file !== undefined) {
-//           model["imageUrl"] = req.file ? req`${req.protocol}://${req.get("host")}/public/${
-//             req.file.filename
-//           }` : null
-//         }
-
-//         models.User.update(model)
-//         .then(function (updateUser) {
-//           return res.status(201).json({
-//             updateUser,
-//           });
-//         })
-//         .catch(function (err) {
-//           return res.status(500).json({ err });
-//         });
-//     })
-//     .catch(function (err) {
-//       return res.status(500).json({ err });
-//     });
-// };
 
 exports.updateUserProfile = (req, res, next) => {
   models.User.findOne({

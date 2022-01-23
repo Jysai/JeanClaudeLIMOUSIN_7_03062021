@@ -1,8 +1,10 @@
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
-const upload = require("express-fileupload")
 
+const mongoSanitize = require('express-mongo-sanitize');
+const limiter = require("./middleware/api-limiter");
+const helmet = require("helmet");
 const userRoutes = require('./routes/user')
 const messagesRoutes = require('./routes/message');
 const { Sequelize } = require('sequelize');
@@ -24,10 +26,14 @@ app.use((req, res, next) => {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }))
 
+app.use(helmet())
+
+app.use(mongoSanitize());
+
 app.use('/public',express.static(path.join(__dirname,'image')));
 
-app.use('/api/user', userRoutes);
+app.use('/api/user', limiter, userRoutes);
 
-app.use('/api/message', messagesRoutes);
+app.use('/api/message', limiter, messagesRoutes);
 
 module.exports = app;
