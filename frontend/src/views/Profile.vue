@@ -17,44 +17,17 @@
         </div>
         <div class="card">
           
-          
-          <textarea
-            v-model="contentPost"
-            class="textarea-row"
-            type="text-area"
-            placeholder="Quoi de neuf?"
-          ></textarea>
-
-          <input
-            type="file"
-            accept="image/*"
-            @change="openFile"
-            id="inputFile"
-            ref="inputFile"
-          />
-          <div class="form-row-btn">
-            <button id="app" v-on:click.prevent="creationPost" class="button">
-              Publier
-            </button>
-          </div>
-          <p v-if="errors.length">
-            <b
-              >Le contenu de votre publication est vide, veuillez ajouter du
-              texte ou/et une image.</b
-            >
-          </p>
-          <p v-if="status == 'error_message'">
-              <b>Le contenu de votre publication est vide!</b>
-            </p>
+          <span>Vos publications</span>
+      
         </div>
         <div v-bind:key="index" v-for="(message, index) in messages">
           <div class="card" v-if="message.UserId == profileUsers.id">
             <div class="icon">
-              <button @click="deletePost(message.id)">
-                <i class="fas fa-trash-alt"></i>
-              </button>
+              <div @click="deletePost(message.id)">
+                <i class="fas fa-trash-alt fas-post"></i>
+              </div>
 
-              <i class="fas fa-edit"></i>
+              <i class="fas fa-edit fas-post"></i>
             </div>
 
             <div class="identity">
@@ -89,13 +62,13 @@
               <div class="commment-row" v-if="comment.messageId == message.id">
                 <div class="icon">
                   <div v-if="comment.UserId == profileUsers.id">
-                    <button @click="deleteComment(comment.id)">
-                      <i class="fas fa-trash-alt"></i>
-                    </button>
+                    <div @click="deleteComment(comment.id)">
+                      <i class="fas fa-trash-alt fas-post"></i>
+                    </div>
                   </div>
 
                   <div v-if="comment.UserId == profileUsers.id">
-                    <i class="fas fa-edit"></i>
+                    <i class="fas fa-edit fas-post"></i>
                   </div>
                 </div>
                 <p class="nickname">
@@ -108,10 +81,28 @@
                     })
                   }}
                 </p>
+                
                 <div class="comment">
                   <p>{{ comment.content }}</p>
                 </div>
+                 
               </div>
+              
+            </div>
+            <div class="comment">
+              <input
+                v-model="contentComment[message.id]"
+                class="textarea-row-comment"
+                type="text-area"
+                placeholder="Ecrivez un commentaire..."
+              />
+
+              <button
+                v-on:click.prevent="createComment(message.id)"
+                class="button-comment"
+              >
+                Commenter
+              </button>
             </div>
           </div>
         </div>
@@ -142,6 +133,7 @@ export default {
   mounted: function () {
     this.$store.dispatch("getMessageInfos");
     this.$store.dispatch("getUserInfos");
+    this.$store.dispatch("getComment");
   },
 
   computed: {
@@ -188,6 +180,7 @@ export default {
           .then(() => {
             self.getPosts();
             self.contentPost = "";
+            this.imagesArray = null
           });
       }
       
@@ -197,7 +190,20 @@ export default {
     },
     editProfil: function (){
       this.$router.push("/settings")
-    }
+    },
+    createComment: function (id) {
+      // const self = this;
+
+      this.$store
+        .dispatch("createComment", {
+          content: this.contentComment[id],
+          id: id,
+        })
+        .then(() => {
+          this.getComments();
+          this.contentComment[id] = "";
+        });
+    },
   },
 };
 </script>
@@ -206,13 +212,56 @@ export default {
 
 
 <style scoped>
+
+.comment {
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap, ss;
+}
+.textarea-row-comment {
+  width: 100%;
+  resize: none;
+  overflow: hidden;
+  padding: 8px;
+  border: none;
+  border-radius: 25px 0px 0px 25px;
+  background: #3b3b3b;
+  font-weight: 500;
+  font-size: 12px;
+  color: black;
+}
+.button {
+  border-radius: 35px;
+}
+
+.button-comment {
+  background: rgb(9, 31, 67);
+  color: white;
+  border-radius: 8px;
+  font-weight: 800;
+  font-size: 15px;
+  border: none;
+  border-radius: 0px 25px 25px 0px;
+  padding: 16px;
+  transition: 0.4s background-color;
+}
+.commment-row {
+  border-radius: 10px;
+  background: #414141;
+  padding: 15px;
+  margin: 15px 0px 15px;
+}
+.button-comment:hover {
+  cursor: pointer;
+  background: #1976d2;
+}
 .card-profile {
   display: flex;
   padding-left: 15px;
   padding-top: 15px;
   padding-bottom: 15px;
   background-color: rgb(20, 20, 20);
-  border-radius: 25px 25px 0px 0px;
+  border-radius: 15px 15px 0px 0px;
 }
 .card {
   max-width: 100%;
@@ -272,9 +321,7 @@ h4 {
   margin-left: 20px;
 }
 
-.fas {
-  width: 20px;
-}
+
 
 p {
   text-align: center;

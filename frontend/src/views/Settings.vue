@@ -10,8 +10,8 @@
       <nav-header></nav-header>
       <div class="main-container">
         <div class="card">
-          <h1 class="card__title">Espace Perso</h1>
-          <p class="card__subtitle">C'est mon profil</p>
+         <i class="fas fa-cog fa-2x"></i>
+          <h4 class="title-nav">Paramêtres</h4>
           <div class="form-row">
             <p>Changez votre prénom:</p>
 
@@ -130,6 +130,7 @@ export default {
     }
     this.$store.dispatch("getUserInfos");
     this.$el.addEventListener("click", this.onClick);
+    this.$store.dispatch("getComment");
   },
   // beforeDestroy: function () {
   //   this.$el.removeEventListener("click", this.onClick);

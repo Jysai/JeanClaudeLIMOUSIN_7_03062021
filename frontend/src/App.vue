@@ -108,6 +108,16 @@ p{
   background-color: rgb(26, 26, 26);
 
 }
+.fas-post{
+
+ color: rgb(117, 117, 117);
+
+}
+.fas-post:hover{
+ cursor: pointer;
+  color: black
+}
+
 .card__title {
   text-align: center;
   font-weight: 800;

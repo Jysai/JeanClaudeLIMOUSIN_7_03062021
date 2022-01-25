@@ -26,11 +26,7 @@
           <h4 class="title-nav">Profil</h4>
         </div></router-link
       >
-      <router-link :to="{ name: 'settings' }"
-        ><div class="menu-nav menu-nav-center">
-          <i class="fas fa-cog fa-2x"></i>
-          <h4 class="title-nav">Paramêtres</h4>
-        </div></router-link
+      
       >
     </div>
     <div class="menu-end">

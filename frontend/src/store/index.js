@@ -148,7 +148,7 @@ const store = createStore({
       instance
         .get("user/me")
         .then(function (response) {
-          
+          console.log(response.data);
           commit("userInfos", response.data);
         })
         .catch(function () {});
