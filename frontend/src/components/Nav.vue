@@ -27,13 +27,11 @@
         </div></router-link
       >
       
-      >
+      
     </div>
     <div class="menu-end">
-      <img class="image-avatar" :src="profileUsers.imageUrl" />
-      <span class="menu-nickname"
-        >{{ profileUsers.firstname }} {{ profileUsers.lastname }}</span
-      >
+    
+      
 
       <div @click="logout()" class="logout">
         <i class="fas fa-sign-out-alt"></i
@@ -88,7 +86,10 @@ export default {
   z-index: 1;
   padding: 0px 15px 0px 15px;
 }
-
+.title-nav{
+  margin: 5px;
+  word-break: normal;
+}
 .logo {
   width: 10%;
 }
@@ -124,6 +125,11 @@ export default {
 }
 .logout {
   cursor: pointer;
+}
+.menu-nickname
+{
+  margin: 5px;
+  word-break: normal;
 }
 
 @media all and (max-width: 750px) {

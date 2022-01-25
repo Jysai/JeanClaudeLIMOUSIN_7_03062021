@@ -1,18 +1,12 @@
 <template>
-
   <router-view></router-view>
 </template>
 
 
 <script>
-
-
-
 export default {
   name: "App",
-  components: {
-    
-  },
+  components: {},
 };
 </script>
 
@@ -28,20 +22,44 @@ export default {
   padding: 0;
   box-sizing: border-box;
   text-decoration: none;
-  
+  word-break: break-all;
 }
+.button-comment {
+  background: rgba(100, 11, 138, 0.6);
+  color: white;
+  border-radius: 8px;
+  font-weight: 800;
+  font-size: 15px;
+  border: none;
+  border-radius: 0px 25px 25px 0px;
+  padding: 16px;
+  transition: 0.4s background-color;
+  width: 160px;
+}
+.commment-row {
+  border-radius: 10px;
+  background: #414141;
+  padding: 15px;
+  margin: 15px 0px 15px;
+}
+.button-comment:hover {
+  cursor: pointer;
+  background: rgba(170, 50, 220, 0.6); 
+}
+
+
+
 .main-site {
   display: flex;
   justify-content: center;
- 
 }
-.main-container{
-  padding-top: 30px;
+.main-container {
+  padding-top: 60px;
   width: 700px;
-  min-width: 360px;
+  
 }
 
-.image-avatar{
+.image-avatar {
   border-radius: 100%;
   object-fit: cover;
   width: 50px;
@@ -49,25 +67,27 @@ export default {
 }
 
 
+
+
+
 a {
-    color: rgb(124, 110, 255);
-    text-decoration: none;
+  color: rgb(255, 255, 255);
+  text-decoration: none;
 }
 
-a:hover 
-{
-     color:#444444; 
-     text-decoration:none; 
-     cursor:pointer;  
+a:hover {
+  color: #370075;
+  text-decoration: none;
+  cursor: pointer;
 }
 #app {
   max-width: 100%;
 }
 body {
-  background-image: linear-gradient( rgb(129, 46, 51) 0%, rgb(6, 20, 44) 100%);
+  background-image: linear-gradient(rgb(129, 46, 51) 0%, rgb(6, 20, 44) 100%);
 
   min-height: 100vh;
-  padding: 32px;
+  
 }
 img {
   max-width: 100%;
@@ -93,29 +113,31 @@ span {
   text-transform: capitalize;
   color: white;
 }
-p{
-    color: white;
+p {
+  color: white;
 }
 .card {
   max-width: 100%;
-  
+
   background: white;
-  border-radius: 16px;
+  border-radius: 15px;
   padding: 32px;
- 
+
   margin-bottom: 15px;
   width: 100%;
   background-color: rgb(26, 26, 26);
-
+  min-width: 375px;
 }
-.fas-post{
 
- color: rgb(117, 117, 117);
-
+.card-placeholder{
+   border-radius: 0px 0px 15px 15px;
 }
-.fas-post:hover{
- cursor: pointer;
-  color: black
+.fas-post {
+  color: rgb(117, 117, 117);
+}
+.fas-post:hover {
+  cursor: pointer;
+  color: rgba(170, 50, 220, 0.6); 
 }
 
 .card__title {
@@ -128,7 +150,7 @@ p{
   font-weight: 500;
 }
 .button {
-  background: rgb(9, 31, 67);
+  background: rgba(100, 11, 138, 0.6);
   color: white;
   border-radius: 8px;
   font-weight: 800;
@@ -137,6 +159,9 @@ p{
   width: 100%;
   padding: 16px;
   transition: 0.4s background-color;
+}
+.textarea-row{
+  color: white;
 }
 .card__action {
   color: #2196f3;
@@ -147,7 +172,7 @@ p{
 }
 .button:hover {
   cursor: pointer;
-  background: #1976d2;
+  background: rgba(170, 50, 220, 0.6); 
 }
 .button--disabled {
   background: #cecece;
@@ -185,7 +210,7 @@ p{
   transform: translate(-50%, -50%);
 }
 .modal-button {
-   background: rgb(9, 31, 67);
+  background: rgba(114, 28, 151, 0.6); 
   color: white;
   border-radius: 8px;
   font-weight: 800;
@@ -195,9 +220,10 @@ p{
   padding: 6px;
   transition: 0.4s background-color;
 }
-.modal-button:hover{
+
+.modal-button:hover {
   cursor: pointer;
-  background: #1976d2;
+  background: rgba(55, 1, 78, 0.6); 
 }
 .modal-header {
   align-items: stretch;
@@ -212,6 +238,7 @@ p{
   flex-grow: 1;
   font-weight: 700;
   padding: 5px 15px;
+  word-break: normal;
 }
 .modal-header-icon {
   background: 0 0;
@@ -227,7 +254,18 @@ p{
   justify-content: center;
   padding: 0.75rem 1rem;
 }
-
+.edit-profil-texte {
+  display: flex;
+  padding: 15px;
+  border: 1mm solid rgba(170, 50, 220, 0.6);
+  border-radius: 25px;
+  height: 45px;
+  min-width: 175px;
+  align-items: center;
+}
+.edit-profil-texte:hover {
+  cursor: pointer;
+}
 #modal-content.animation-1 {
   animation: animation-1 0.5s forwards;
 }
@@ -235,6 +273,83 @@ p{
   padding: 5px 15px;
   display: flex;
   justify-content: space-around;
+}
+.edit-profil-logo {
+  display: none;
+}
+.textarea-row-comment {
+  width: 100%;
+  resize: none;
+  overflow: hidden;
+  padding: 8px;
+  border: none;
+  border-radius: 25px 0px 0px 25px;
+  background: #3b3b3b;
+  font-weight: 500;
+  font-size: 12px;
+  color: black;
+  word-break: break-all;
+}
+.send-mobile{
+    display: none
+  }
+  .image-avatar-profile {
+  width: 80px;
+  height: 80px;
+  border-radius: 100%;
+  object-fit: cover;
+  padding: 5px;
+  background: white;
+}
+.message-content{
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+
+@media all and (max-width: 750px) {
+  .form-row {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+
+}
+@media all and (max-width: 750px) {
+  .edit-profil-texte {
+    display: none;
+  }
+  .fa-user-edit{
+    color: white;
+  }
+  .edit-profil-logo {
+    display: block;
+    display: flex;
+    color: white;
+    padding: 15px;
+    border: 1mm solid rgba(170, 50, 220, 0.6);
+    border-radius: 25px;
+    height: 45px;
+
+    align-items: center;
+  }
+  .edit-profil-logo:hover{
+    cursor: pointer;
+  }
+  .send-mobile{
+    display: block
+
+  }
+  .send-desktop{
+    display: none
+  }
+  .button-comment {
+
+  width: 70px;
+}
+}
+@media all and (max-width: 450px) {
 }
 @keyframes animation-1 {
   0% {

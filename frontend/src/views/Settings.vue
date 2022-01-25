@@ -10,12 +10,15 @@
       <nav-header></nav-header>
       <div class="main-container">
         <div class="card">
-         <i class="fas fa-cog fa-2x"></i>
-          <h4 class="title-nav">Paramêtres</h4>
+          <div class="title-setting">
+            <i class="fas fa-cog fa-2x"></i>
+            <h4 class="title-nav">Paramêtres</h4>
+          </div>
+          
           <div class="form-row">
             <p>Changez votre prénom:</p>
 
-            <div>
+            <div class="option-field">
               <input
                 v-model="firstname"
                 class="form-row__input"
@@ -23,13 +26,15 @@
                 placeholder="Prénom"
               />
 
-              <button @click="editFirstname()">
-                <span>Valider <i class="fas fa-edit"></i></span>
-              </button>
+              <div class="option-button" @click="editFirstname()">
+                <span class="edit-logo-desktop">Valider <i class="fas fa-edit"></i></span>
+              <div class="edit-logo-mobile"><i class="fas fa-edit"></i></div>
+              </div>
             </div>
 
-            <div>
+             
               <p>Changez votre nom:</p>
+              <div class="option-field">
               <input
                 v-model="lastname"
                 class="form-row__input"
@@ -37,9 +42,10 @@
                 placeholder="Nom de Famille"
               />
 
-              <button @click="editLastname()">
-                <span>Valider <i class="fas fa-edit"></i></span>
-              </button>
+              <div class="option-button" @click="editLastname()">
+               <span class="edit-logo-desktop">Valider <i class="fas fa-edit"></i></span>
+               <div class="edit-logo-mobile"><i class="fas fa-edit"></i></div>
+              </div>
             </div>
           </div>
           <p v-if="errors.length">
@@ -73,7 +79,7 @@
             href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css"
             rel="stylesheet"
           />
-          <button @click="openModal()" class="button">
+          <button @click="openModal()" class="button button-delete">
             Supprimer votre compte
           </button>
 
@@ -232,7 +238,31 @@ span {
   font-weight: 500;
   text-transform: capitalize;
 }
+.option-field{
+  display: flex;
+  justify-content: center;
+  
+}
+.edit-logo-mobile{
+  display: none;
+}
+.button-delete{
+  margin-top: 55px
+}
+.option-button{
+  background-color: rgba(170, 50, 220, 0.6);;
 
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  border-radius: 0px 8px 8px 0px;
+ 
+}
+.option-button:hover{
+  cursor: pointer;
+  background-color: grey;
+ 
+}
 h3 {
   margin: 20px;
 }
@@ -249,7 +279,14 @@ h4 {
 p {
   text-align: center;
 }
-
+.title-setting{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  color: white;
+  align-items: center;
+  
+}
 .button {
   border-radius: 35px;
 }
@@ -273,15 +310,30 @@ p {
 .form-row__input {
   padding: 8px;
   border: none;
-  border-radius: 8px;
+  border-radius: 8px 0px 0px 8px;
   background: #f2f2f2;
   font-weight: 500;
   font-size: 16px;
-  flex: 1;
-  min-width: 100px;
+  
+ 
   color: black;
 }
 .form-row__input::placeholder {
   color: #aaaaaa;
+}
+@media all and (max-width: 650px) {
+  .option-field{
+   
+  }
+
+
+  .edit-logo-mobile{
+  display: block;
+  padding-left: 5px;
+}
+.edit-logo-desktop{
+  display: none;
+  
+}
 }
 </style>

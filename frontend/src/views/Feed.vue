@@ -11,13 +11,19 @@
       <div class="main-container">
         <div class="card-profile">
           <img class="image-avatar-profile" :src="profileUsers.imageUrl" />
-          <div class="information-profile"><span class="nickname-profile">{{ profileUsers.firstname }} {{ profileUsers.lastname }}</span>
-          <p class="edit-profil" @click="editProfil">Editer votre profil</p></div>
-          
+          <div class="information-profile">
+            <span class="nickname-profile"
+              >{{ profileUsers.firstname }} {{ profileUsers.lastname }}</span
+            >
+            <p class="edit-profil-texte" @click="editProfil">
+              Editer votre profil
+            </p>
+            <div class="edit-profil-logo" @click="editProfil">
+              <i class="fas fa-user-edit"></i>
+            </div>
+          </div>
         </div>
-        <div class="card">
-          
-          
+        <div class="card card-placeholder">
           <textarea
             v-model="contentPost"
             class="textarea-row"
@@ -44,8 +50,8 @@
             >
           </p>
           <p v-if="status == 'error_message'">
-              <b>Le contenu de votre publication est vide!</b>
-            </p>
+            <b>Le contenu de votre publication est vide!</b>
+          </p>
         </div>
 
         <div class="card" v-if="status == 'loading'">
@@ -59,37 +65,44 @@
             v-for="(message, index) in messages"
           >
             <div class="icon">
-              <div v-if="profileUsers.id === 60 || message.UserId == profileUsers.id " >
-
+              <div
+                v-if="
+                  profileUsers.id === 60 || message.UserId == profileUsers.id
+                "
+              >
                 <div @click="deletePost(message.id)">
                   <i class="fas fa-trash-alt fas-post"></i>
                 </div>
               </div>
-              <div v-if="profileUsers.id === 60 || message.UserId == profileUsers.id">
+              <div
+                v-if="
+                  profileUsers.id === 60 || message.UserId == profileUsers.id
+                "
+              >
                 <i class="fas fa-edit fas-post"></i>
               </div>
             </div>
-            
+
             <div class="identity">
-                <img class="image-avatar" :src="message.User.imageUrl" />
-                <div class="information-post"> <p class="nickname">
+              <img class="image-avatar" :src="message.User.imageUrl" />
+              <div class="information-post">
+                <p class="nickname">
                   {{ message.User.firstname }} {{ message.User.lastname }}
                 </p>
                 <p class="time">
-                {{
-                  new Date(message.createdAt).toLocaleString("fr-FR", {
-                    hour12: false,
-                  })
-                }}
-                </p></div>
-               
+                  {{
+                    new Date(message.createdAt).toLocaleString("fr-FR", {
+                      hour12: false,
+                    })
+                  }}
+                </p>
+              </div>
             </div>
-            <p>{{ message.content }}</p>
+            <p class="message-content">{{ message.content }}</p>
             <div class="image-parent">
               <img class="image-container" :src="message.imageUrl" />
             </div>
             <div class="like">
-              
               <div
                 class="like-heart"
                 v-on:click.prevent="likeMessage(message.id)"
@@ -104,15 +117,25 @@
             <div v-bind:key="index" v-for="(comment, index) in comments">
               <div class="commment-row" v-if="comment.messageId == message.id">
                 <div class="icon">
-                  <div v-if="profileUsers.id === 60 || comment.UserId == profileUsers.id">
+                  <div
+                    v-if="
+                      profileUsers.id === 60 ||
+                      comment.UserId == profileUsers.id
+                    "
+                  >
                     <div class="icon-edit-delete">
-                    <div @click="deleteComment(comment.id)">
-                      <i class="fas fa-trash-alt fas-post"></i>
-                    </div>
+                      <div @click="deleteComment(comment.id)">
+                        <i class="fas fa-trash-alt fas-post"></i>
+                      </div>
                     </div>
                   </div>
 
-                  <div v-if="profileUsers.id === 60 || comment.UserId == profileUsers.id">
+                  <div
+                    v-if="
+                      profileUsers.id === 60 ||
+                      comment.UserId == profileUsers.id
+                    "
+                  >
                     <i class="fas fa-edit fas-post"></i>
                   </div>
                 </div>
@@ -143,10 +166,19 @@
                 v-on:click.prevent="createComment(message.id)"
                 class="button-comment"
               >
+              <p class="send-desktop">
                 Commenter
+              </p>
+                <p class="send-mobile">
+                <i class="fas fa-paper-plane"></i>
+              </p>
               </button>
+              
+
+
+
+
             </div>
-            
           </div>
         </div>
       </div>
@@ -193,7 +225,6 @@ export default {
       users: "allUsers",
       comments: "getComment",
       profileUsers: "userInfos",
-      
     }),
     ...mapState(["status"]),
   },
@@ -225,28 +256,25 @@ export default {
           this.contentComment[id] = "";
         });
     },
-  editProfil: function (){
-      this.$router.push("/settings")
+    editProfil: function () {
+      this.$router.push("/settings");
     },
     creationPost: function () {
-      const self = this
+ 
       this.errors = [];
       if (this.contentPost == "" && this.imagesArray == null) {
         this.errors.push("");
-      } 
-      else {
+      } else {
         // const self = this;
         this.$store // Appel API dans le store
           .dispatch("createNewPost", {
             content: this.contentPost,
             file: this.imagesArray,
           })
-          .then(() => {
-            self.getPosts();
-            self.contentPost = "";
-            this.imagesArray = null
-          });
           
+          .then(() => {
+              this.$router.push("/");
+          });
       }
       
     },
@@ -287,23 +315,6 @@ export default {
   border-radius: 15px 15px 0px 0px;
 }
 
-
-
-
-
-.card {
-  max-width: 100%;
-  
-  background: white;
-  border-radius: 0px;
-  padding: 32px;
- 
-  margin-bottom: 15px;
-  width: 100%;
-  background-color: rgb(26, 26, 26);
-
-}
-
 .information-profile {
   display: flex;
   flex-direction: row;
@@ -312,38 +323,14 @@ export default {
   padding: 15px;
 }
 
-.image-avatar-profile {
-  width: 150px;
-  height: 150px;
-  border-radius: 100%;
-  object-fit: cover;
-  padding: 5px;
-  background: white;
-}
 
-.edit-profil{
-  display: flex;
-  padding: 15px;
-  border: 1mm solid rgba(170, 50, 220, .6);
-  border-radius: 25px;
-  height: 45px;
-  align-items: center;
-}
-.nickname-profile{
+.nickname-profile {
   display: flex;
   align-items: center;
 }
 
-.edit-profil:hover{
-  cursor: pointer;
-}
-
-
-
-
-.pre-post{
+.pre-post {
   background-color: rgb(20, 20, 20);
-  
 }
 .image-parent {
   display: flex;
@@ -375,14 +362,14 @@ export default {
   align-content: center;
   justify-content: center;
 }
-.identity{
+.identity {
   display: flex;
 }
 .information-post {
   display: flex;
   flex-direction: column;
   margin-left: 5px;
-justify-content: center;
+  justify-content: center;
 }
 .nickname {
   font-weight: 500;
@@ -400,7 +387,6 @@ justify-content: center;
   cursor: pointer;
 }
 .icon {
-  
   float: right;
 }
 
@@ -421,45 +407,14 @@ h4 {
 .comment {
   display: flex;
   justify-content: flex-start;
-  flex-wrap: wrap, ss;
+  flex-wrap: wrap,;
+  margin-top: 15px;
 }
-.textarea-row-comment {
-  width: 100%;
-  resize: none;
-  overflow: hidden;
-  padding: 8px;
-  border: none;
-  border-radius: 25px 0px 0px 25px;
-  background: #3b3b3b;
-  font-weight: 500;
-  font-size: 12px;
-  color: black;
-}
+
 .button {
   border-radius: 35px;
 }
 
-.button-comment {
-  background: rgb(9, 31, 67);
-  color: white;
-  border-radius: 8px;
-  font-weight: 800;
-  font-size: 15px;
-  border: none;
-  border-radius: 0px 25px 25px 0px;
-  padding: 16px;
-  transition: 0.4s background-color;
-}
-.commment-row {
-  border-radius: 10px;
-  background: #414141;
-  padding: 15px;
-  margin: 15px 0px 15px;
-}
-.button-comment:hover {
-  cursor: pointer;
-  background: #1976d2;
-}
 .form-row-btn {
   display: flex;
   margin: 16px 0px;
