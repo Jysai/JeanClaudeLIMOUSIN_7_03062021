@@ -41,7 +41,12 @@ export default {
   min-width: 360px;
 }
 
-
+.image-avatar{
+  border-radius: 100%;
+  object-fit: cover;
+  width: 50px;
+  height: 50px;
+}
 
 
 a {

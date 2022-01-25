@@ -34,6 +34,7 @@
       >
     </div>
     <div class="menu-end">
+      <img class="image-avatar" :src="profileUsers.imageUrl" />
       <span class="menu-nickname"
         >{{ profileUsers.firstname }} {{ profileUsers.lastname }}</span
       >

@@ -104,7 +104,7 @@ exports.listMessages = (req, res, next) => {
     include: [
       {
         model: models.User,
-        attributes: ["lastname", "firstname"],
+        attributes: ["lastname", "firstname", "imageUrl"],
       },
     ],
     order: [["createdAt", "DESC"]],

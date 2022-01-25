@@ -11,7 +11,7 @@
       <div class="main-container">
         <div class="card">
           <span>Bonjour {{ profileUsers.firstname }}</span>
-
+          
           <textarea
             v-model="contentPost"
             class="textarea-row"
@@ -62,19 +62,20 @@
                 <i class="fas fa-edit"></i>
               </div>
             </div>
+            
             <div class="identity">
-              <div @click="profil(message.UserId)">
-                <p class="nickname">
+                <img class="image-avatar" :src="message.User.imageUrl" />
+                <div class="information-post"> <p class="nickname">
                   {{ message.User.firstname }} {{ message.User.lastname }}
                 </p>
-              </div>
-              <p class="time">
+                <p class="time">
                 {{
                   new Date(message.createdAt).toLocaleString("fr-FR", {
                     hour12: false,
                   })
                 }}
-              </p>
+                </p></div>
+               
             </div>
             <p>{{ message.content }}</p>
             <div class="image-parent">
@@ -135,7 +136,7 @@
                 Commenter
               </button>
             </div>
-            <p v-if="status == 'error_comment'">
+            <p v-if="status == 'error_comment'" >
               <b>Vous ne pouvez pas envoyer un commentaire sans contenu!</b>
             </p>
           </div>
@@ -159,7 +160,7 @@ export default {
   data: function () {
     return {
       mode: "message",
-      contentPost: null,
+      contentPost: "",
       imagesArray: null,
       contentComment: new Map(),
       errors: [],
@@ -217,10 +218,12 @@ export default {
     },
 
     creationPost: function () {
+      const self = this
       this.errors = [];
-      if (this.contentPost == null && this.imagesArray == null) {
+      if (this.contentPost == "" && this.imagesArray == null) {
         this.errors.push("");
-      } else {
+      } 
+      else {
         // const self = this;
         this.$store // Appel API dans le store
           .dispatch("createNewPost", {
@@ -228,11 +231,12 @@ export default {
             file: this.imagesArray,
           })
           .then(() => {
-            this.getPosts();
-            this.contentPost = "";
-            this.imagesArray = null;
+            self.getPosts();
+            self.contentPost = "";
           });
+          
       }
+      
     },
     openFile: function (e) {
       this.imagesArray = e.target.files[0];
@@ -262,6 +266,7 @@ export default {
 
 
 <style scoped>
+
 .image-parent {
   display: flex;
   justify-content: center;
@@ -292,19 +297,18 @@ export default {
   align-content: center;
   justify-content: center;
 }
-
-.identity {
+.identity{
   display: flex;
-  align-items: flex-start;
+}
+.information-post {
+  display: flex;
   flex-direction: column;
+  margin-left: 5px;
+justify-content: center;
 }
 .nickname {
   font-weight: 500;
   text-transform: capitalize;
-  display: flex;
-  align-items: flex-start;
-
-  padding-right: 5px;
 }
 .time {
   font-weight: 100;

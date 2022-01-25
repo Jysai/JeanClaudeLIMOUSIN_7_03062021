@@ -42,7 +42,8 @@ const store = createStore({
     messageInfos: [],
     postInfos: [],
     commentInfos: [],
-    getError: []
+    getError: [],
+    getPostsOneUser: []
   },
   mutations: {
     setStatus: function (state, status) {
@@ -76,7 +77,11 @@ const store = createStore({
       //récupère les informations de l'user pour les afficher dans profile.vue
       state.deleteComment = deleteComment;
     },
-
+  
+    getPostsOneUser: function (state, getPostsOneUser) {
+      //récupère les informations de l'user pour les afficher dans profile.vue
+      state.getPostsOneUser = getPostsOneUser;
+    },
     messageInfos: function (state, messageInfos) {
       //récupère les publications pour les afficher dans profile.vue
       state.messageInfos = messageInfos;
@@ -143,10 +148,13 @@ const store = createStore({
       instance
         .get("user/me")
         .then(function (response) {
+          
           commit("userInfos", response.data);
         })
         .catch(function () {});
     },
+
+
 
     getAllUsers: ({ commit }) => {
       // Méthode GET via AXIOS pour récupérer les données de l'utilisateur
@@ -253,7 +261,7 @@ const store = createStore({
       instance
         .delete(`message/comment/${id}`)
         .then(function (response) {
-          console.log(response);
+         
           commit("deleteComment");
           resolve(response);
         })
@@ -345,8 +353,8 @@ const store = createStore({
       commit("setStatus");
       instance
         .post(`message/${id}/like`)
-        .then(function (response) {
-          console.log(response);
+        .then(function () {
+          console.log();
           commit("setStatus", "");
         })
         .catch(function (error) {

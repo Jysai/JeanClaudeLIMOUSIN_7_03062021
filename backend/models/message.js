@@ -22,9 +22,8 @@ module.exports = (sequelize, DataTypes) => {
       content: {
         type: DataTypes.STRING,
         validate: {
-          min: 1,
-          
-          notEmpty: true,
+          min: 2,
+         
         },
       },
       

@@ -89,9 +89,15 @@ exports.login = (req, res, next) => {
 
 exports.me = (req, res, next) => {
   models.User.findOne({
-    attributes: ["id", "email", "firstname", "lastname"],
+    attributes: ["id", "email", "firstname", "lastname", "imageUrl"],
     // where: { userId: req.body.userId },
     where: { id: req.body.userId },
+    include: [
+      {
+        model: models.Message,
+       
+      },
+    ],
   })
     .then(function (userFound) {
       if (userFound) {
