@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Like extends Model {
     /**
@@ -9,36 +7,21 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-     static associate(models) {
-      // define association here
-      // models.User.belongsToMany(models.Message, {
-      //   through: models.Like,
-      //   foreignKey: 'userId',
-      //   otherKey  : 'messageId'
-      // });
-      // models.Message.belongsTo(models.User, {
-      //   through: models.Like,
-      //   // foreignKey: 'messageId',
-      //   otherKey: 'userId'
-      // });
-      // models.Like.belongsTo(models.User, {
-      //   foreignKey: 'userId',
-      //   as: 'user'
-      // });
-      // models.Like.belongsTo(models.Message, {
-      //   foreignKey: 'messageId',
-      //   as: 'message'
-      // });
+    static associate(models) {
+
     }
-  };
-  
-  Like.init({
-    messageId: DataTypes.INTEGER,
-    userId: DataTypes.INTEGER
-  }, {
-    sequelize,
-    modelName: 'Like',
-  });
+  }
+
+  Like.init(
+    {
+      messageId: DataTypes.INTEGER,
+      userId: DataTypes.INTEGER,
+    },
+    {
+      sequelize,
+      modelName: "Like",
+    }
+  );
   // Like.hasOne(models.User, { onDelete: 'CASCADE' })
   return Like;
 };

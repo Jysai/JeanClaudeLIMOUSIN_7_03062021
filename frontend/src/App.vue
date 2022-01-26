@@ -24,7 +24,7 @@ export default {
   text-decoration: none;
   word-break: break-all;
 }
-.message-no-post{
+.message-no-post {
   display: flex;
   align-items: center;
   flex-flow: column;
@@ -49,12 +49,11 @@ export default {
 }
 .button-comment:hover {
   cursor: pointer;
-  background: rgba(170, 50, 220, 0.6); 
+  background: rgba(170, 50, 220, 0.6);
 }
-.text-no-post{
+.text-no-post {
   word-break: normal;
 }
-
 
 .main-site {
   display: flex;
@@ -63,7 +62,6 @@ export default {
 .main-container {
   padding-top: 60px;
   width: 700px;
-  
 }
 
 .image-avatar {
@@ -72,10 +70,6 @@ export default {
   width: 50px;
   height: 50px;
 }
-
-
-
-
 
 a {
   color: rgb(255, 255, 255);
@@ -94,7 +88,6 @@ body {
   background-image: linear-gradient(rgb(129, 46, 51) 0%, rgb(6, 20, 44) 100%);
 
   min-height: 100vh;
-  
 }
 img {
   max-width: 100%;
@@ -136,15 +129,16 @@ p {
   min-width: 375px;
 }
 
-.card-placeholder{
-   border-radius: 0px 0px 15px 15px;
+.card-placeholder {
+  border-radius: 0px 0px 15px 15px;
 }
 .fas-post {
   color: rgb(117, 117, 117);
+  margin-right: 5px;
 }
 .fas-post:hover {
   cursor: pointer;
-  color: rgba(170, 50, 220, 0.6); 
+  color: rgba(170, 50, 220, 0.6);
 }
 
 .card__title {
@@ -169,7 +163,7 @@ p {
   padding: 16px;
   transition: 0.4s background-color;
 }
-.textarea-row{
+.textarea-row {
   color: white;
 }
 .card__action {
@@ -182,7 +176,7 @@ p {
 }
 .button:hover {
   cursor: pointer;
-  background: rgba(170, 50, 220, 0.6); 
+  background: rgba(170, 50, 220, 0.6);
 }
 .button--disabled {
   background: #cecece;
@@ -220,7 +214,7 @@ p {
   transform: translate(-50%, -50%);
 }
 .modal-button {
-  background: rgba(114, 28, 151, 0.6); 
+  background: rgba(114, 28, 151, 0.6);
   color: white;
   border-radius: 8px;
   font-weight: 800;
@@ -233,7 +227,7 @@ p {
 
 .modal-button:hover {
   cursor: pointer;
-  background: rgba(55, 1, 78, 0.6); 
+  background: rgba(55, 1, 78, 0.6);
 }
 .modal-header {
   align-items: stretch;
@@ -300,27 +294,26 @@ p {
   color: black;
   word-break: break-all;
 }
-.option-avatar{
+.option-avatar {
   display: flex;
   justify-content: center;
 }
 .comment {
   display: flex;
-margin-top: 15px;
-flex-direction: row;
-
+  margin-top: 15px;
+  flex-direction: row;
 }
-.fa-window-close{
+.fa-window-close {
   color: red;
   padding: 5px;
 }
-.fa-window-close{
+.fa-window-close {
   cursor: pointer;
 }
-.send-mobile{
-    display: none
-  }
-  .image-avatar-profile {
+.send-mobile {
+  display: none;
+}
+.image-avatar-profile {
   width: 80px;
   height: 80px;
   border-radius: 100%;
@@ -328,28 +321,28 @@ flex-direction: row;
   padding: 5px;
   background: white;
 }
-.message-content{
+.message-content {
   margin-top: 15px;
   margin-bottom: 15px;
 }
 input[type="file"] {
-    display: none;
+  display: none;
 }
 .custom-file-upload {
-    border: 1px solid rgba(170, 50, 220, 0.6);
-    display: inline-block;
-    padding: 6px 12px;
-    cursor: pointer;
-    color: white;
-    border-radius: 15px;
+  border: 1px solid rgba(170, 50, 220, 0.6);
+  display: inline-block;
+  padding: 6px 12px;
+  cursor: pointer;
+  color: white;
+  border-radius: 15px;
 }
-.custom-file-upload:hover{
-   color: rgba(170, 50, 220, 0.6);
-     border: 1px solid white
+.custom-file-upload:hover {
+  color: rgba(170, 50, 220, 0.6);
+  border: 1px solid white;
 }
-#preview{
+#preview {
   display: flex;
-justify-content: center;
+  justify-content: center;
 }
 
 @media all and (max-width: 750px) {
@@ -358,14 +351,12 @@ justify-content: center;
     flex-direction: column;
     justify-content: space-between;
   }
-
-
 }
 @media all and (max-width: 750px) {
   .edit-profil-texte {
     display: none;
   }
-  .fa-user-edit{
+  .fa-user-edit {
     color: white;
   }
   .edit-profil-logo {
@@ -379,20 +370,18 @@ justify-content: center;
 
     align-items: center;
   }
-  .edit-profil-logo:hover{
+  .edit-profil-logo:hover {
     cursor: pointer;
   }
-  .send-mobile{
-    display: block
-
+  .send-mobile {
+    display: block;
   }
-  .send-desktop{
-    display: none
+  .send-desktop {
+    display: none;
   }
   .button-comment {
-
-  width: 70px;
-}
+    width: 70px;
+  }
 }
 @media all and (max-width: 450px) {
 }

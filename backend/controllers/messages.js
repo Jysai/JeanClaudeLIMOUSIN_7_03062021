@@ -1,12 +1,8 @@
 const models = require("../models");
-const fs=require('fs');
+const fs = require("fs");
 
-
-exports.createMessage = function (req, res) {
+exports.createMessage = function (req, res) { // Permet de créer un nouveau Post
   const content = req.body.content;
-  // if (content == null) {
-  //   return res.status(400).json({ err: "missing parameters" });
-  // }
 
   models.User.findOne({
     where: { id: req.body.userId },
@@ -17,7 +13,7 @@ exports.createMessage = function (req, res) {
         likes: 0,
         UserId: userFound.id,
       };
-      if (req.file !== undefined) {
+      if (req.file !== undefined) {  
         model["imageUrl"] = `${req.protocol}://${req.get("host")}/public/${
           req.file.filename
         }`;
@@ -38,7 +34,7 @@ exports.createMessage = function (req, res) {
     });
 };
 
-exports.deleteMessage = (req, res) => {
+exports.deleteMessage = (req, res) => { // Permet de supprimer un Post
   models.User.findOne({
     where: { id: req.body.userId },
   })
@@ -70,9 +66,9 @@ exports.deleteMessage = (req, res) => {
               const filename = messageFound.imageUrl.split("/public/")[1];
               console.log(messageFound);
               fs.unlink(`image/${filename}`, () => {
-              messageFound.destroy();
-              res.status(200).json({ message: "message supprimé !" });
-             });
+                messageFound.destroy();
+                res.status(200).json({ message: "message supprimé !" });
+              });
             } else {
               res.status(401).json({
                 error: "vous n'avez pas les droits pour supprimer ce message",
@@ -91,40 +87,8 @@ exports.deleteMessage = (req, res) => {
     });
 };
 
-exports.editMessage = (req, res, next) => {
-  models.User.findOne({
-    where: { id: req.body.userId },
-  })
-    .then(function (userFound) {
-      models.Message.findOne({
-        where: { id: req.params.id },
-      })
-        .then(function (messageFound) {
-          if (userFound.id == messageFound.UserId) {
-            messageFound.update({
-              content: req.body.content
-                ? req.body.content
-                : messageFound.content,
-            });
-            res.status(200).json({ error: "message modifié" });
-          } else {
-            res.status(401).json({
-              error: "vous n'avez pas les droits pour modifier ce message",
-            });
-          }
-        })
-        .catch(function (err) {
-          res.status(404).json({
-            error: "message non trouvé",
-          });
-        });
-    })
-    .catch(function (error) {
-      res.status(404).json({ error: "Utilisateur non trouvé" });
-    });
-};
 
-exports.listMessages = (req, res, next) => {
+exports.listMessages = (req, res, next) => { // liste tous les posts des utilisateurs
   models.Message.findAll({
     include: [
       {
@@ -146,7 +110,7 @@ exports.listMessages = (req, res, next) => {
     );
 };
 
-exports.addComment = async (req, res) => {
+exports.addComment = async (req, res) => { // permet d'ajouter un commentaire sous un post
   try {
     const userId = req.body.userId;
     const messageId = req.params.id;
@@ -168,7 +132,7 @@ exports.addComment = async (req, res) => {
   }
 };
 
-exports.deleteComment = (req, res) => {
+exports.deleteComment = (req, res) => { // supprime un commentaire
   models.User.findOne({
     where: { id: req.body.userId },
   })
@@ -197,7 +161,7 @@ exports.deleteComment = (req, res) => {
     });
 };
 
-exports.likeMessage = async (req, res, next) => {
+exports.likeMessage = async (req, res, next) => { // Permet d'ajouter un like à un post
   try {
     const userId = req.body.userId;
     const messageId = req.params.id;
@@ -245,7 +209,7 @@ exports.likeMessage = async (req, res, next) => {
   }
 };
 
-exports.listComments = (req, res, next) => {
+exports.listComments = (req, res, next) => { // liste tous les commentaires
   models.Comment.findAll({
     include: [
       {
@@ -262,3 +226,5 @@ exports.listComments = (req, res, next) => {
       return res.status(404).json({ error: "no comments found" });
     });
 };
+
+

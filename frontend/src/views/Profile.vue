@@ -38,7 +38,7 @@
                 <i class="fas fa-trash-alt fas-post"></i>
               </div>
 
-              <i class="fas fa-edit fas-post"></i>
+            
             </div>
 
             <div class="identity">
@@ -60,12 +60,16 @@
             <div class="image-parent">
               <img class="image-container" :src="message.imageUrl" />
             </div>
-            <div class="like">
-              <p>{{ message.likes }}</p>
-              <div class="like-heart">
-                <i class="fas fa-heart"></i>
+             <div class="like">
+              <div
+                class="like-heart"
+                v-on:click.prevent="likeMessage(message.id)"
+              >
+                <i class="fas fa-heart fas-post"></i>
               </div>
+              <p>{{ message.likes }}</p>
             </div>
+
 
             <hr />
 
@@ -78,9 +82,7 @@
                     </div>
                   </div>
 
-                  <div v-if="comment.UserId == profileUsers.id">
-                    <i class="fas fa-edit fas-post"></i>
-                  </div>
+               
                 </div>
                 <p class="nickname">
                   {{ comment.User.firstname }} {{ comment.User.lastname }}
@@ -174,6 +176,15 @@ export default {
         this.getPosts();
         
       });
+    },
+    likeMessage(id) {
+      
+      this.$store // Appel API dans le store
+        .dispatch("likeMessage", id)
+        .then(() => {
+          this.$store.dispatch("getMessageInfos");
+          
+        });
     },
     deleteComment: function (id) {
       console.log(id);
@@ -327,12 +338,7 @@ h4 {
   justify-content: flex-start;
 }
 
-.comment {
-  display: flex;
-  justify-content: flex-start;
-  margin-top: 15px;
-  
-}
+
 
 .button {
   border-radius: 35px;
@@ -368,308 +374,5 @@ h4 {
 .form-row__input::placeholder {
   color: #555555;
 }
-/* .card-profile {
-  display: flex;
-  padding-left: 15px;
-  padding-top: 15px;
-  padding-bottom: 15px;
-  background-color: rgb(20, 20, 20);
-  border-radius: 15px 15px 0px 0px;
-}
 
-.card {
-  max-width: 100%;
-
-  background: white;
-  border-radius: 0px;
-  padding: 32px;
-
-  margin-bottom: 15px;
-  width: 100%;
-  background-color: rgb(26, 26, 26);
-}
-
-.information-profile {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  width: 100%;
-  padding: 15px;
-}
-
-
-
-.nickname-profile {
-  display: flex;
-  align-items: center;
-}
-
-.pre-post {
-  background-color: rgb(20, 20, 20);
-}
-.image-parent {
-  display: flex;
-  justify-content: center;
-}
-.image-container {
-  object-fit: scale-down;
-}
-.image-upload > input {
-  display: none;
-}
-.icon-download {
-  color: white;
-  width: 25px;
-  height: 25px;
-  padding: 15px;
-  display: flex;
-  align-items: center;
-  align-content: center;
-  justify-content: center;
-}
-.icon-download:hover {
-  background-color: pink;
-
-  border-radius: 100%;
-  cursor: pointer;
-  color: black;
-  align-items: center;
-  align-content: center;
-  justify-content: center;
-}
-.identity {
-  display: flex;
-}
-.information-post {
-  display: flex;
-  flex-direction: column;
-  margin-left: 5px;
-  justify-content: center;
-}
-.nickname {
-  font-weight: 500;
-  text-transform: capitalize;
-}
-.time {
-  font-weight: 100;
-  font-size: 10px;
-}
-.like {
-  display: flex;
-  align-items: center;
-}
-.like-heart {
-  cursor: pointer;
-}
-.icon {
-  float: right;
-}
-
-h3 {
-  margin: 20px;
-}
-h4 {
-  margin-left: 20px;
-}
-
-.card-contact {
-  display: flex;
-  flex-direction: row;
-  margin: 20px;
-  justify-content: flex-start;
-}
-
-.comment {
-  display: flex;
-  justify-content: flex-start;
-  flex-wrap: wrap, ss;
-}
-.textarea-row-comment {
-  width: 100%;
-  resize: none;
-  overflow: hidden;
-  padding: 8px;
-  border: none;
-  border-radius: 25px 0px 0px 25px;
-  background: #3b3b3b;
-  font-weight: 500;
-  font-size: 12px;
-  color: black;
-}
-.button {
-  border-radius: 35px;
-}
-
-.button-comment {
-  background: rgb(9, 31, 67);
-  color: white;
-  border-radius: 8px;
-  font-weight: 800;
-  font-size: 15px;
-  border: none;
-  border-radius: 0px 25px 25px 0px;
-  padding: 16px;
-  transition: 0.4s background-color;
-}
-.commment-row {
-  border-radius: 10px;
-  background: #414141;
-  padding: 15px;
-  margin: 15px 0px 15px;
-}
-.button-comment:hover {
-  cursor: pointer;
-  background: #1976d2;
-}
-.form-row-btn {
-  display: flex;
-  margin: 16px 0px;
-  gap: 16px;
-  width: 100px;
-  border-radius: 35px;
-  justify-content: flex-end;
-}
-.form-row {
-  display: flex;
-  margin: 16px 0px;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-.form-row__input {
-  padding: 8px;
-  border: none;
-  border-radius: 8px;
-  background: #424242;
-  font-weight: 500;
-  font-size: 16px;
-  flex: 1;
-  min-width: 100px;
-  color: black;
-}
-.form-row__input::placeholder {
-  color: #555555;
-}
-
-.information-profile {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  width: 100%;
-  padding: 15px;
-}
-
-
-
-.nickname-profile {
-  display: flex;
-  align-items: center;
-}
-
-span {
-  font-weight: 500;
-  text-transform: capitalize;
-}
-h3 {
-  margin: 20px;
-}
-h4 {
-  margin-left: 20px;
-}
-
-p {
-  text-align: center;
-}
-.textarea-row {
-  width: 100%;
-  resize: none;
-  overflow: hidden;
-  height: auto;
-  padding: 8px;
-  border: none;
-  border-radius: 8px;
-  background: #f2f2f2;
-  font-weight: 500;
-  font-size: 16px;
-  flex: 1;
-  color: black;
-}
-
-.button {
-  border-radius: 35px;
-}
-
-.form-row-btn {
-  display: flex;
-  margin: 16px 0px;
-  gap: 16px;
-  width: 100px;
-  border-radius: 35px;
-  justify-content: flex-end;
-}
-.form-row {
-  display: flex;
-  margin: 16px 0px;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-.form-row__input {
-  padding: 8px;
-  border: none;
-  border-radius: 8px;
-  background: #f2f2f2;
-  font-weight: 500;
-  font-size: 16px;
-  flex: 1;
-  min-width: 100px;
-  color: black;
-}
-.form-row__input::placeholder {
-  color: #aaaaaa;
-}
-.identity {
-  display: flex;
-}
-.information-post {
-  display: flex;
-  flex-direction: column;
-  margin-left: 5px;
-  justify-content: center;
-}
-.nickname {
-  font-weight: 500;
-  text-transform: capitalize;
-}
-
-.time {
-  font-weight: 100;
-  font-size: 10px;
-}
-.like {
-  display: flex;
-  align-items: center;
-}
-.like-heart {
-  cursor: pointer;
-}
-.icon {
-  display: flex;
-  float: right;
-}
-.comment {
-  display: flex;
-  justify-content: flex-start;
-  flex-wrap: wrap, ss;
-}
-.textarea-row-comment {
-  width: 100%;
-  resize: none;
-  overflow: hidden;
-  padding: 8px;
-  border: none;
-  border-radius: 25px 0px 0px 25px;
-  background: #3b3b3b;
-  font-weight: 500;
-  font-size: 12px;
-  color: black;
-} */
 </style>

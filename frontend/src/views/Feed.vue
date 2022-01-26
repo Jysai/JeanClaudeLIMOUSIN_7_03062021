@@ -15,6 +15,7 @@
             <span class="nickname-profile"
               >{{ profileUsers.firstname }} {{ profileUsers.lastname }}</span
             >
+
             <p class="edit-profil-texte" @click="editProfil">
               Editer votre profil
             </p>
@@ -42,13 +43,13 @@
             <i class="fas fa-images"></i>
           </label>
 
-         
-
           <div id="preview">
             <img v-if="url" :src="url" />
           </div>
           <div v-if="url">
-            <div @click="removeImage()"><i class="fas fa-2x fa-window-close"></i></div>
+            <div @click="removeImage()">
+              <i class="fas fa-2x fa-window-close"></i>
+            </div>
           </div>
 
           <div class="form-row-btn">
@@ -66,8 +67,13 @@
             <b>Le contenu de votre publication est vide!</b>
           </p>
         </div>
-        
-        <div v-if="messages == 0" class="card"><div class="message-no-post"><p>Le fil d'actualité est vide</p><img src="../assets/sad-pablo-lonely.gif"></div></div>
+
+        <div v-if="messages == 0" class="card">
+          <div class="message-no-post">
+            <p>Le fil d'actualité est vide</p>
+            <img src="../assets/sad-pablo-lonely.gif" />
+          </div>
+        </div>
         <div v-else>
           <div
             class="card"
@@ -84,13 +90,7 @@
                   <i class="fas fa-trash-alt fas-post"></i>
                 </div>
               </div>
-              <div
-                v-if="
-                  profileUsers.id === 60 || message.UserId == profileUsers.id
-                "
-              >
-                <i class="fas fa-edit fas-post"></i>
-              </div>
+              <div v-if="message.UserId == profileUsers.id"></div>
             </div>
 
             <div class="identity">
@@ -138,15 +138,6 @@
                         <i class="fas fa-trash-alt fas-post"></i>
                       </div>
                     </div>
-                  </div>
-
-                  <div
-                    v-if="
-                      profileUsers.id === 60 ||
-                      comment.UserId == profileUsers.id
-                    "
-                  >
-                    <i class="fas fa-edit fas-post"></i>
                   </div>
                 </div>
                 <p class="nickname">
@@ -208,6 +199,8 @@ export default {
       contentComment: new Map(),
       errors: [],
       url: null,
+      contentMessage: new Map(),
+      contentEditPost: "",
     };
   },
 
@@ -236,17 +229,19 @@ export default {
     getComments() {
       this.$store.dispatch("getComment");
     },
+
     getPosts() {
       this.$store.dispatch("getMessageInfos");
     },
-    likeMessage: function (id) {
-      const self = this;
-      console.log(id);
-      // const self = this;
+
+    likeMessage(id) {
       this.$store // Appel API dans le store
         .dispatch("likeMessage", id)
-        .then(self.$router.push("/"));
+        .then(() => {
+          this.$store.dispatch("getMessageInfos");
+        });
     },
+
     createComment: function (id) {
       // const self = this;
 
@@ -288,6 +283,22 @@ export default {
     openFile: function (e) {
       this.imagesArray = e.target.files[0];
       this.url = URL.createObjectURL(this.imagesArray);
+    },
+
+    editOpen: function () {},
+
+    editPost: function (id) {
+      // const self = this;
+      this.$store // Appel API dans le store
+        .dispatch("editPost", {
+          content: this.contentEditPost,
+          file: this.imagesArray,
+          id: id,
+        })
+        .then(() => {
+          this.getPosts();
+          this.contentEditPost = "";
+        });
     },
 
     deletePost: function (id) {
@@ -410,8 +421,6 @@ h4 {
   margin: 20px;
   justify-content: flex-start;
 }
-
-
 
 .button {
   border-radius: 35px;

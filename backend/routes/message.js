@@ -13,4 +13,5 @@ router.post('/:id/comment', auth,  messageCtrl.addComment)
 router.get('/comment', auth,  messageCtrl.listComments)
 router.delete('/comment/:id', auth,  messageCtrl.deleteComment)
 
+
 module.exports = router

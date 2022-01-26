@@ -3,14 +3,14 @@ const jwt = require("jsonwebtoken");
 const fs = require("fs");
 const models = require("../models");
 
-exports.signup = (req, res, next) => {
-  // console.log(req.body);
+exports.signup = (req, res, next) => { // Création d'un compte
+ 
   models.User.findOne({
     // attributes: ["email"],
     where: { email: req.body.email },
   })
     .then(function (userFound) {
-      // console.log(userFound);
+    
       if (!userFound) {
         bcrypt
           .hash(req.body.password, 5)
@@ -45,7 +45,7 @@ exports.signup = (req, res, next) => {
     });
 };
 
-exports.login = (req, res, next) => {
+exports.login = (req, res, next) => { // Permet de s'authentifier 
   if (req.body.email == null || req.body.password == null) {
     return res.status(400).json({ error: "missing parameters" });
   }
@@ -85,10 +85,10 @@ exports.login = (req, res, next) => {
     .catch((error) => res.status(500).json({ error }));
 };
 
-exports.me = (req, res, next) => {
+exports.me = (req, res, next) => { // permet d'afficher un utilisateur
   models.User.findOne({
     attributes: ["id", "email", "firstname", "lastname", "imageUrl"],
-    // where: { userId: req.body.userId },
+    
     where: { id: req.body.userId },
     include: [
       {
@@ -108,7 +108,7 @@ exports.me = (req, res, next) => {
     });
 };
 
-exports.allUsers = (req, res, next) => {
+exports.allUsers = (req, res, next) => { // permet d'afficher tous les utilisateurs
   models.User.findAll({
     attributes: ["id", "firstname", "lastname"],
   
@@ -125,7 +125,7 @@ exports.allUsers = (req, res, next) => {
     });
 };
 
-(exports.editAvatar = (req, res, next) => {
+(exports.editAvatar = (req, res, next) => { // Permet de changer la photo de profile
   models.User.findOne({
     where: { id: req.body.userId },
     attributes: ["id", "firstname", "lastname", "imageUrl"],
@@ -172,7 +172,7 @@ exports.allUsers = (req, res, next) => {
       return res.status(500).json({ err });
     });
 }),
-  (exports.updateUserLastname = (req, res, next) => {
+  (exports.updateUserLastname = (req, res, next) => { // Permet de modifier le lastname
     models.User.findOne({
       where: { id: req.body.userId },
       attributes: ["id", "firstname", "lastname"],
@@ -197,7 +197,7 @@ exports.allUsers = (req, res, next) => {
         return res.status(500).json({ err });
       });
   }),
-  (exports.updateUserFirstname = (req, res, next) => {
+  (exports.updateUserFirstname = (req, res, next) => { // Permet de modifier le firstname
     models.User.findOne({
       where: { id: req.body.userId },
       attributes: ["id", "firstname", "lastname"],
@@ -223,7 +223,7 @@ exports.allUsers = (req, res, next) => {
       });
   }),
 
-  (exports.deleteProfile = (req, res, next) => {
+  (exports.deleteProfile = (req, res, next) => { // Permet de supprimer son compte
     models.User.findOne({
       where: { id: req.body.userId },
     })
@@ -259,50 +259,4 @@ exports.allUsers = (req, res, next) => {
       });
   });
   
-(exports.editAvatar = (req, res, next) => {
-  models.User.findOne({
-    where: { id: req.body.userId },
-    attributes: ["id", "firstname", "lastname", "imageUrl"],
-  })
-    .then(function (userFound) {
-      if (userFound.imageUrl == null) {
-        const updatedProfile = {
-          imageUrl: `${req.protocol}://${req.get("host")}/public/${
-            req.file.filename
-          }`,
-        };
-        userFound
-          .update(updatedProfile)
-          .then(function (updateUser) {
-            return res.status(201).json({
-              updateUser,
-            });
-          })
-          .catch(function (err) {
-            return res.status(500).json({ err });
-          });
-      } else {
-        const filename = userFound.imageUrl.split("/public/")[1];
-        fs.unlink(`image/${filename}`, () => {
-          const updatedProfile = {
-            imageUrl: `${req.protocol}://${req.get("host")}/public/${
-              req.file.filename
-            }`,
-          };
-          userFound
-            .update(updatedProfile)
-            .then(function (updateUser) {
-              return res.status(201).json({
-                updateUser,
-              });
-            })
-            .catch(function (err) {
-              return res.status(500).json({ err });
-            });
-        });
-      }
-    })
-    .catch(function (err) {
-      return res.status(500).json({ err });
-    });
-})
+

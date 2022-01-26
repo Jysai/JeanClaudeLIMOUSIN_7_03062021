@@ -44,7 +44,8 @@ const store = createStore({
     commentInfos: [],
     getError: [],
     getPostsOneUser: [],
-
+    getLikes: [],
+    likesNumber: []
   },
   mutations: {
     setStatus: function (state, status) {
@@ -70,6 +71,11 @@ const store = createStore({
       //récupère les informations de l'user pour les afficher dans profile.vue
       state.createNewPost = createNewPost;
     },
+    editPost: function (state, editPost) {
+      //récupère les informations de l'user pour les afficher dans profile.vue
+      state.editPost = editPost;
+    },
+
     deletePost: function (state, deletePost) {
       //récupère les informations de l'user pour les afficher dans profile.vue
       state.deletePost = deletePost;
@@ -78,7 +84,10 @@ const store = createStore({
       //récupère les informations de l'user pour les afficher dans profile.vue
       state.deleteComment = deleteComment;
     },
-  
+    getLikes: function (state, getLikes) {
+      //récupère les informations de l'user pour les afficher dans profile.vue
+      state.getLikes = getLikes;
+    },
     getPostsOneUser: function (state, getPostsOneUser) {
       //récupère les informations de l'user pour les afficher dans profile.vue
       state.getPostsOneUser = getPostsOneUser;
@@ -87,11 +96,24 @@ const store = createStore({
       //récupère les publications pour les afficher dans profile.vue
       state.messageInfos = messageInfos;
     },
+    likesNumber: function (state, likesNumber) {
+      //récupère les publications pour les afficher dans profile.vue
+      state.likesNumber = likesNumber;
+    },
 
+
+    
     getComment: function (state, getComment) {
       //récupère les publications pour les afficher dans profile.vue
       state.getComment = getComment;
     },
+    createLike: function (state, createLike) {
+      //récupère les publications pour les afficher dans profile.vue
+      state.createLike = createLike;
+    },
+
+  
+
     allUsers: (state, allUsers) => {
       state.allUsers = allUsers;
     },
@@ -149,13 +171,11 @@ const store = createStore({
       instance
         .get("user/me")
         .then(function (response) {
-          console.log(response.data);
+         
           commit("userInfos", response.data);
         })
         .catch(function () {});
     },
-
-
 
     getAllUsers: ({ commit }) => {
       // Méthode GET via AXIOS pour récupérer les données de l'utilisateur
@@ -175,6 +195,7 @@ const store = createStore({
         instance
           .get("message")
           .then(function (response) {
+            // console.log(response.data.messages);
             // commit("setStatus", "");
             commit("messageInfos", response.data.messages);
             resolve(response);
@@ -185,13 +206,13 @@ const store = createStore({
 
     getComment: ({ commit }) => {
       // Méthode GET via AXIOS pour récupérer les plucations
-      // console.log({ commit });
+     
       // commit("setStatus", "loading");
       return new Promise((resolve) => {
         instance
           .get("message/comment")
           .then(function (response) {
-            
+            // console.log(response.data.comments);
             // commit("setStatus", "");
             commit("getComment", response.data.comments);
             resolve(response);
@@ -202,7 +223,7 @@ const store = createStore({
 
     createNewPost: ({ commit }, postInfos) => {
       // Méthode post via AXIOS pour authentifier l'utilisateur dans la base de données
-      // console.log(postInfos);
+      
       // commit("setStatus", "loading");
       return new Promise((resolve, reject) => {
         let formData = new FormData()
@@ -348,22 +369,30 @@ const store = createStore({
       });
     },
 
+    
+
+
+
     likeMessage: ({ commit }, id) => {
       // Méthode post via AXIOS pour authentifier l'utilisateur dans la base de données
 
-      commit("setStatus");
+      return new Promise((resolve, reject) => {
       instance
         .post(`message/${id}/like`)
-        .then(function () {
-          console.log();
-          commit("setStatus", "");
+        .then(function (response) {
+          commit("createLike");
+          resolve(response);
         })
         .catch(function (error) {
           commit("setStatus", "");
-          error;
+          reject(error);
         });
-      // });
-    },
+      });
+    }, 
+
+
+
+
   },
 });
 
