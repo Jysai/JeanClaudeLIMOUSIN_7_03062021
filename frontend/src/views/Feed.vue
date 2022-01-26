@@ -31,13 +31,26 @@
             placeholder="Quoi de neuf?"
           ></textarea>
 
-          <input
-            type="file"
-            accept="image/*"
-            @change="openFile"
-            id="inputFile"
-            ref="inputFile"
-          />
+          <label class="custom-file-upload">
+            <input
+              type="file"
+              accept="image/*"
+              @change="openFile"
+              id="inputFile"
+              ref="inputFile"
+            />
+            <i class="fas fa-images"></i>
+          </label>
+
+         
+
+          <div id="preview">
+            <img v-if="url" :src="url" />
+          </div>
+          <div v-if="url">
+            <div @click="removeImage()"><i class="fas fa-2x fa-window-close"></i></div>
+          </div>
+
           <div class="form-row-btn">
             <button id="app" v-on:click.prevent="creationPost" class="button">
               Publier
@@ -53,11 +66,8 @@
             <b>Le contenu de votre publication est vide!</b>
           </p>
         </div>
-
-        <div class="card" v-if="status == 'loading'">
-          <div class="loader">Loading...</div>
-        </div>
-
+        
+        <div v-if="messages == 0" class="card"><div class="message-no-post"><p>Le fil d'actualité est vide</p><img src="../assets/sad-pablo-lonely.gif"></div></div>
         <div v-else>
           <div
             class="card"
@@ -166,18 +176,11 @@
                 v-on:click.prevent="createComment(message.id)"
                 class="button-comment"
               >
-              <p class="send-desktop">
-                Commenter
-              </p>
+                <p class="send-desktop">Commenter</p>
                 <p class="send-mobile">
-                <i class="fas fa-paper-plane"></i>
-              </p>
+                  <i class="fas fa-paper-plane"></i>
+                </p>
               </button>
-              
-
-
-
-
             </div>
           </div>
         </div>
@@ -204,6 +207,7 @@ export default {
       imagesArray: null,
       contentComment: new Map(),
       errors: [],
+      url: null,
     };
   },
 
@@ -259,8 +263,10 @@ export default {
     editProfil: function () {
       this.$router.push("/settings");
     },
+    removeImage: function () {
+      (this.url = null), (this.imagesArray = null);
+    },
     creationPost: function () {
- 
       this.errors = [];
       if (this.contentPost == "" && this.imagesArray == null) {
         this.errors.push("");
@@ -271,15 +277,17 @@ export default {
             content: this.contentPost,
             file: this.imagesArray,
           })
-          
+
           .then(() => {
-              this.$router.push("/");
+            this.removeImage();
+            this.getPosts();
+            this.contentPost = "";
           });
       }
-      
     },
     openFile: function (e) {
       this.imagesArray = e.target.files[0];
+      this.url = URL.createObjectURL(this.imagesArray);
     },
 
     deletePost: function (id) {
@@ -322,7 +330,6 @@ export default {
   width: 100%;
   padding: 15px;
 }
-
 
 .nickname-profile {
   display: flex;
@@ -404,12 +411,7 @@ h4 {
   justify-content: flex-start;
 }
 
-.comment {
-  display: flex;
-  justify-content: flex-start;
-  flex-wrap: wrap,;
-  margin-top: 15px;
-}
+
 
 .button {
   border-radius: 35px;

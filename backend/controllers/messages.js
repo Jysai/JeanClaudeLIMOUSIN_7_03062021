@@ -1,7 +1,8 @@
 const models = require("../models");
+const fs=require('fs');
+
 
 exports.createMessage = function (req, res) {
-  
   const content = req.body.content;
   // if (content == null) {
   //   return res.status(400).json({ err: "missing parameters" });
@@ -46,18 +47,38 @@ exports.deleteMessage = (req, res) => {
         where: { id: req.params.id },
       })
         .then(function (messageFound) {
-          console.log(userFound.id == 60);
-          if (userFound.id == messageFound.UserId) {
-            messageFound.destroy();
-            res.status(200).json({ message: "message supprimé !" });
-          }else if (userFound.id == 60 ){
-            messageFound.destroy();
-            res.status(200).json({ message: "message supprimé !" });  
+          if (messageFound.imageUrl == null) {
+            if (userFound.id == messageFound.UserId) {
+              messageFound.destroy();
+              res.status(200).json({ message: "message supprimé !" });
+            } else if (userFound.id == 60) {
+              messageFound.destroy();
+              res.status(200).json({ message: "message supprimé !" });
+            } else {
+              res.status(401).json({
+                error: "vous n'avez pas les droits pour supprimer ce message",
+              });
+            }
           } else {
-            res.status(401).json({
-              error: "vous n'avez pas les droits pour supprimer ce message",
-            });
-          } 
+            if (userFound.id == messageFound.UserId) {
+              const filename = messageFound.imageUrl.split("/public/")[1];
+              fs.unlink(`image/${filename}`, () => {
+                messageFound.destroy();
+                res.status(200).json({ message: "message supprimé !" });
+              });
+            } else if (userFound.id == 60) {
+              const filename = messageFound.imageUrl.split("/public/")[1];
+              console.log(messageFound);
+              fs.unlink(`image/${filename}`, () => {
+              messageFound.destroy();
+              res.status(200).json({ message: "message supprimé !" });
+             });
+            } else {
+              res.status(401).json({
+                error: "vous n'avez pas les droits pour supprimer ce message",
+              });
+            }
+          }
         })
         .catch(function (err) {
           res.status(404).json({

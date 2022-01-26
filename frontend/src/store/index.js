@@ -43,7 +43,8 @@ const store = createStore({
     postInfos: [],
     commentInfos: [],
     getError: [],
-    getPostsOneUser: []
+    getPostsOneUser: [],
+
   },
   mutations: {
     setStatus: function (state, status) {

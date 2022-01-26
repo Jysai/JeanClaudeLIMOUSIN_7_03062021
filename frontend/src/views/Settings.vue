@@ -14,7 +14,7 @@
             <i class="fas fa-cog fa-2x"></i>
             <h4 class="title-nav">Paramêtres</h4>
           </div>
-          
+
           <div class="form-row">
             <p>Changez votre prénom:</p>
 
@@ -27,14 +27,15 @@
               />
 
               <div class="option-button" @click="editFirstname()">
-                <span class="edit-logo-desktop">Valider <i class="fas fa-edit"></i></span>
-              <div class="edit-logo-mobile"><i class="fas fa-edit"></i></div>
+                <span class="edit-logo-desktop"
+                  >Valider <i class="fas fa-edit"></i
+                ></span>
+                <div class="edit-logo-mobile"><i class="fas fa-edit"></i></div>
               </div>
             </div>
 
-             
-              <p>Changez votre nom:</p>
-              <div class="option-field">
+            <p>Changez votre nom:</p>
+            <div class="option-field">
               <input
                 v-model="lastname"
                 class="form-row__input"
@@ -43,15 +44,15 @@
               />
 
               <div class="option-button" @click="editLastname()">
-               <span class="edit-logo-desktop">Valider <i class="fas fa-edit"></i></span>
-               <div class="edit-logo-mobile"><i class="fas fa-edit"></i></div>
+                <span class="edit-logo-desktop"
+                  >Valider <i class="fas fa-edit"></i
+                ></span>
+                <div class="edit-logo-mobile"><i class="fas fa-edit"></i></div>
               </div>
             </div>
           </div>
           <p v-if="errors.length">
-            <b
-              >Le champs est vide!</b
-            >
+            <b>Le champs est vide!</b>
           </p>
           <p v-if="status == 'error_name'">
             <b
@@ -60,7 +61,29 @@
           </p>
           <hr />
           <p>Changez votre photo de profil</p>
-          <div>
+          <div id="preview">
+            <label v-if="url == null" class="custom-file-upload">
+              <input
+                type="file"
+                accept="image/*"
+                @change="openFile"
+                id="inputFile"
+                ref="inputFile"
+              />
+              <img class="image-avatar-profile" :src="user.imageUrl" />
+            </label>
+          </div>
+          <div id="preview">
+            <label v-if="url" class="custom-file-upload">
+              <img class="image-avatar-profile" :src="url" />
+              
+            </label>
+            <div v-if="url">
+              <div @click="removeImage()"><i class="fas fa-2x fa-window-close"></i></div>
+            </div>
+          </div>
+
+          <div class="option-avatar">
             <input
               type="file"
               accept="image/*"
@@ -68,10 +91,15 @@
               id="inputFile"
               ref="inputFile"
             />
-            <button @click="editAvatar()">
+            
+            <div
+              class="option-button option-button-avatar"
+              @click="editAvatar()"
+            >
               <!-- <span v-if="status == 'loading'">Validation en cours...</span> -->
               <span>Valider <i class="fas fa-check-square"></i></span>
-            </button>
+            </div>
+            
           </div>
 
           <hr />
@@ -123,6 +151,7 @@ export default {
       firstname: "",
       lastname: "",
       imagesArray: null,
+      url: null,
     };
   },
 
@@ -161,14 +190,8 @@ export default {
       const self = this;
       this.$store // Appel API dans le store
         .dispatch("deleteProfile", {})
-        .then(
-          function () {
-            self.logout();
-          },
-          function (error) {
-            console.log(error);
-          }
-        );
+        .then(self.logout())
+        .then(location.reload());
     },
     onClick: function (ev) {
       if (ev.target == this.$refs.myModal) {
@@ -213,6 +236,9 @@ export default {
           });
       }
     },
+    removeImage: function () {
+      (this.url = null), (this.imagesArray = null);
+    },
     editAvatar: function () {
       // const self = this;
       this.$store // Appel API dans le store
@@ -220,11 +246,12 @@ export default {
           file: this.imagesArray,
         })
         .then(() => {
-          this.$router.push("/settings");
+          location.reload();
         });
     },
     openFile: function (e) {
       this.imagesArray = e.target.files[0];
+      this.url = URL.createObjectURL(this.imagesArray);
     },
   },
 };
@@ -234,34 +261,36 @@ export default {
 
 
 <style scoped>
+.image-avatar-profile {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 span {
   font-weight: 500;
   text-transform: capitalize;
 }
-.option-field{
+.option-field {
   display: flex;
   justify-content: center;
-  
 }
-.edit-logo-mobile{
+.edit-logo-mobile {
   display: none;
 }
-.button-delete{
-  margin-top: 55px
+.button-delete {
+  margin-top: 55px;
 }
-.option-button{
-  background-color: rgba(170, 50, 220, 0.6);;
+.option-button {
+  background-color: rgba(170, 50, 220, 0.6);
 
   display: flex;
   align-items: center;
   padding: 5px;
   border-radius: 0px 8px 8px 0px;
- 
 }
-.option-button:hover{
+.option-button:hover {
   cursor: pointer;
   background-color: grey;
- 
 }
 h3 {
   margin: 20px;
@@ -279,13 +308,12 @@ h4 {
 p {
   text-align: center;
 }
-.title-setting{
+.title-setting {
   display: flex;
   flex-direction: row;
   justify-content: center;
   color: white;
   align-items: center;
-  
 }
 .button {
   border-radius: 35px;
@@ -314,26 +342,25 @@ p {
   background: #f2f2f2;
   font-weight: 500;
   font-size: 16px;
-  
- 
+
   color: black;
 }
 .form-row__input::placeholder {
   color: #aaaaaa;
 }
+.option-button-avatar {
+  border-radius: 10px;
+}
 @media all and (max-width: 650px) {
-  .option-field{
-   
+  .option-field {
   }
 
-
-  .edit-logo-mobile{
-  display: block;
-  padding-left: 5px;
-}
-.edit-logo-desktop{
-  display: none;
-  
-}
+  .edit-logo-mobile {
+    display: block;
+    padding-left: 5px;
+  }
+  .edit-logo-desktop {
+    display: none;
+  }
 }
 </style>

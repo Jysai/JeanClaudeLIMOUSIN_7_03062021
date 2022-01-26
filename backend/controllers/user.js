@@ -4,7 +4,6 @@ const fs = require("fs");
 const models = require("../models");
 
 exports.signup = (req, res, next) => {
-  
   // console.log(req.body);
   models.User.findOne({
     // attributes: ["email"],
@@ -30,34 +29,33 @@ exports.signup = (req, res, next) => {
           })
 
           .catch(function (err) {
-            return res.status(500).json({ error: "Vérifier le format de l'adresse mail: exemple@test.com, votre nom/prénom ne doit pas comporter de caractères spéciaux!", });
-            
+            return res.status(500).json({
+              error:
+                "Vérifier le format de l'adresse mail: exemple@test.com, votre nom/prénom ne doit pas comporter de caractères spéciaux!",
+            });
           });
       } else {
-        return res.status(409).json({ error: "Cette adresse e-mail est déjà utilisée" });
+        return res
+          .status(409)
+          .json({ error: "Cette adresse e-mail est déjà utilisée" });
       }
     })
     .catch(function (err) {
       return res.status(500).json({ err });
-    })
-}
+    });
+};
 
 exports.login = (req, res, next) => {
-
-  if (
-    req.body.email == null ||
-    req.body.password == null
-  ) {
+  if (req.body.email == null || req.body.password == null) {
     return res.status(400).json({ error: "missing parameters" });
   }
-
 
   models.User.findOne({
     // attributes: ["email"],
     where: { email: req.body.email },
   })
     .then(function (userFound) {
-      // console.log(userFound)
+      
       if (!userFound) {
         return res.status(401).json({ error: "Utilisateur non trouvé !" });
       } else {
@@ -95,7 +93,6 @@ exports.me = (req, res, next) => {
     include: [
       {
         model: models.Message,
-       
       },
     ],
   })
@@ -114,6 +111,7 @@ exports.me = (req, res, next) => {
 exports.allUsers = (req, res, next) => {
   models.User.findAll({
     attributes: ["id", "firstname", "lastname"],
+  
   })
     .then(function (userFound) {
       if (userFound) {
@@ -127,101 +125,184 @@ exports.allUsers = (req, res, next) => {
     });
 };
 
-
-exports.editAvatar = (req, res, next) => {
+(exports.editAvatar = (req, res, next) => {
   models.User.findOne({
     where: { id: req.body.userId },
+    attributes: ["id", "firstname", "lastname", "imageUrl"],
   })
     .then(function (userFound) {
-      const updatedProfile = {
-        imageUrl : `${req.protocol}://${req.get("host")}/public/${
-          req.file.filename
-        }`
+      if (userFound.imageUrl == null) {
+        const updatedProfile = {
+          imageUrl: `${req.protocol}://${req.get("host")}/public/${
+            req.file.filename
+          }`,
+        };
+        userFound
+          .update(updatedProfile)
+          .then(function (updateUser) {
+            return res.status(201).json({
+              updateUser,
+            });
+          })
+          .catch(function (err) {
+            return res.status(500).json({ err });
+          });
+      } else {
+        const filename = userFound.imageUrl.split("/public/")[1];
+        fs.unlink(`image/${filename}`, () => {
+          const updatedProfile = {
+            imageUrl: `${req.protocol}://${req.get("host")}/public/${
+              req.file.filename
+            }`,
+          };
+          userFound
+            .update(updatedProfile)
+            .then(function (updateUser) {
+              return res.status(201).json({
+                updateUser,
+              });
+            })
+            .catch(function (err) {
+              return res.status(500).json({ err });
+            });
+        });
       }
-      userFound.update(updatedProfile)
-        .then(function (updateUser) {
-          return res.status(201).json({
-            updateUser,
-          });
-        })
-        .catch(function (err) {
-          return res.status(500).json({ err });
-        });
     })
     .catch(function (err) {
       return res.status(500).json({ err });
     });
-},
- 
-exports.updateUserLastname= (req, res, next) => {
-  models.User.findOne({
-    where: { id: req.body.userId },
-  })
-    .then(function (userFound) {
-      const updatedProfile = {
-        lastname: req.body.lastname,
+}),
+  (exports.updateUserLastname = (req, res, next) => {
+    models.User.findOne({
+      where: { id: req.body.userId },
+      attributes: ["id", "firstname", "lastname"],
+    })
+      .then(function (userFound) {
+        const updatedProfile = {
+          lastname: req.body.lastname,
         };
-      
-      userFound.update(updatedProfile)
-        .then(function (updateUser) {
-          return res.status(201).json({
-            updateUser,
+
+        userFound
+          .update(updatedProfile)
+          .then(function (updateUser) {
+            return res.status(201).json({
+              updateUser,
+            });
+          })
+          .catch(function (err) {
+            return res.status(500).json({ err });
           });
-        })
-        .catch(function (err) {
-          return res.status(500).json({ err });
-        });
+      })
+      .catch(function (err) {
+        return res.status(500).json({ err });
+      });
+  }),
+  (exports.updateUserFirstname = (req, res, next) => {
+    models.User.findOne({
+      where: { id: req.body.userId },
+      attributes: ["id", "firstname", "lastname"],
     })
-    .catch(function (err) {
-      return res.status(500).json({ err });
-    });
-},
-
-
-exports.updateUserFirstname= (req, res, next) => {
-  models.User.findOne({
-    where: { id: req.body.userId },
-  })
-    .then(function (userFound) {
-      const updatedProfile = {
-        firstname: req.body.firstname,
+      .then(function (userFound) {
+        const updatedProfile = {
+          firstname: req.body.firstname,
         };
-      
-      userFound.update(updatedProfile)
-        .then(function (updateUser) {
-          return res.status(201).json({
-            updateUser,
+
+        userFound
+          .update(updatedProfile)
+          .then(function (updateUser) {
+            return res.status(201).json({
+              updateUser,
+            });
+          })
+          .catch(function (err) {
+            return res.status(500).json({ err });
           });
-        })
-        .catch(function (err) {
-          return res.status(500).json({ err });
-        });
-    })
-    .catch(function (err) {
-      return res.status(500).json({ err });
-    });
-},
+      })
+      .catch(function (err) {
+        return res.status(500).json({ err });
+      });
+  }),
 
-
-
-exports.deleteProfile = (req, res, next) => {
+  (exports.deleteProfile = (req, res, next) => {
     models.User.findOne({
       where: { id: req.body.userId },
     })
       .then(function (userFound) {
-        console.log(userFound);
-        if (userFound) {
-          return userFound.destroy({
-            force: true,
-          });
-        } else {
-          res.status(404).json({ error: "user not found" });
+        if (userFound.imageUrl !== null) {
+          const filename = userFound.imageUrl.split("/public/")[1];
+          fs.unlink(`image/${filename}`, () =>
+          userFound
+            .destroy({force: true,})
+            .then(function (destroyUser) {
+              return res.status(201).json({
+                destroyUser,
+              });
+            })
+            .catch(function (err) {
+              return res.status(500).json({ err });
+            })
+          )} else {
+          userFound
+            .destroy()
+            .then(function (destroyUser) {
+              return res.status(201).json({
+                destroyUser,
+              });
+            })
+            .catch(function (err) {
+              return res.status(500).json({ err });
+            });
         }
       })
-      .then(function () {
-        res.status(200).json({ message: "utilisateur supprimé" });
-      })
       .catch(function (err) {
-        res.status(500).json({ err });
+        return res.status(500).json({ err });
       });
-  };
+  });
+  
+(exports.editAvatar = (req, res, next) => {
+  models.User.findOne({
+    where: { id: req.body.userId },
+    attributes: ["id", "firstname", "lastname", "imageUrl"],
+  })
+    .then(function (userFound) {
+      if (userFound.imageUrl == null) {
+        const updatedProfile = {
+          imageUrl: `${req.protocol}://${req.get("host")}/public/${
+            req.file.filename
+          }`,
+        };
+        userFound
+          .update(updatedProfile)
+          .then(function (updateUser) {
+            return res.status(201).json({
+              updateUser,
+            });
+          })
+          .catch(function (err) {
+            return res.status(500).json({ err });
+          });
+      } else {
+        const filename = userFound.imageUrl.split("/public/")[1];
+        fs.unlink(`image/${filename}`, () => {
+          const updatedProfile = {
+            imageUrl: `${req.protocol}://${req.get("host")}/public/${
+              req.file.filename
+            }`,
+          };
+          userFound
+            .update(updatedProfile)
+            .then(function (updateUser) {
+              return res.status(201).json({
+                updateUser,
+              });
+            })
+            .catch(function (err) {
+              return res.status(500).json({ err });
+            });
+        });
+      }
+    })
+    .catch(function (err) {
+      return res.status(500).json({ err });
+    });
+})

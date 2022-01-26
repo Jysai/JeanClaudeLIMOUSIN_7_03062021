@@ -24,6 +24,11 @@ export default {
   text-decoration: none;
   word-break: break-all;
 }
+.message-no-post{
+  display: flex;
+  align-items: center;
+  flex-flow: column;
+}
 .button-comment {
   background: rgba(100, 11, 138, 0.6);
   color: white;
@@ -46,7 +51,9 @@ export default {
   cursor: pointer;
   background: rgba(170, 50, 220, 0.6); 
 }
-
+.text-no-post{
+  word-break: normal;
+}
 
 
 .main-site {
@@ -143,11 +150,13 @@ p {
 .card__title {
   text-align: center;
   font-weight: 800;
+  word-break: normal;
 }
 .card__subtitle {
   text-align: center;
   color: #666;
   font-weight: 500;
+  word-break: normal;
 }
 .button {
   background: rgba(100, 11, 138, 0.6);
@@ -166,6 +175,7 @@ p {
 .card__action {
   color: #2196f3;
   text-decoration: underline;
+  word-break: normal;
 }
 .card__action:hover {
   cursor: pointer;
@@ -290,6 +300,23 @@ p {
   color: black;
   word-break: break-all;
 }
+.option-avatar{
+  display: flex;
+  justify-content: center;
+}
+.comment {
+  display: flex;
+margin-top: 15px;
+flex-direction: row;
+
+}
+.fa-window-close{
+  color: red;
+  padding: 5px;
+}
+.fa-window-close{
+  cursor: pointer;
+}
 .send-mobile{
     display: none
   }
@@ -305,7 +332,25 @@ p {
   margin-top: 15px;
   margin-bottom: 15px;
 }
-
+input[type="file"] {
+    display: none;
+}
+.custom-file-upload {
+    border: 1px solid rgba(170, 50, 220, 0.6);
+    display: inline-block;
+    padding: 6px 12px;
+    cursor: pointer;
+    color: white;
+    border-radius: 15px;
+}
+.custom-file-upload:hover{
+   color: rgba(170, 50, 220, 0.6);
+     border: 1px solid white
+}
+#preview{
+  display: flex;
+justify-content: center;
+}
 
 @media all and (max-width: 750px) {
   .form-row {

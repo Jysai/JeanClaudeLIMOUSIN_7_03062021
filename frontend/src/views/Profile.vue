@@ -26,7 +26,12 @@
         <div class="card card-placeholder">
           <span>Vos publications</span>
         </div>
+
+        <div v-if="profileUsers.Messages == 0" class="card"><div class="message-no-post"><p class="text-no-post">Vous n'avez publié aucun post sur le réseau social</p><img src="../assets/the-simpsons-ralph-wiggum.gif"></div></div>
+        <div v-else>
         <div v-bind:key="index" v-for="(message, index) in messages">
+          
+          <!-- <div v-else> -->
           <div class="card" v-if="message.UserId == profileUsers.id">
             <div class="icon">
               <div @click="deletePost(message.id)">
@@ -114,6 +119,8 @@
               </button>
             </div>
           </div>
+          
+          </div>
         </div>
       </div>
     </div>
@@ -165,6 +172,7 @@ export default {
       // const self = this;
       this.$store.dispatch("deletePost", id).then(() => {
         this.getPosts();
+        
       });
     },
     deleteComment: function (id) {
