@@ -6,7 +6,7 @@ const models = require("../models");
 exports.signup = (req, res, next) => { // Création d'un compte
  
   models.User.findOne({
-    // attributes: ["email"],
+    
     where: { email: req.body.email },
   })
     .then(function (userFound) {
@@ -51,7 +51,7 @@ exports.login = (req, res, next) => { // Permet de s'authentifier
   }
 
   models.User.findOne({
-    // attributes: ["email"],
+    
     where: { email: req.body.email },
   })
     .then(function (userFound) {

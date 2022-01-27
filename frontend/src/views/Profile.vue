@@ -9,119 +9,108 @@
     <div class="main-site">
       <nav-header></nav-header>
       <div class="main-container">
-        <div class="card-profile">
-          <img class="image-avatar-profile" :src="profileUsers.imageUrl" />
-          <div class="information-profile">
-            <span class="nickname-profile"
-              >{{ profileUsers.firstname }} {{ profileUsers.lastname }}</span
-            >
-            <p class="edit-profil-texte" @click="editProfil">
-              Editer votre profil
-            </p>
-            <div class="edit-profil-logo" @click="editProfil">
-              <i class="fas fa-user-edit"></i>
-            </div>
-          </div>
-        </div>
+        <user-information></user-information>
         <div class="card card-placeholder">
           <span>Vos publications</span>
         </div>
 
-        <div v-if="profileUsers.Messages == 0" class="card"><div class="message-no-post"><p class="text-no-post">Vous n'avez publié aucun post sur le réseau social</p><img src="../assets/the-simpsons-ralph-wiggum.gif"></div></div>
-        <div v-else>
-        <div v-bind:key="index" v-for="(message, index) in messages">
-          
-          <!-- <div v-else> -->
-          <div class="card" v-if="message.UserId == profileUsers.id">
-            <div class="icon">
-              <div @click="deletePost(message.id)">
-                <i class="fas fa-trash-alt fas-post"></i>
-              </div>
-
+        <div v-if="profileUsers.Messages == 0" class="card">
+          <div class="message-no-post">
+            <i class="fas fa-feather-alt fa-10x"></i>
+            <p class="text-no-post">
+              Vous n'avez publié aucun post sur le réseau social
+            </p>
             
-            </div>
-
-            <div class="identity">
-              <img class="image-avatar" :src="message.User.imageUrl" />
-              <div class="information-post">
-                <p class="nickname">
-                  {{ message.User.firstname }} {{ message.User.lastname }}
-                </p>
-                <p class="time">
-                  {{
-                    new Date(message.createdAt).toLocaleString("fr-FR", {
-                      hour12: false,
-                    })
-                  }}
-                </p>
+          </div>
+        </div>
+        <div v-else>
+          <div v-bind:key="index" v-for="(message, index) in messages">
+            <!-- <div v-else> -->
+            <div class="card" v-if="message.UserId == profileUsers.id">
+              <div class="icon">
+                <div @click="deletePost(message.id)">
+                  <i class="fas fa-trash-alt fas-post"></i>
+                </div>
               </div>
-            </div>
-            <p class="message-content">{{ message.content }}</p>
-            <div class="image-parent">
-              <img class="image-container" :src="message.imageUrl" />
-            </div>
-             <div class="like">
-              <div
-                class="like-heart"
-                v-on:click.prevent="likeMessage(message.id)"
-              >
-                <i class="fas fa-heart fas-post"></i>
+
+              <div class="identity">
+                <img class="image-avatar" :src="message.User.imageUrl" />
+                <div class="information-post">
+                  <p class="nickname">
+                    {{ message.User.firstname }} {{ message.User.lastname }}
+                  </p>
+                  <p class="time">
+                    {{
+                      new Date(message.createdAt).toLocaleString("fr-FR", {
+                        hour12: false,
+                      })
+                    }}
+                  </p>
+                </div>
               </div>
-              <p>{{ message.likes }}</p>
-            </div>
+              <p class="message-content">{{ message.content }}</p>
+              <div class="image-parent">
+                <img class="image-container" :src="message.imageUrl" />
+              </div>
+              <div class="like">
+                <div
+                  class="like-heart"
+                  v-on:click.prevent="likeMessage(message.id)"
+                >
+                  <i class="fas fa-heart fas-post"></i>
+                </div>
+                <p>{{ message.likes }}</p>
+              </div>
 
+              <hr />
 
-            <hr />
-
-            <div v-bind:key="index" v-for="(comment, index) in comments">
-              <div class="commment-row" v-if="comment.messageId == message.id">
-                <div class="icon">
-                  <div v-if="comment.UserId == profileUsers.id">
-                    <div @click="deleteComment(comment.id)">
-                      <i class="fas fa-trash-alt fas-post"></i>
+              <div v-bind:key="index" v-for="(comment, index) in comments">
+                <div
+                  class="commment-row"
+                  v-if="comment.messageId == message.id"
+                >
+                  <div class="icon">
+                    <div v-if="comment.UserId == profileUsers.id">
+                      <div @click="deleteComment(comment.id)">
+                        <i class="fas fa-trash-alt fas-post"></i>
+                      </div>
                     </div>
                   </div>
+                  <p class="nickname">
+                    {{ comment.User.firstname }} {{ comment.User.lastname }}
+                  </p>
+                  <p class="time">
+                    {{
+                      new Date(comment.createdAt).toLocaleString("fr-FR", {
+                        hour12: false,
+                      })
+                    }}
+                  </p>
 
-               
-                </div>
-                <p class="nickname">
-                  {{ comment.User.firstname }} {{ comment.User.lastname }}
-                </p>
-                <p class="time">
-                  {{
-                    new Date(comment.createdAt).toLocaleString("fr-FR", {
-                      hour12: false,
-                    })
-                  }}
-                </p>
-
-                <div class="comment">
-                  <p>{{ comment.content }}</p>
+                  <div class="comment">
+                    <p>{{ comment.content }}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="comment">
-              <input
-                v-model="contentComment[message.id]"
-                class="textarea-row-comment"
-                type="text-area"
-                placeholder="Ecrivez un commentaire..."
-              />
+              <div class="comment">
+                <input
+                  v-model="contentComment[message.id]"
+                  class="textarea-row-comment"
+                  type="text-area"
+                  placeholder="Ecrivez un commentaire..."
+                />
 
-              <button
-                v-on:click.prevent="createComment(message.id)"
-                class="button-comment"
-              >
-               <p class="send-desktop">
-                Commenter
-              </p>
-                <p class="send-mobile">
-                <i class="fas fa-paper-plane"></i>
-              </p>
-              </button>
+                <button
+                  v-on:click.prevent="createComment(message.id)"
+                  class="button-comment"
+                >
+                  <p class="send-desktop">Commenter</p>
+                  <p class="send-mobile">
+                    <i class="fas fa-paper-plane"></i>
+                  </p>
+                </button>
+              </div>
             </div>
-          </div>
-          
           </div>
         </div>
       </div>
@@ -133,6 +122,7 @@
 import { mapState } from "vuex";
 
 import Nav from "../components/Nav.vue";
+import UserInformation from "../components/User-Information.vue";
 
 export default {
   name: "Profile",
@@ -147,6 +137,7 @@ export default {
   },
   components: {
     "nav-header": Nav,
+    "user-information": UserInformation
   },
   mounted: function () {
     this.$store.dispatch("getMessageInfos");
@@ -174,16 +165,13 @@ export default {
       // const self = this;
       this.$store.dispatch("deletePost", id).then(() => {
         this.getPosts();
-        
       });
     },
     likeMessage(id) {
-      
       this.$store // Appel API dans le store
         .dispatch("likeMessage", id)
         .then(() => {
           this.$store.dispatch("getMessageInfos");
-          
         });
     },
     deleteComment: function (id) {
@@ -192,30 +180,8 @@ export default {
         this.getComments();
       });
     },
-    creationPost: function () {
-      const self = this;
-      this.errors = [];
-      if (this.contentPost == "" && this.imagesArray == null) {
-        this.errors.push("");
-      } else {
-        this.$store // Appel API dans le store
-          .dispatch("createNewPost", {
-            content: this.contentPost,
-            file: this.imagesArray,
-          })
-          .then(() => {
-            self.getPosts();
-            self.contentPost = "";
-            this.imagesArray = null;
-          });
-      }
-    },
-    openFile: function (e) {
-      this.imagesArray = e.target.files[0];
-    },
-    editProfil: function () {
-      this.$router.push("/settings");
-    },
+    
+
     createComment: function (id) {
       // const self = this;
 
@@ -237,42 +203,15 @@ export default {
 
 
 <style scoped>
-.card-profile {
-  display: flex;
-  padding-left: 15px;
-  padding-top: 15px;
-  padding-bottom: 15px;
-  background-color: rgb(20, 20, 20);
-  border-radius: 15px 15px 0px 0px;
-}
 
 
 
-.information-profile {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  width: 100%;
-  padding: 15px;
-}
 
-
-
-.nickname-profile {
-  display: flex;
-  align-items: center;
-}
 
 .pre-post {
   background-color: rgb(20, 20, 20);
 }
-.image-parent {
-  display: flex;
-  justify-content: center;
-}
-.image-container {
-  object-fit: scale-down;
-}
+
 .image-upload > input {
   display: none;
 }
@@ -296,23 +235,13 @@ export default {
   align-content: center;
   justify-content: center;
 }
-.identity {
-  display: flex;
-}
-.information-post {
-  display: flex;
-  flex-direction: column;
-  margin-left: 5px;
-  justify-content: center;
-}
+
+
 .nickname {
   font-weight: 500;
   text-transform: capitalize;
 }
-.time {
-  font-weight: 100;
-  font-size: 10px;
-}
+
 .like {
   display: flex;
   align-items: center;
@@ -338,13 +267,9 @@ h4 {
   justify-content: flex-start;
 }
 
-
-
 .button {
   border-radius: 35px;
 }
-
-
 
 .form-row-btn {
   display: flex;
@@ -374,5 +299,4 @@ h4 {
 .form-row__input::placeholder {
   color: #555555;
 }
-
 </style>

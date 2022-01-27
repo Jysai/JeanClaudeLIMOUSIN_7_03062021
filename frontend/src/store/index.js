@@ -4,7 +4,7 @@ import { createStore } from "vuex";
 
 const axios = require("axios");
 
-const instance = axios.create({
+const instance = axios.create({ 
   baseURL: "http://localhost:3000/api",
   timeout: 1000,
   headers: { "content-type": "application/json" },
@@ -43,16 +43,13 @@ const store = createStore({
     postInfos: [],
     commentInfos: [],
     getError: [],
-    getPostsOneUser: [],
-    getLikes: [],
-    likesNumber: []
   },
   mutations: {
     setStatus: function (state, status) {
       state.status = status;
     },
     logUser: function (state, user) {
-      // Permet de récupérer le token et de le stocker dans le local
+      // Permet de stocker le token 
       instance.defaults.headers.common[
         "Authorization"
       ] = `bearer ${user.token}`;
@@ -60,59 +57,32 @@ const store = createStore({
       state.user = user;
     },
     userInfos: function (state, userInfos) {
-      //récupère les informations de l'user pour les afficher dans profile.vue
       state.userInfos = userInfos;
     },
     createComment: function (state, createComment) {
-      //récupère les informations de l'user pour les afficher dans profile.vue
       state.createComment = createComment;
     },
     createNewPost: function (state, createNewPost) {
-      //récupère les informations de l'user pour les afficher dans profile.vue
       state.createNewPost = createNewPost;
     },
-    editPost: function (state, editPost) {
-      //récupère les informations de l'user pour les afficher dans profile.vue
-      state.editPost = editPost;
-    },
-
     deletePost: function (state, deletePost) {
-      //récupère les informations de l'user pour les afficher dans profile.vue
       state.deletePost = deletePost;
     },
     deleteComment: function (state, deleteComment) {
-      //récupère les informations de l'user pour les afficher dans profile.vue
       state.deleteComment = deleteComment;
-    },
-    getLikes: function (state, getLikes) {
-      //récupère les informations de l'user pour les afficher dans profile.vue
-      state.getLikes = getLikes;
-    },
-    getPostsOneUser: function (state, getPostsOneUser) {
-      //récupère les informations de l'user pour les afficher dans profile.vue
-      state.getPostsOneUser = getPostsOneUser;
-    },
-    messageInfos: function (state, messageInfos) {
-      //récupère les publications pour les afficher dans profile.vue
-      state.messageInfos = messageInfos;
-    },
-    likesNumber: function (state, likesNumber) {
-      //récupère les publications pour les afficher dans profile.vue
-      state.likesNumber = likesNumber;
-    },
-
-
-    
-    getComment: function (state, getComment) {
-      //récupère les publications pour les afficher dans profile.vue
-      state.getComment = getComment;
-    },
-    createLike: function (state, createLike) {
-      //récupère les publications pour les afficher dans profile.vue
-      state.createLike = createLike;
     },
 
   
+    messageInfos: function (state, messageInfos) {
+      state.messageInfos = messageInfos;
+    },
+
+    getComment: function (state, getComment) {
+      state.getComment = getComment;
+    },
+    createLike: function (state, createLike) {
+      state.createLike = createLike;
+    },
 
     allUsers: (state, allUsers) => {
       state.allUsers = allUsers;
@@ -158,27 +128,23 @@ const store = createStore({
             resolve(response);
           })
           .catch(function (error) {
-            
-            commit("getError", error.response.data),
-            
-            reject(error);
+            commit("getError", error.response.data), reject(error);
           });
       });
     },
 
     getUserInfos: ({ commit }) => {
-      // Méthode GET via AXIOS pour récupérer les données de l'utilisateur
+      // Méthode GET via AXIOS pour récupérer un seul utilisateur
       instance
         .get("user/me")
         .then(function (response) {
-         
           commit("userInfos", response.data);
         })
         .catch(function () {});
     },
 
     getAllUsers: ({ commit }) => {
-      // Méthode GET via AXIOS pour récupérer les données de l'utilisateur
+      // Méthode GET via AXIOS pour récupérer les Users
       instance
         .get("user/allUsers")
         .then(function (response) {
@@ -205,8 +171,8 @@ const store = createStore({
     },
 
     getComment: ({ commit }) => {
-      // Méthode GET via AXIOS pour récupérer les plucations
-     
+      // Méthode GET via AXIOS pour récupérer les commentaires
+
       // commit("setStatus", "loading");
       return new Promise((resolve) => {
         instance
@@ -222,13 +188,13 @@ const store = createStore({
     },
 
     createNewPost: ({ commit }, postInfos) => {
-      // Méthode post via AXIOS pour authentifier l'utilisateur dans la base de données
-      
+      // Méthode post via AXIOS pour publier une nouvelle publication
+
       // commit("setStatus", "loading");
       return new Promise((resolve, reject) => {
-        let formData = new FormData()
-        formData.append("content", postInfos.content)
-        formData.append("image", postInfos.file)
+        let formData = new FormData();
+        formData.append("content", postInfos.content);
+        formData.append("image", postInfos.file);
         instance
           .post("/message/", formData)
           .then(function (response) {
@@ -243,6 +209,7 @@ const store = createStore({
     },
 
     createComment: ({ commit }, commentInfos) => {
+      // Méthode post via AXIOS pour publier un nouveau commentaire
       return new Promise((resolve, reject) => {
         instance
           .post(`message/${commentInfos.id}/comment`, commentInfos)
@@ -258,72 +225,66 @@ const store = createStore({
     },
 
     deletePost: ({ commit }, id) => {
-      // Méthode post via AXIOS pour authentifier l'utilisateur dans la base de données
+      // Méthode post via AXIOS pour effacer une publication
       return new Promise((resolve, reject) => {
-      
-      instance
-        .delete(`message/${id}`)
-        .then(function (response) {
-          
-          commit("deletePost");
-          resolve(response);
-        })
-        .catch(function (error) {
-          // commit("setStatus", "");
-          reject(error);
-        });
-      });
-    },
-
-
-    deleteComment: ({ commit }, id) => {
-      // Méthode post via AXIOS pour authentifier l'utilisateur dans la base de données
-      return new Promise((resolve, reject) => {
-      
-      instance
-        .delete(`message/comment/${id}`)
-        .then(function (response) {
-         
-          commit("deleteComment");
-          resolve(response);
-        })
-        .catch(function (error) {
-          // commit("setStatus", "");
-          reject(error);
-        });
-      });
-    },
-
-    editAvatar: ({ commit }, userInfos) => {
-      // Méthode post via AXIOS pour authentifier l'utilisateur dans la base de données
-      commit("setStatus", "loading");
-      return new Promise((resolve, reject) => {
-        let formData = new FormData()
-        formData.append("image", userInfos.file)
         instance
-          .put("/user/editAvatar", formData)
+          .delete(`message/${id}`)
           .then(function (response) {
-            commit("setStatus", "");
-            
+            commit("deletePost");
             resolve(response);
           })
           .catch(function (error) {
-            commit("setStatus", );
+            // commit("setStatus", "");
             reject(error);
           });
       });
     },
 
+    deleteComment: ({ commit }, id) => {
+      // Méthode post via AXIOS pour effacer un commentaire
+      return new Promise((resolve, reject) => {
+        instance
+          .delete(`message/comment/${id}`)
+          .then(function (response) {
+            commit("deleteComment");
+            resolve(response);
+          })
+          .catch(function (error) {
+            // commit("setStatus", "");
+            reject(error);
+          });
+      });
+    },
+
+    editAvatar: ({ commit }, userInfos) => {
+      // Méthode post via AXIOS pour editer la photo de profile
+      commit("setStatus", "loading");
+      return new Promise((resolve, reject) => {
+        let formData = new FormData();
+        formData.append("image", userInfos.file);
+        instance
+          .put("/user/editAvatar", formData)
+          .then(function (response) {
+            commit("setStatus", "");
+
+            resolve(response);
+          })
+          .catch(function (error) {
+            commit("setStatus");
+            reject(error);
+          });
+      });
+    },
 
     editLastname: ({ commit }, userInfos) => {
-      // Méthode post via AXIOS pour authentifier l'utilisateur dans la base de données
+      // Méthode post via AXIOS pour editer le lastname
       commit("setStatus", "loading");
       return new Promise((resolve, reject) => {
         instance
           .put("/user/editLastname", userInfos)
           .then(function (response) {
             commit("setStatus", "");
-            
+
             resolve(response);
           })
           .catch(function (error) {
@@ -334,14 +295,14 @@ const store = createStore({
     },
 
     editFirstname: ({ commit }, userInfos) => {
-      // Méthode post via AXIOS pour authentifier l'utilisateur dans la base de données
+      // Méthode post via AXIOS pour  éditer le firstname
       commit("setStatus", "loading");
       return new Promise((resolve, reject) => {
         instance
           .put("/user/editFirstname", userInfos)
           .then(function (response) {
             commit("setStatus", "");
-            
+
             resolve(response);
           })
           .catch(function (error) {
@@ -352,7 +313,7 @@ const store = createStore({
     },
 
     deleteProfile: ({ commit }, userInfos) => {
-      // Méthode post via AXIOS pour authentifier l'utilisateur dans la base de données
+      // Méthode post via AXIOS pour supprimer son compte
       commit("setStatus", "loading");
       return new Promise((resolve, reject) => {
         instance
@@ -369,30 +330,22 @@ const store = createStore({
       });
     },
 
-    
-
-
-
     likeMessage: ({ commit }, id) => {
-      // Méthode post via AXIOS pour authentifier l'utilisateur dans la base de données
+      // Méthode post via AXIOS pour aimer un post
 
       return new Promise((resolve, reject) => {
-      instance
-        .post(`message/${id}/like`)
-        .then(function (response) {
-          commit("createLike");
-          resolve(response);
-        })
-        .catch(function (error) {
-          commit("setStatus", "");
-          reject(error);
-        });
+        instance
+          .post(`message/${id}/like`)
+          .then(function (response) {
+            commit("createLike");
+            resolve(response);
+          })
+          .catch(function (error) {
+            commit("setStatus", "");
+            reject(error);
+          });
       });
-    }, 
-
-
-
-
+    },
   },
 });
 

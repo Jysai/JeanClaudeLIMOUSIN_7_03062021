@@ -76,10 +76,11 @@
           <div id="preview">
             <label v-if="url" class="custom-file-upload">
               <img class="image-avatar-profile" :src="url" />
-              
             </label>
             <div v-if="url">
-              <div @click="removeImage()"><i class="fas fa-2x fa-window-close"></i></div>
+              <div @click="removeImage()">
+                <i class="fas fa-2x fa-window-close"></i>
+              </div>
             </div>
           </div>
 
@@ -91,7 +92,7 @@
               id="inputFile"
               ref="inputFile"
             />
-            
+
             <div
               class="option-button option-button-avatar"
               @click="editAvatar()"
@@ -99,7 +100,6 @@
               <!-- <span v-if="status == 'loading'">Validation en cours...</span> -->
               <span>Valider <i class="fas fa-check-square"></i></span>
             </div>
-            
           </div>
 
           <hr />
@@ -167,10 +167,7 @@ export default {
     this.$el.addEventListener("click", this.onClick);
     this.$store.dispatch("getComment");
   },
-  // beforeDestroy: function () {
-  //   this.$el.removeEventListener("click", this.onClick);
-  //   // document.removeEventListener('click', this.onClick)
-  // },
+
 
   computed: {
     ...mapState({
@@ -189,9 +186,11 @@ export default {
     deleteProfile: function () {
       const self = this;
       this.$store // Appel API dans le store
-        .dispatch("deleteProfile", {})
+        .dispatch("deleteProfile")
+        
         .then(self.logout())
-        .then(location.reload());
+        
+        
     },
     onClick: function (ev) {
       if (ev.target == this.$refs.myModal) {
@@ -241,13 +240,16 @@ export default {
     },
     editAvatar: function () {
       // const self = this;
-      this.$store // Appel API dans le store
+      if (this.url != null) {
+        this.$store // Appel API dans le store
         .dispatch("editAvatar", {
           file: this.imagesArray,
         })
         .then(() => {
           location.reload();
         });
+      }
+      
     },
     openFile: function (e) {
       this.imagesArray = e.target.files[0];

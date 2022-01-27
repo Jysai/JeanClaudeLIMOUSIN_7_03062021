@@ -55,12 +55,12 @@
           />
         </div>
         <div class="form-row" v-if="mode == 'login' && status == 'error_login'">
-          Adresse mail et/ou mot de passe invalide
+          <p class="error"> Adresse mail et/ou mot de passe invalide</p>
         </div>
 
         <div class="card" v-bind:key="index" v-for="(error, index) in errors">
           <li>
-            {{ error }}
+            <p class="error">{{ error }}</p>
           </li>
         </div>
         <div class="form-row">
@@ -88,7 +88,7 @@ export default {
       firstname: "",
       lastname: "",
       password: "",
-      error: ""
+      error: "",
     };
   },
 
@@ -122,11 +122,14 @@ export default {
         .then(
           function () {
             self.$router.push("/feed"); // La route quand l'user est authentifié
+            location.reload()
           },
           function (error) {
             console.log(error);
           }
-        );
+        )
+        
+        
     },
     createAccount: function () {
       // Création du compte
@@ -140,14 +143,14 @@ export default {
         })
         .then(
           function () {
-             
             self.login(); // Quand le compte est créé on utilise la fonction login pour se diriger sur la route profile
-           
+            
           },
           function (error) {
             console.log(error);
           }
         )
+        
         
     },
   },
@@ -208,20 +211,5 @@ export default {
   display: flex;
 
   padding: 8px;
-}
-
-@media all and (max-width: 750px) {
-  .form-row {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-  .form-row__input {
-    width: 100%;
-  }
-}
-@media all and (max-width: 750px) {
-}
-@media all and (max-width: 450px) {
 }
 </style>

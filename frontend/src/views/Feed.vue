@@ -9,21 +9,7 @@
     <div class="main-site">
       <nav-header></nav-header>
       <div class="main-container">
-        <div class="card-profile">
-          <img class="image-avatar-profile" :src="profileUsers.imageUrl" />
-          <div class="information-profile">
-            <span class="nickname-profile"
-              >{{ profileUsers.firstname }} {{ profileUsers.lastname }}</span
-            >
-
-            <p class="edit-profil-texte" @click="editProfil">
-              Editer votre profil
-            </p>
-            <div class="edit-profil-logo" @click="editProfil">
-              <i class="fas fa-user-edit"></i>
-            </div>
-          </div>
-        </div>
+        <user-information></user-information>
         <div class="card card-placeholder">
           <textarea
             v-model="contentPost"
@@ -67,114 +53,7 @@
             <b>Le contenu de votre publication est vide!</b>
           </p>
         </div>
-
-        <div v-if="messages == 0" class="card">
-          <div class="message-no-post">
-            <p>Le fil d'actualité est vide</p>
-            <img src="../assets/sad-pablo-lonely.gif" />
-          </div>
-        </div>
-        <div v-else>
-          <div
-            class="card"
-            v-bind:key="index"
-            v-for="(message, index) in messages"
-          >
-            <div class="icon">
-              <div
-                v-if="
-                  profileUsers.id === 60 || message.UserId == profileUsers.id
-                "
-              >
-                <div @click="deletePost(message.id)">
-                  <i class="fas fa-trash-alt fas-post"></i>
-                </div>
-              </div>
-              <div v-if="message.UserId == profileUsers.id"></div>
-            </div>
-
-            <div class="identity">
-              <img class="image-avatar" :src="message.User.imageUrl" />
-              <div class="information-post">
-                <p class="nickname">
-                  {{ message.User.firstname }} {{ message.User.lastname }}
-                </p>
-                <p class="time">
-                  {{
-                    new Date(message.createdAt).toLocaleString("fr-FR", {
-                      hour12: false,
-                    })
-                  }}
-                </p>
-              </div>
-            </div>
-            <p class="message-content">{{ message.content }}</p>
-            <div class="image-parent">
-              <img class="image-container" :src="message.imageUrl" />
-            </div>
-            <div class="like">
-              <div
-                class="like-heart"
-                v-on:click.prevent="likeMessage(message.id)"
-              >
-                <i class="fas fa-heart fas-post"></i>
-              </div>
-              <p>{{ message.likes }}</p>
-            </div>
-
-            <hr />
-
-            <div v-bind:key="index" v-for="(comment, index) in comments">
-              <div class="commment-row" v-if="comment.messageId == message.id">
-                <div class="icon">
-                  <div
-                    v-if="
-                      profileUsers.id === 60 ||
-                      comment.UserId == profileUsers.id
-                    "
-                  >
-                    <div class="icon-edit-delete">
-                      <div @click="deleteComment(comment.id)">
-                        <i class="fas fa-trash-alt fas-post"></i>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <p class="nickname">
-                  {{ comment.User.firstname }} {{ comment.User.lastname }}
-                </p>
-                <p class="time">
-                  {{
-                    new Date(comment.createdAt).toLocaleString("fr-FR", {
-                      hour12: false,
-                    })
-                  }}
-                </p>
-                <div class="comment">
-                  <p>{{ comment.content }}</p>
-                </div>
-              </div>
-            </div>
-            <div class="comment">
-              <input
-                v-model="contentComment[message.id]"
-                class="textarea-row-comment"
-                type="text-area"
-                placeholder="Ecrivez un commentaire..."
-              />
-
-              <button
-                v-on:click.prevent="createComment(message.id)"
-                class="button-comment"
-              >
-                <p class="send-desktop">Commenter</p>
-                <p class="send-mobile">
-                  <i class="fas fa-paper-plane"></i>
-                </p>
-              </button>
-            </div>
-          </div>
-        </div>
+        <feed></feed>
       </div>
     </div>
   </div>
@@ -184,12 +63,16 @@
 <script>
 import { mapState } from "vuex";
 import Nav from "../components/Nav.vue";
+import UserInformation from "../components/User-Information.vue";
+import Feed from "../components/Feed.vue";
 
 export default {
   el: "#app",
   name: "Message",
   components: {
     "nav-header": Nav,
+    "user-information": UserInformation,
+    "feed": Feed,
   },
   data: function () {
     return {
@@ -199,8 +82,6 @@ export default {
       contentComment: new Map(),
       errors: [],
       url: null,
-      contentMessage: new Map(),
-      contentEditPost: "",
     };
   },
 
@@ -209,20 +90,14 @@ export default {
       this.$router.push("/");
       return;
     }
-    this.$store.dispatch("getMessageInfos");
-    this.$store.dispatch("getAllUsers");
+
     this.$store.dispatch("getUserInfos");
     this.$el.addEventListener("click", this.onClick);
     this.$store.dispatch("getComment");
   },
 
   computed: {
-    ...mapState({
-      messages: "messageInfos",
-      users: "allUsers",
-      comments: "getComment",
-      profileUsers: "userInfos",
-    }),
+    ...mapState({}),
     ...mapState(["status"]),
   },
   methods: {
@@ -234,30 +109,6 @@ export default {
       this.$store.dispatch("getMessageInfos");
     },
 
-    likeMessage(id) {
-      this.$store // Appel API dans le store
-        .dispatch("likeMessage", id)
-        .then(() => {
-          this.$store.dispatch("getMessageInfos");
-        });
-    },
-
-    createComment: function (id) {
-      // const self = this;
-
-      this.$store
-        .dispatch("createComment", {
-          content: this.contentComment[id],
-          id: id,
-        })
-        .then(() => {
-          this.getComments();
-          this.contentComment[id] = "";
-        });
-    },
-    editProfil: function () {
-      this.$router.push("/settings");
-    },
     removeImage: function () {
       (this.url = null), (this.imagesArray = null);
     },
@@ -284,79 +135,14 @@ export default {
       this.imagesArray = e.target.files[0];
       this.url = URL.createObjectURL(this.imagesArray);
     },
-
-    editOpen: function () {},
-
-    editPost: function (id) {
-      // const self = this;
-      this.$store // Appel API dans le store
-        .dispatch("editPost", {
-          content: this.contentEditPost,
-          file: this.imagesArray,
-          id: id,
-        })
-        .then(() => {
-          this.getPosts();
-          this.contentEditPost = "";
-        });
-    },
-
-    deletePost: function (id) {
-      // const self = this;
-      this.$store.dispatch("deletePost", id).then(() => {
-        this.getPosts();
-      });
-    },
-    deleteComment: function (id) {
-      console.log(id);
-      this.$store.dispatch("deleteComment", id).then(() => {
-        this.getComments();
-      });
-    },
-    profil(userId) {
-      const router = this.$router;
-      setTimeout(function () {
-        router.push(`/user/${userId}`);
-      }, 10);
-    },
   },
 };
 </script>
 
 
 <style scoped>
-.card-profile {
-  display: flex;
-  padding-left: 15px;
-  padding-top: 15px;
-  padding-bottom: 15px;
-  background-color: rgb(20, 20, 20);
-  border-radius: 15px 15px 0px 0px;
-}
 
-.information-profile {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  width: 100%;
-  padding: 15px;
-}
 
-.nickname-profile {
-  display: flex;
-  align-items: center;
-}
-
-.pre-post {
-  background-color: rgb(20, 20, 20);
-}
-.image-parent {
-  display: flex;
-  justify-content: center;
-}
-.image-container {
-  object-fit: scale-down;
-}
 .image-upload > input {
   display: none;
 }
@@ -380,32 +166,10 @@ export default {
   align-content: center;
   justify-content: center;
 }
-.identity {
-  display: flex;
-}
-.information-post {
-  display: flex;
-  flex-direction: column;
-  margin-left: 5px;
-  justify-content: center;
-}
+
 .nickname {
   font-weight: 500;
   text-transform: capitalize;
-}
-.time {
-  font-weight: 100;
-  font-size: 10px;
-}
-.like {
-  display: flex;
-  align-items: center;
-}
-.like-heart {
-  cursor: pointer;
-}
-.icon {
-  float: right;
 }
 
 h3 {

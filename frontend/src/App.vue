@@ -41,6 +41,9 @@ export default {
   transition: 0.4s background-color;
   width: 160px;
 }
+.error{
+  word-break: normal;
+}
 .commment-row {
   border-radius: 10px;
   background: #414141;
