@@ -34,7 +34,7 @@ CREATE TABLE `comments` (
   KEY `comments_ibfk_1` (`messageId`),
   CONSTRAINT `comments_ibfk_1` FOREIGN KEY (`messageId`) REFERENCES `messages` (`id`) ON DELETE CASCADE,
   CONSTRAINT `comments_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=285 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=560 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -43,6 +43,7 @@ CREATE TABLE `comments` (
 
 LOCK TABLES `comments` WRITE;
 /*!40000 ALTER TABLE `comments` DISABLE KEYS */;
+INSERT INTO `comments` VALUES (557,1331,108,'Salut, monsieur Admin!','2022-01-28 19:43:43','2022-01-28 19:43:43');
 /*!40000 ALTER TABLE `comments` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -72,6 +73,7 @@ CREATE TABLE `likes` (
 
 LOCK TABLES `likes` WRITE;
 /*!40000 ALTER TABLE `likes` DISABLE KEYS */;
+INSERT INTO `likes` VALUES (1331,60,'2022-01-28 19:44:53','2022-01-28 19:44:53',NULL);
 /*!40000 ALTER TABLE `likes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -93,7 +95,7 @@ CREATE TABLE `messages` (
   PRIMARY KEY (`id`),
   KEY `messages_ibfk_1` (`userId`),
   CONSTRAINT `messages_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=1122 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1337 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -102,7 +104,7 @@ CREATE TABLE `messages` (
 
 LOCK TABLES `messages` WRITE;
 /*!40000 ALTER TABLE `messages` DISABLE KEYS */;
-INSERT INTO `messages` VALUES (1108,60,'Salut','http://localhost:3000/public/1643290298178.jpeg',0,'2022-01-27 13:31:38','2022-01-27 13:52:04'),(1121,103,'Salut',NULL,0,'2022-01-27 13:44:02','2022-01-27 13:52:02');
+INSERT INTO `messages` VALUES (1331,60,'Bonjour,','http://localhost:3000/public/1643398972927.jpeg',1,'2022-01-28 19:42:52','2022-01-28 19:44:53'),(1332,108,'Bonjour tout le monde',NULL,0,'2022-01-28 19:44:05','2022-01-28 19:44:05');
 /*!40000 ALTER TABLE `messages` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -147,7 +149,7 @@ CREATE TABLE `users` (
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=104 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=110 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -156,7 +158,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (60,'Super','Admin','Admin@groupomania.com','$2b$05$7ruBKeY8uWTt.ETr1IjOTOzodi2RTnwFm.kJJ7WGrBoQeYrgDx5QC','http://localhost:3000/public/1643281905036.jpeg','2022-01-25 13:51:31','2022-01-27 11:13:22'),(103,'Jean-claude','Limousin','Jysai@gmail.com','$2b$05$B8yTJg64rQkdBPcPQUx4AucpOnMO0PmiryNmC6hx31nuCgjmeX1si','https://p1.storage.canalblog.com/15/78/447472/125157689.jpg','2022-01-27 13:43:33','2022-01-27 13:43:33');
+INSERT INTO `users` VALUES (60,'Super','Admin','Admin@groupomania.com','$2b$05$7ruBKeY8uWTt.ETr1IjOTOzodi2RTnwFm.kJJ7WGrBoQeYrgDx5QC','http://localhost:3000/public/1643398960916.jpeg','2022-01-25 13:51:31','2022-01-28 19:44:45'),(108,'Jysai','limousin','jysai@gmail.com','$2b$05$/uZrgd01vxbBA4tTDG.kpufoW2D98McjO0IZZjQfH3htRo2qLXHLC','https://p1.storage.canalblog.com/15/78/447472/125157689.jpg','2022-01-28 17:34:36','2022-01-28 17:34:36');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -169,4 +171,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-01-27 15:04:37
+-- Dump completed on 2022-01-28 20:47:11
