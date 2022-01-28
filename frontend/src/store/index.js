@@ -4,7 +4,7 @@ import { createStore } from "vuex";
 
 const axios = require("axios");
 
-const instance = axios.create({ 
+const instance = axios.create({
   baseURL: "http://localhost:3000/api",
   timeout: 1000,
   headers: { "content-type": "application/json" },
@@ -40,7 +40,7 @@ const store = createStore({
       firstname: "",
     },
     messageInfos: [],
-    postInfos: [],
+
     commentInfos: [],
     getError: [],
   },
@@ -49,7 +49,7 @@ const store = createStore({
       state.status = status;
     },
     logUser: function (state, user) {
-      // Permet de stocker le token 
+      // Permet de stocker le token
       instance.defaults.headers.common[
         "Authorization"
       ] = `bearer ${user.token}`;
@@ -72,13 +72,12 @@ const store = createStore({
       state.deleteComment = deleteComment;
     },
 
-  
     messageInfos: function (state, messageInfos) {
       state.messageInfos = messageInfos;
     },
 
-    getComment: function (state, getComment) {
-      state.getComment = getComment;
+    commentInfos: function (state, commentInfos) {
+      state.commentInfos = commentInfos;
     },
     createLike: function (state, createLike) {
       state.createLike = createLike;
@@ -155,14 +154,12 @@ const store = createStore({
 
     getMessageInfos: ({ commit }) => {
       // Méthode GET via AXIOS pour récupérer les plucations
-      // console.log({ commit });
-      // commit("setStatus", "loading");
+
+      commit("setStatus");
       return new Promise((resolve) => {
         instance
           .get("message")
           .then(function (response) {
-            // console.log(response.data.messages);
-            // commit("setStatus", "");
             commit("messageInfos", response.data.messages);
             resolve(response);
           })
@@ -180,7 +177,7 @@ const store = createStore({
           .then(function (response) {
             // console.log(response.data.comments);
             // commit("setStatus", "");
-            commit("getComment", response.data.comments);
+            commit("commentInfos", response.data.comments);
             resolve(response);
           })
           .catch(function () {});
@@ -242,11 +239,11 @@ const store = createStore({
 
     deleteComment: ({ commit }, id) => {
       // Méthode post via AXIOS pour effacer un commentaire
+      commit("setStatus");
       return new Promise((resolve, reject) => {
         instance
           .delete(`message/comment/${id}`)
           .then(function (response) {
-            commit("deleteComment");
             resolve(response);
           })
           .catch(function (error) {
@@ -258,15 +255,13 @@ const store = createStore({
 
     editAvatar: ({ commit }, userInfos) => {
       // Méthode post via AXIOS pour editer la photo de profile
-      commit("setStatus", "loading");
+      commit("setStatus");
       return new Promise((resolve, reject) => {
         let formData = new FormData();
         formData.append("image", userInfos.file);
         instance
           .put("/user/editAvatar", formData)
           .then(function (response) {
-            commit("setStatus", "");
-
             resolve(response);
           })
           .catch(function (error) {
@@ -278,13 +273,11 @@ const store = createStore({
 
     editLastname: ({ commit }, userInfos) => {
       // Méthode post via AXIOS pour editer le lastname
-      commit("setStatus", "loading");
+      commit("setStatus");
       return new Promise((resolve, reject) => {
         instance
           .put("/user/editLastname", userInfos)
           .then(function (response) {
-            commit("setStatus", "");
-
             resolve(response);
           })
           .catch(function (error) {
@@ -296,13 +289,11 @@ const store = createStore({
 
     editFirstname: ({ commit }, userInfos) => {
       // Méthode post via AXIOS pour  éditer le firstname
-      commit("setStatus", "loading");
+      commit("setStatus");
       return new Promise((resolve, reject) => {
         instance
           .put("/user/editFirstname", userInfos)
           .then(function (response) {
-            commit("setStatus", "");
-
             resolve(response);
           })
           .catch(function (error) {
@@ -314,7 +305,7 @@ const store = createStore({
 
     deleteProfile: ({ commit }, userInfos) => {
       // Méthode post via AXIOS pour supprimer son compte
-      commit("setStatus", "loading");
+
       return new Promise((resolve, reject) => {
         instance
           .delete("/user/", userInfos)

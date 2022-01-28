@@ -149,25 +149,20 @@ export default {
     ...mapState({
       messages: "messageInfos",
       profileUsers: "userInfos",
-      comments: "getComment",
+      comments: "commentInfos",
     }),
     ...mapState(["status"]),
   },
 
   methods: {
-    getComments() {
-      this.$store.dispatch("getComment");
-    },
-    getPosts() {
-      this.$store.dispatch("getMessageInfos");
-    },
+    
     deletePost: function (id) {
       // const self = this;
       this.$store.dispatch("deletePost", id).then(() => {
-        this.getPosts();
+        this.$store.dispatch("getMessageInfos");
       });
     },
-    likeMessage(id) {
+    likeMessage: function (id) {
       this.$store // Appel API dans le store
         .dispatch("likeMessage", id)
         .then(() => {
@@ -175,13 +170,12 @@ export default {
         });
     },
     deleteComment: function (id) {
+      const self = this
       console.log(id);
       this.$store.dispatch("deleteComment", id).then(() => {
-        this.getComments();
+        self.$store.dispatch("getComment");
       });
     },
-    
-
     createComment: function (id) {
       // const self = this;
 
@@ -191,7 +185,7 @@ export default {
           id: id,
         })
         .then(() => {
-          this.getComments();
+          this.$store.dispatch("getComment");
           this.contentComment[id] = "";
         });
     },

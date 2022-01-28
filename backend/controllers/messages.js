@@ -1,7 +1,9 @@
 const models = require("../models");
 const fs = require("fs");
+const e = require("express");
 
-exports.createMessage = function (req, res) { // Permet de créer un nouveau Post
+exports.createMessage = function (req, res) {
+  // Permet de créer un nouveau Post
   const content = req.body.content;
 
   models.User.findOne({
@@ -13,7 +15,7 @@ exports.createMessage = function (req, res) { // Permet de créer un nouveau Pos
         likes: 0,
         UserId: userFound.id,
       };
-      if (req.file !== undefined) {  
+      if (req.file !== undefined) {
         model["imageUrl"] = `${req.protocol}://${req.get("host")}/public/${
           req.file.filename
         }`;
@@ -34,7 +36,8 @@ exports.createMessage = function (req, res) { // Permet de créer un nouveau Pos
     });
 };
 
-exports.deleteMessage = (req, res) => { // Permet de supprimer un Post
+exports.deleteMessage = (req, res) => {
+  // Permet de supprimer un Post
   models.User.findOne({
     where: { id: req.body.userId },
   })
@@ -44,30 +47,36 @@ exports.deleteMessage = (req, res) => { // Permet de supprimer un Post
       })
         .then(function (messageFound) {
           if (messageFound.imageUrl == null) {
-            if (userFound.id == messageFound.UserId) {
-              messageFound.destroy();
-              res.status(200).json({ message: "message supprimé !" });
-            } else if (userFound.id == 60) {
-              messageFound.destroy();
-              res.status(200).json({ message: "message supprimé !" });
+            if (userFound.id == messageFound.UserId || userFound.id == 60) {
+              messageFound
+                .destroy()
+                .then(function (messageDestroy) {
+                  return res.status(200).json({
+                    messageDestroy,
+                  });
+                })
+                .catch(function (err) {
+                  return res.status(500).json({ err });
+                });
             } else {
               res.status(401).json({
                 error: "vous n'avez pas les droits pour supprimer ce message",
               });
             }
           } else {
-            if (userFound.id == messageFound.UserId) {
+            if (userFound.id == messageFound.UserId || userFound.id == 60) {
               const filename = messageFound.imageUrl.split("/public/")[1];
               fs.unlink(`image/${filename}`, () => {
-                messageFound.destroy();
-                res.status(200).json({ message: "message supprimé !" });
-              });
-            } else if (userFound.id == 60) {
-              const filename = messageFound.imageUrl.split("/public/")[1];
-              console.log(messageFound);
-              fs.unlink(`image/${filename}`, () => {
-                messageFound.destroy();
-                res.status(200).json({ message: "message supprimé !" });
+                messageFound
+                  .destroy()
+                  .then(function (messageDestroy) {
+                    return res.status(200).json({
+                      messageDestroy,
+                    });
+                  })
+                  .catch(function (err) {
+                    return res.status(500).json({ err });
+                  });
               });
             } else {
               res.status(401).json({
@@ -87,8 +96,8 @@ exports.deleteMessage = (req, res) => { // Permet de supprimer un Post
     });
 };
 
-
-exports.listMessages = (req, res, next) => { // liste tous les posts des utilisateurs
+exports.listMessages = (req, res, next) => {
+  // liste tous les posts des utilisateurs
   models.Message.findAll({
     include: [
       {
@@ -110,7 +119,8 @@ exports.listMessages = (req, res, next) => { // liste tous les posts des utilisa
     );
 };
 
-exports.addComment = async (req, res) => { // permet d'ajouter un commentaire sous un post
+exports.addComment = async (req, res) => {
+  // permet d'ajouter un commentaire sous un post
   try {
     const userId = req.body.userId;
     const messageId = req.params.id;
@@ -132,7 +142,48 @@ exports.addComment = async (req, res) => { // permet d'ajouter un commentaire so
   }
 };
 
-exports.deleteComment = (req, res) => { // supprime un commentaire
+exports.deleteMessage = (req, res) => {
+  // Permet de supprimer un Post
+  models.User.findOne({
+    where: { id: req.body.userId },
+  })
+    .then(function (userFound) {
+      models.Message.findOne({
+        where: { id: req.params.id },
+      })
+        .then(function (messageFound) {
+          if (userFound.id == messageFound.UserId || userFound.id == 60) {
+            if (messageFound.imageUrl == null) {
+              messageFound.destroy().then(function () {
+                return res.status(200).json({ msg: "Message supprimé" });
+              });
+            } else {
+              const filename = messageFound.imageUrl.split("/public/")[1];
+              fs.unlink(`image/${filename}`, () => {
+                messageFound.destroy().then(function () {
+                  return res.status(200).json({ msg: "Message supprimé" });
+                });
+              });
+            }
+          } else {
+            return res.status(401).json({
+              error: "Vous ne pouvez pas supprimer ce message",
+            });
+          }
+        })
+        .catch(function (err) {
+          res.status(404).json({
+            error: "message non trouvé",
+          });
+        });
+    })
+    .catch(function (error) {
+      res.status(404).json({ error: "Utilisateur non trouvé" });
+    });
+};
+
+exports.deleteComment = (req, res) => {
+  // supprime un commentaire
   models.User.findOne({
     where: { id: req.body.userId },
   })
@@ -141,12 +192,13 @@ exports.deleteComment = (req, res) => { // supprime un commentaire
         where: { id: req.params.id },
       })
         .then(function (commentFound) {
-          if (userFound.id == commentFound.UserId) {
-            commentFound.destroy();
-            res.status(200).json({ error: "commentaire supprimé !" });
+          if (userFound.id == commentFound.UserId || userFound.id == 60) {
+            commentFound.destroy().then(function () {
+              return res.status(200).json({ message: "Commentaire supprimé" });
+            });
           } else {
-            res.status(401).json({
-              error: "vous n'avez pas les droits pour supprimer ce message",
+            return res.status(401).json({
+              error: "Vous ne pouvez pas supprimer ce commentaire",
             });
           }
         })
@@ -161,7 +213,9 @@ exports.deleteComment = (req, res) => { // supprime un commentaire
     });
 };
 
-exports.likeMessage = async (req, res, next) => { // Permet d'ajouter un like à un post
+
+
+exports.likeMessage = async (req, res, next) => {
   try {
     const userId = req.body.userId;
     const messageId = req.params.id;
@@ -169,39 +223,39 @@ exports.likeMessage = async (req, res, next) => { // Permet d'ajouter un like à
       where: { userId: userId, messageId: messageId },
     });
     if (user) {
-      await models.Like.destroy({
-        where: { userId: userId, messageId: messageId },
-      });
-      res.status(201).send({ Message: "vous n'aimez plus ce Message" });
+      await models.Like.destroy(
+        { where: { userId: userId, messageId: messageId } },
+        { truncate: true, restartIdentity: true }
+      );
+
+      res.status(200).send({ message: "vous n'aimez plus ce Message" });
       try {
-        const messageFound = await models.Message.findOne({
+        models.Message.findOne({
           where: { id: messageId },
-        });
-        if (messageFound) {
+        }).then(function (messageFound) {
           messageFound.update({
             likes: messageFound.likes - 1,
           });
-        }
+        });
       } catch (err) {
-        return res.status(500).send({ err });
+        return res.status(404).send({ err });
       }
     } else {
       await models.Like.create({
         userId: userId,
         messageId: messageId,
       });
-      res.status(201).json({ Message: "vous aimez ce Message" });
+      res.status(201).json({ message: "vous aimez ce Message" });
       try {
-        const messageFound = await models.Message.findOne({
+        models.Message.findOne({
           where: { id: messageId },
-        });
-        if (messageFound) {
+        }).then(function (messageFound) {
           messageFound.update({
             likes: messageFound.likes + 1,
           });
-        }
+        });
       } catch (err) {
-        return res.status(500).send({ err });
+        return res.status(404).send({ err });
       }
     }
   } catch (err) {
@@ -209,7 +263,8 @@ exports.likeMessage = async (req, res, next) => { // Permet d'ajouter un like à
   }
 };
 
-exports.listComments = (req, res, next) => { // liste tous les commentaires
+exports.listComments = (req, res, next) => {
+  // liste tous les commentaires
   models.Comment.findAll({
     include: [
       {
@@ -220,11 +275,9 @@ exports.listComments = (req, res, next) => { // liste tous les commentaires
     order: [["createdAt", "DESC"]],
   })
     .then(function (comments) {
-      return res.status(200).json({ comments });
+      return res.status(201).json({ comments });
     })
     .catch(function (err) {
       return res.status(404).json({ error: "no comments found" });
     });
 };
-
-
