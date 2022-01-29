@@ -1,5 +1,6 @@
 <template>
   <router-view></router-view>
+  
 </template>
 
 
@@ -9,9 +10,6 @@ export default {
   components: {},
 };
 </script>
-
-
-
 
 
 <style>
@@ -346,6 +344,7 @@ input[type="file"] {
 #preview {
   display: flex;
   justify-content: center;
+  
 }
 
 .loader {

@@ -57,7 +57,7 @@ exports.login = (req, res, next) => { // Permet de s'authentifier
     .then(function (userFound) {
       
       if (!userFound) {
-        return res.status(401).json({ error: "Utilisateur non trouvé !" });
+        return res.status(404).json({ error: "Utilisateur non trouvé !" });
       } else {
         bcrypt
           .compare(req.body.password, userFound.password) // comparaison du mot de passe

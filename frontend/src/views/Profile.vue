@@ -5,7 +5,9 @@
       href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
       integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm"
       crossorigin="anonymous"
+      
     />
+    
     <div class="main-site">
       <nav-header></nav-header>
       <div class="main-container">
@@ -34,7 +36,7 @@
               </div>
 
               <div class="identity">
-                <img class="image-avatar" :src="message.User.imageUrl" />
+                <img class="image-avatar" :src="message.User.imageUrl" alt="photo de profil" />
                 <div class="information-post">
                   <p class="nickname">
                     {{ message.User.firstname }} {{ message.User.lastname }}
@@ -50,7 +52,7 @@
               </div>
               <p class="message-content">{{ message.content }}</p>
               <div class="image-parent">
-                <img class="image-container" :src="message.imageUrl" />
+                <img class="image-container" :src="message.imageUrl" alt="image du post" />
               </div>
               <div class="like">
                 <div
@@ -98,6 +100,7 @@
                   class="textarea-row-comment"
                   type="text-area"
                   placeholder="Ecrivez un commentaire..."
+                  aria-label="Ecrivez votre commentaire"
                 />
 
                 <button
@@ -140,6 +143,10 @@ export default {
     "user-information": UserInformation
   },
   mounted: function () {
+    if (this.$store.state.user.userId == -1) {
+      this.$router.push("/");
+      return;
+    }
     this.$store.dispatch("getMessageInfos");
     this.$store.dispatch("getUserInfos");
     this.$store.dispatch("getComment");

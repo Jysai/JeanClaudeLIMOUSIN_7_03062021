@@ -59,9 +59,9 @@
         </div>
 
         <div class="card" v-bind:key="index" v-for="(error, index) in errors">
-          <li>
+          
             <p class="error">{{ error }}</p>
-          </li>
+          
         </div>
         <div class="form-row">
           <button @click="login()" class="button" v-if="mode == 'login'">
@@ -143,7 +143,7 @@ export default {
         })
         .then(
           function () {
-            self.login(); // Quand le compte est créé on utilise la fonction login pour se diriger sur la route profile
+            self.login(); // Quand le compte pour s'authentifier directement 
             
           },
           function (error) {

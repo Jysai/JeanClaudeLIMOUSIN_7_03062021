@@ -6,6 +6,7 @@
       integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm"
       crossorigin="anonymous"
     />
+    <link rel="alternate" href="http://localhost:8080/" hreflang="fr" />
     <div class="main-site">
       <nav-header></nav-header>
       <div class="main-container">
@@ -16,6 +17,7 @@
             class="textarea-row"
             type="text-area"
             placeholder="Quoi de neuf?"
+            aria-label="Ecriver votre message"
           ></textarea>
 
           <label class="custom-file-upload">
@@ -25,12 +27,14 @@
               @change="openFile"
               id="inputFile"
               ref="inputFile"
+              aria-label="envoyer une image"
             />
             <i class="fas fa-images"></i>
+            Envoyer un image
           </label>
 
           <div id="preview">
-            <img v-if="url" :src="url" />
+            <img v-if="url" :src="url" alt="aperçu photo" />
           </div>
           <div v-if="url">
             <div @click="removeImage()">
@@ -74,32 +78,22 @@ export default {
   components: {
     "nav-header": Nav,
     "user-information": UserInformation,
-    feed: Feed,
+    "feed": Feed,
   },
   data: function () {
     return {
       mode: "message",
       contentPost: "",
       imagesArray: null,
-      contentComment: new Map(),
+     
       errors: [],
-      url: null,
+      url: "",
     };
   },
 
-  mounted: function () {
-    if (this.$store.state.user.userId == -1) {
-      this.$router.push("/");
-      return;
-    }
-
-    this.$store.dispatch("getUserInfos");
-    this.$el.addEventListener("click", this.onClick);
-    this.$store.dispatch("getComment");
-  },
 
   computed: {
-    ...mapState({}),
+ 
     ...mapState(["status"]),
   },
   methods: {
@@ -117,12 +111,13 @@ export default {
             content: this.contentPost,
             file: this.imagesArray,
           })
-
-          .then(() => {
-            this.removeImage();
-            this.$store.dispatch("getMessageInfos");
+          .then(() => {    
+            this.url = null;
+            this.imagesArray = null
             this.contentPost = "";
-          });
+            this.$store.dispatch("getMessageInfos");
+          })
+      
       }
     },
     openFile: function (e) {

@@ -1,16 +1,15 @@
 <template>
   <div class="card" v-if="status == 'loading'">
-      <div class="loader">Loading...</div>
-    </div>
-    <div v-else>
-  <div v-if="messages == 0" class="card">
-    <div class="message-no-post">
-      <i class="fas fa-feather-alt fa-10x"></i>
-      <p>Le fil d'actualité est vide</p>
-    </div>
+    <div class="loader">Loading...</div>
   </div>
   <div v-else>
-    
+    <div v-if="messages == 0" class="card">
+      <div class="message-no-post">
+        <i class="fas fa-feather-alt fa-10x"></i>
+        <p>Le fil d'actualité est vide</p>
+      </div>
+    </div>
+    <div v-else>
       <div class="card" v-bind:key="index" v-for="(message, index) in messages">
         <div class="icon">
           <div
@@ -24,7 +23,7 @@
         </div>
 
         <div class="identity">
-          <img class="image-avatar" :src="message.User.imageUrl" />
+          <img class="image-avatar" :src="message.User.imageUrl" alt="photo de profil"/>
           <div class="information-post">
             <p class="nickname">
               {{ message.User.firstname }} {{ message.User.lastname }}
@@ -40,7 +39,7 @@
         </div>
         <p class="message-content">{{ message.content }}</p>
         <div class="image-parent">
-          <img class="image-container" :src="message.imageUrl" />
+          <img class="image-container" :src="message.imageUrl" alt="Image du post" />
         </div>
         <div class="like">
           <div class="like-heart" v-on:click.prevent="likeMessage(message.id)">
@@ -91,6 +90,7 @@
             class="textarea-row-comment"
             type="text-area"
             placeholder="Ecrivez un commentaire..."
+            aria-label="espace commentaire"
           />
 
           <button
@@ -118,8 +118,6 @@ export default {
     this.$store.dispatch("getMessageInfos");
     this.$store.dispatch("getAllUsers");
     this.$store.dispatch("getUserInfos");
-    this.$el.addEventListener("click", this.onClick);
-    this.$store.dispatch("getComment");
   },
 
   data: function () {
@@ -191,7 +189,7 @@ export default {
 }
 .time {
   font-weight: 100;
-  font-size: 10px;
+  font-size: 12px;
 }
 .image-parent {
   display: flex;
@@ -199,6 +197,7 @@ export default {
 }
 .image-container {
   object-fit: scale-down;
+  max-height: 500px;
 }
 .like {
   display: flex;

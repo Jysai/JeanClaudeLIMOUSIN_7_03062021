@@ -1,7 +1,9 @@
 
  <template>
+ 
   <div class="card-profile">
-    <img class="image-avatar-profile" :src="profileUsers.imageUrl" />
+    <link rel="alternate" href="https://example.com/" hreflang="x-default" />
+    <img class="image-avatar-profile" :src="profileUsers.imageUrl" alt="Photo de profil">
     <div class="information-profile">
       <span class="nickname-profile"
         >{{ profileUsers.firstname }} {{ profileUsers.lastname }}</span
@@ -47,7 +49,7 @@ export default {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  width: 100%;
+  width: 85%;
   padding: 15px;
 }
 

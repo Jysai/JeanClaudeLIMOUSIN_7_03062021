@@ -1,6 +1,6 @@
 const models = require("../models");
 const fs = require("fs");
-const e = require("express");
+
 
 exports.createMessage = function (req, res) {
   // Permet de créer un nouveau Post
@@ -36,6 +36,9 @@ exports.createMessage = function (req, res) {
     });
 };
 
+
+
+
 exports.deleteMessage = (req, res) => {
   // Permet de supprimer un Post
   models.User.findOne({
@@ -46,43 +49,23 @@ exports.deleteMessage = (req, res) => {
         where: { id: req.params.id },
       })
         .then(function (messageFound) {
-          if (messageFound.imageUrl == null) {
-            if (userFound.id == messageFound.UserId || userFound.id == 60) {
-              messageFound
-                .destroy()
-                .then(function (messageDestroy) {
-                  return res.status(200).json({
-                    messageDestroy,
-                  });
-                })
-                .catch(function (err) {
-                  return res.status(500).json({ err });
-                });
+          if (userFound.id == messageFound.UserId || userFound.id == 60) {
+            if (messageFound.imageUrl == null) {
+              messageFound.destroy().then(function () {
+                return res.status(200).json({ msg: "Message supprimé" });
+              });
             } else {
-              res.status(401).json({
-                error: "vous n'avez pas les droits pour supprimer ce message",
+              const filename = messageFound.imageUrl.split("/public/")[1];
+              fs.unlink(`image/${filename}`, () => {
+                messageFound.destroy().then(function () {
+                  return res.status(200).json({ msg: "Message supprimé" });
+                });
               });
             }
           } else {
-            if (userFound.id == messageFound.UserId || userFound.id == 60) {
-              const filename = messageFound.imageUrl.split("/public/")[1];
-              fs.unlink(`image/${filename}`, () => {
-                messageFound
-                  .destroy()
-                  .then(function (messageDestroy) {
-                    return res.status(200).json({
-                      messageDestroy,
-                    });
-                  })
-                  .catch(function (err) {
-                    return res.status(500).json({ err });
-                  });
-              });
-            } else {
-              res.status(401).json({
-                error: "vous n'avez pas les droits pour supprimer ce message",
-              });
-            }
+            return res.status(401).json({
+              error: "Vous ne pouvez pas supprimer ce message",
+            });
           }
         })
         .catch(function (err) {
@@ -95,6 +78,11 @@ exports.deleteMessage = (req, res) => {
       res.status(404).json({ error: "Utilisateur non trouvé" });
     });
 };
+
+
+
+
+
 
 exports.listMessages = (req, res, next) => {
   // liste tous les posts des utilisateurs
@@ -142,45 +130,6 @@ exports.addComment = async (req, res) => {
   }
 };
 
-exports.deleteMessage = (req, res) => {
-  // Permet de supprimer un Post
-  models.User.findOne({
-    where: { id: req.body.userId },
-  })
-    .then(function (userFound) {
-      models.Message.findOne({
-        where: { id: req.params.id },
-      })
-        .then(function (messageFound) {
-          if (userFound.id == messageFound.UserId || userFound.id == 60) {
-            if (messageFound.imageUrl == null) {
-              messageFound.destroy().then(function () {
-                return res.status(200).json({ msg: "Message supprimé" });
-              });
-            } else {
-              const filename = messageFound.imageUrl.split("/public/")[1];
-              fs.unlink(`image/${filename}`, () => {
-                messageFound.destroy().then(function () {
-                  return res.status(200).json({ msg: "Message supprimé" });
-                });
-              });
-            }
-          } else {
-            return res.status(401).json({
-              error: "Vous ne pouvez pas supprimer ce message",
-            });
-          }
-        })
-        .catch(function (err) {
-          res.status(404).json({
-            error: "message non trouvé",
-          });
-        });
-    })
-    .catch(function (error) {
-      res.status(404).json({ error: "Utilisateur non trouvé" });
-    });
-};
 
 exports.deleteComment = (req, res) => {
   // supprime un commentaire
@@ -213,53 +162,48 @@ exports.deleteComment = (req, res) => {
     });
 };
 
-
-
 exports.likeMessage = async (req, res, next) => {
-  try {
-    const userId = req.body.userId;
-    const messageId = req.params.id;
-    const user = await models.Like.findOne({
-      where: { userId: userId, messageId: messageId },
-    });
-    if (user) {
-      await models.Like.destroy(
-        { where: { userId: userId, messageId: messageId } },
-        { truncate: true, restartIdentity: true }
-      );
-
-      res.status(200).send({ message: "vous n'aimez plus ce Message" });
-      try {
-        models.Message.findOne({
-          where: { id: messageId },
-        }).then(function (messageFound) {
-          messageFound.update({
-            likes: messageFound.likes - 1,
-          });
+  const userId = req.body.userId;
+  const messageId = req.params.id;
+  const user = await models.Like.findOne({
+    where: { userId: userId, messageId: messageId },
+  });
+  if (user) {
+    await models.Like.destroy(
+      { where: { userId: userId, messageId: messageId } },
+      { truncate: true, restartIdentity: true }
+    );
+    try {
+      models.Message.findOne({
+        where: { id: req.params.id },
+      }).then(function (messageUnlike) {
+        messageUnlike.update({
+          likes: messageUnlike.likes - 1,
         });
-      } catch (err) {
-        return res.status(404).send({ err });
-      }
-    } else {
-      await models.Like.create({
-        userId: userId,
-        messageId: messageId,
+        res
+          .status(200)
+          .json({ message: "vous n'aimez plus ce message" });
       });
-      res.status(201).json({ message: "vous aimez ce Message" });
-      try {
-        models.Message.findOne({
-          where: { id: messageId },
-        }).then(function (messageFound) {
-          messageFound.update({
-            likes: messageFound.likes + 1,
-          });
-        });
-      } catch (err) {
-        return res.status(404).send({ err });
-      }
+    } catch (err) {
+      return res.status(404).json({ err });
     }
-  } catch (err) {
-    return res.status(500).send({ err });
+  } else {
+    await models.Like.create({
+      userId: userId,
+      messageId: messageId,
+    });
+    try {
+      models.Message.findOne({
+        where: { id: req.params.id },
+      }).then(function (mesageLike) {
+        mesageLike.update({
+          likes: mesageLike.likes + 1,
+        });
+        res.status(201).json({ message: "vous aimez ce Message" });
+      });
+    } catch (err) {
+      return res.status(404).json({ err });
+    }
   }
 };
 

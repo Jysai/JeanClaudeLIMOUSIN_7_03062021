@@ -24,6 +24,7 @@
                 class="form-row__input"
                 type="text"
                 placeholder="Prénom"
+                aria-label="votre prénom"
               />
 
               <div class="option-button" @click="editFirstname()">
@@ -41,6 +42,7 @@
                 class="form-row__input"
                 type="text"
                 placeholder="Nom de Famille"
+                aria-label="votre nom"
               />
 
               <div class="option-button" @click="editLastname()">
@@ -69,8 +71,9 @@
                 @change="openFile"
                 id="inputFile"
                 ref="inputFile"
+                aria-label="changer votre photo de profil"
               />
-              <img class="image-avatar-profile" :src="user.imageUrl" />
+              <img class="image-avatar-profile" :src="user.imageUrl" alt="aperçu de votre photo de profil"/>
             </label>
           </div>
           <div id="preview">
@@ -91,6 +94,7 @@
               @change="openFile"
               id="inputFile"
               ref="inputFile"
+              aria-label="sélectionner votre photo de profil"
             />
 
             <div
@@ -165,7 +169,7 @@ export default {
     }
     this.$store.dispatch("getUserInfos");
     this.$el.addEventListener("click", this.onClick);
-    this.$store.dispatch("getComment");
+    
   },
 
 

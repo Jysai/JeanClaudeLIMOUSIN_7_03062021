@@ -40,7 +40,6 @@ const store = createStore({
       firstname: "",
     },
     messageInfos: [],
-
     commentInfos: [],
     getError: [],
   },
@@ -59,30 +58,13 @@ const store = createStore({
     userInfos: function (state, userInfos) {
       state.userInfos = userInfos;
     },
-    createComment: function (state, createComment) {
-      state.createComment = createComment;
-    },
-    createNewPost: function (state, createNewPost) {
-      state.createNewPost = createNewPost;
-    },
-    deletePost: function (state, deletePost) {
-      state.deletePost = deletePost;
-    },
-    deleteComment: function (state, deleteComment) {
-      state.deleteComment = deleteComment;
-    },
 
     messageInfos: function (state, messageInfos) {
       state.messageInfos = messageInfos;
     },
-
     commentInfos: function (state, commentInfos) {
       state.commentInfos = commentInfos;
     },
-    createLike: function (state, createLike) {
-      state.createLike = createLike;
-    },
-
     allUsers: (state, allUsers) => {
       state.allUsers = allUsers;
     },
@@ -154,7 +136,6 @@ const store = createStore({
 
     getMessageInfos: ({ commit }) => {
       // Méthode GET via AXIOS pour récupérer les plucations
-
       commit("setStatus");
       return new Promise((resolve) => {
         instance
@@ -169,14 +150,12 @@ const store = createStore({
 
     getComment: ({ commit }) => {
       // Méthode GET via AXIOS pour récupérer les commentaires
-
       // commit("setStatus", "loading");
       return new Promise((resolve) => {
         instance
           .get("message/comment")
           .then(function (response) {
             // console.log(response.data.comments);
-            // commit("setStatus", "");
             commit("commentInfos", response.data.comments);
             resolve(response);
           })
@@ -186,7 +165,6 @@ const store = createStore({
 
     createNewPost: ({ commit }, postInfos) => {
       // Méthode post via AXIOS pour publier une nouvelle publication
-
       // commit("setStatus", "loading");
       return new Promise((resolve, reject) => {
         let formData = new FormData();
@@ -195,7 +173,6 @@ const store = createStore({
         instance
           .post("/message/", formData)
           .then(function (response) {
-            commit("createNewPost");
             resolve(response);
           })
           .catch(function (error) {
@@ -211,7 +188,6 @@ const store = createStore({
         instance
           .post(`message/${commentInfos.id}/comment`, commentInfos)
           .then(function (response) {
-            commit("createComment");
             resolve(response);
           })
           .catch(function (error) {
@@ -227,11 +203,10 @@ const store = createStore({
         instance
           .delete(`message/${id}`)
           .then(function (response) {
-            commit("deletePost");
             resolve(response);
           })
           .catch(function (error) {
-            // commit("setStatus", "");
+            commit("setStatus", "");
             reject(error);
           });
       });
@@ -328,7 +303,7 @@ const store = createStore({
         instance
           .post(`message/${id}/like`)
           .then(function (response) {
-            commit("createLike");
+            
             resolve(response);
           })
           .catch(function (error) {
