@@ -37,8 +37,6 @@ exports.createMessage = function (req, res) {
 };
 
 
-
-
 exports.deleteMessage = (req, res) => {
   // Permet de supprimer un Post
   models.User.findOne({
@@ -78,9 +76,6 @@ exports.deleteMessage = (req, res) => {
       res.status(404).json({ error: "Utilisateur non trouvé" });
     });
 };
-
-
-
 
 
 

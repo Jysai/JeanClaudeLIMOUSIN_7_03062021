@@ -23,7 +23,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         validate: {
           min: 2,
-         
         },
       },
       

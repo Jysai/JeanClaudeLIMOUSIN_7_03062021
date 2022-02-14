@@ -52,7 +52,7 @@
               </div>
               <p class="message-content">{{ message.content }}</p>
               <div class="image-parent">
-                <img class="image-container" :src="message.imageUrl" alt="image du post" />
+                <img class="image-container" :src="message.imageUrl">
               </div>
               <div class="like">
                 <div

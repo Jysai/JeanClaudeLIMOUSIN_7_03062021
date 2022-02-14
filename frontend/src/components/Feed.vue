@@ -39,7 +39,7 @@
         </div>
         <p class="message-content">{{ message.content }}</p>
         <div class="image-parent">
-          <img class="image-container" :src="message.imageUrl" alt="Image du post" />
+          <img class="image-container" :src="message.imageUrl">
         </div>
         <div class="like">
           <div class="like-heart" v-on:click.prevent="likeMessage(message.id)">
@@ -118,6 +118,7 @@ export default {
     this.$store.dispatch("getMessageInfos");
     this.$store.dispatch("getAllUsers");
     this.$store.dispatch("getUserInfos");
+    this.$store.dispatch("getComment");
   },
 
   data: function () {

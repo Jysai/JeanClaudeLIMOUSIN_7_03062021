@@ -58,7 +58,6 @@ const store = createStore({
     userInfos: function (state, userInfos) {
       state.userInfos = userInfos;
     },
-
     messageInfos: function (state, messageInfos) {
       state.messageInfos = messageInfos;
     },

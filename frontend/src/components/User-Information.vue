@@ -2,7 +2,7 @@
  <template>
  
   <div class="card-profile">
-    <link rel="alternate" href="https://example.com/" hreflang="x-default" />
+    
     <img class="image-avatar-profile" :src="profileUsers.imageUrl" alt="Photo de profil">
     <div class="information-profile">
       <span class="nickname-profile"

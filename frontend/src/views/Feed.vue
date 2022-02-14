@@ -6,7 +6,7 @@
       integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm"
       crossorigin="anonymous"
     />
-    <link rel="alternate" href="http://localhost:8080/" hreflang="fr" />
+    
     <div class="main-site">
       <nav-header></nav-header>
       <div class="main-container">
